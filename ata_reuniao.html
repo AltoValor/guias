@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ata de Reunião — Alto Valor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080e14;
+    --surface: #0d151e;
+    --surface2: #111d28;
+    --border: rgba(0,153,116,0.15);
+    --green: #009974;
+    --green-dim: rgba(0,153,116,0.08);
+    --white: #e8eef4;
+    --muted: #6b8099;
+    --red: #c0392b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+  }
+  .logo-svg { height: 30px; width: auto; }
+  .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  .app-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); opacity: 0.85; }
+  .app-sub { font-size: 10px; color: var(--muted); opacity: 0.45; letter-spacing: 0.06em; }
+
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    z-index: 1;
+  }
+  .panel { padding: 36px 44px; display: flex; flex-direction: column; gap: 20px; }
+  .panel-left { border-right: 1px solid var(--border); }
+  .panel-title { font-family: 'Cormorant Garamond', serif; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--green); }
+
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .field input, .field textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    padding: 9px 13px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    border-radius: 2px;
+    resize: none;
+  }
+  .field input:focus, .field textarea:focus { border-color: var(--green); background: var(--surface2); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--muted); opacity: 0.35; }
+  .field-full { grid-column: 1 / -1; }
+
+  .transcript-wrap { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .transcript-top { display: flex; justify-content: space-between; align-items: center; }
+  .char-count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
+
+  .mic-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 13px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .btn-mic {
+    display: flex; align-items: center; gap: 7px;
+    background: transparent;
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 6px 13px; cursor: pointer;
+    transition: all 0.2s; border-radius: 2px; white-space: nowrap;
+  }
+  .btn-mic:hover { background: var(--green-dim); }
+  .btn-mic.recording { border-color: var(--red); color: var(--red); animation: mpulse 1.5s ease-in-out infinite; }
+  @keyframes mpulse { 0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,0.3)} 50%{box-shadow:0 0 0 6px rgba(192,57,43,0)} }
+  .mic-status { font-size: 11px; color: var(--muted); flex: 1; }
+  .mic-status.active { color: var(--red); }
+  .lang-select {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px;
+    padding: 5px 8px; border-radius: 2px; outline: none; cursor: pointer;
+  }
+  .lang-select option { background: var(--surface2); }
+
+  #transcript {
+    flex: 1; min-height: 190px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--white); font-family: 'DM Mono', monospace;
+    font-size: 12px; font-weight: 300; line-height: 1.7;
+    padding: 13px; outline: none; resize: vertical;
+    transition: border-color 0.2s; border-radius: 2px;
+  }
+  #transcript:focus { border-color: var(--green); }
+  #transcript::placeholder { color: var(--muted); opacity: 0.35; }
+
+  .btn-generate {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: transparent; border: 1px solid var(--green); color: var(--green);
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 14px 32px; cursor: pointer; transition: all 0.25s;
+    border-radius: 2px; position: relative; overflow: hidden;
+  }
+  .btn-generate::before {
+    content: ''; position: absolute; inset: 0; background: var(--green);
+    transform: scaleX(0); transform-origin: left; transition: transform 0.25s ease; z-index: 0;
+  }
+  .btn-generate:hover::before { transform: scaleX(1); }
+  .btn-generate:hover { color: var(--black); }
+  .btn-generate > * { position: relative; z-index: 1; }
+  .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-generate:disabled::before { display: none; }
+  .btn-generate:disabled:hover { color: var(--green); }
+
+  .output-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 13px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
+  }
+  .output-status { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
+  .status-dot.active { background: var(--green); }
+  .status-dot.loading { background: var(--green); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .output-actions { display: flex; gap: 8px; }
+  .btn-action {
+    display: flex; align-items: center; gap: 5px;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 10px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 7px 13px; cursor: pointer; transition: all 0.2s; border-radius: 2px;
+  }
+  .btn-action:hover { border-color: var(--green); color: var(--green); }
+  .btn-action:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  #ata-output { flex: 1; overflow-y: auto; padding-right: 6px; min-height: 420px; max-height: 66vh; }
+  #ata-output::-webkit-scrollbar { width: 3px; }
+  #ata-output::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .ata-placeholder {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%; gap: 14px; color: var(--muted); min-height: 280px;
+  }
+  .ata-placeholder svg { opacity: 0.22; }
+  .ata-placeholder p { font-size: 13px; opacity: 0.55; text-align: center; line-height: 1.7; }
+
+  .ata-content { font-family: 'DM Sans', sans-serif; font-size: 13px; line-height: 1.8; color: var(--white); }
+  .ata-header-block {
+    background: var(--green-dim); border: 1px solid var(--border);
+    border-left: 3px solid var(--green); padding: 17px 21px;
+    margin-bottom: 24px; border-radius: 0 2px 2px 0;
+  }
+  .ata-title { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 500; letter-spacing: 0.03em; margin-bottom: 11px; }
+  .ata-meta-row { display: flex; flex-wrap: wrap; gap: 16px; }
+  .ata-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .ata-meta-key { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--green); font-weight: 500; }
+  .ata-meta-val { font-size: 12px; font-weight: 300; }
+  .ata-section { margin-bottom: 20px; }
+  .ata-section-title { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--green); font-weight: 500; margin-bottom: 9px; padding-bottom: 7px; border-bottom: 1px solid var(--border); }
+  .ata-section-body { font-size: 13px; line-height: 1.75; }
+  .ata-item { display: flex; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .ata-item:last-child { border-bottom: none; }
+  .ata-item-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--green); opacity: 0.6; min-width: 20px; padding-top: 2px; }
+  .ata-item-text { flex: 1; font-size: 13px; line-height: 1.7; }
+  .ata-encam { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 10px 14px; margin-bottom: 6px; display: grid; grid-template-columns: 1fr auto auto; gap: 11px; align-items: start; }
+  .ata-encam-desc { font-size: 13px; line-height: 1.6; }
+  .ata-encam-resp { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--green); background: var(--green-dim); border: 1px solid var(--border); padding: 3px 8px; border-radius: 2px; white-space: nowrap; }
+  .ata-encam-date { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; padding-top: 3px; }
+
+  .skeleton-line { height: 11px; background: linear-gradient(90deg, var(--surface) 0%, var(--surface2) 50%, var(--surface) 100%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 2px; margin-bottom: 9px; }
+  @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+
+  footer { padding: 13px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
+  footer p { font-size: 10px; color: var(--muted); opacity: 0.4; letter-spacing: 0.07em; }
+
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; }
+    .panel-left { border-right: none; border-bottom: 1px solid var(--border); }
+    header, .panel, footer { padding-left: 22px; padding-right: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <svg class="logo-svg" viewBox="0 0 1835 295.6" xmlns="http://www.w3.org/2000/svg">
+    <defs><style>.st0{fill:#fff}</style></defs>
+    <g><g>
+      <path class="st0" d="M174.9,248.6c-20.4-40.4-27.6-85.1-39.9-128.1-8.6-30.1-7.5-30.2-38.5-30.2-7.7,0-11.5,2.4-14.5,9.7C55,165.2,32.9,232.3,0,295.6h65.6c15.3-57.1,40.6-108.9,61.3-162.6,1.4,0,1.5,0,2.8,0,1,2,2.4,3.9,3,6.1,4.9,18,9.8,36,14.4,54,6.3,24.1,14.6,47.3,26.5,68.9.4-.2.9-.5,1.3-.7,2.8-1.4,3.9-5,2.4-7.8s-1.7-3.2-2.5-4.9Z"/>
+      <path class="st0" d="M240.6,14.8c-15.2,57-40.7,109.2-61.5,163.2q-1.7,0-3.3,0c-1.3-3.9-2.8-7.8-4-11.8-9.3-31.3-16.7-63.4-28.3-93.9-11.5-30.2-28-55.6-52.2-72.3-.4,1.1-.9,2.1-1.4,3.1-1.5,2.9-.6,6.4,1.9,8.5.9.7,1.8,1.5,2.7,2.2,27.3,23.1,42.3,53.9,52.2,87.3,10.8,36.4,20.3,73.1,30,109.8,2,7.4,5.3,10.5,14.3,9,5.3-.9,10.8-1.2,16.1-.2,8.3,1.5,11.5-.7,14.1-7,27.6-65.9,49.7-134.2,83.2-197.9h-63.8Z"/>
+    </g><g><g>
+      <path class="st0" d="M345.5,206.7h2.8v26.2h-2.8v-26.2Z"/><path class="st0" d="M388.1,206.7v26.2h-2.3l-16.9-21.3v21.3h-2.8v-26.2h2.3l16.9,21.3v-21.3h2.7Z"/><path class="st0" d="M427.5,206.7l-11.6,26.2h-2.7l-11.6-26.2h3l10,22.8,10.1-22.8h2.8Z"/><path class="st0" d="M459.3,230.5v2.4h-18.6v-26.2h18v2.4h-15.2v9.3h13.6v2.4h-13.6v9.7h15.8Z"/><path class="st0" d="M472.6,229.7l1.1-2.1c1.9,1.8,5.2,3.2,8.7,3.2,4.9,0,7-2.1,7-4.6,0-7.2-16.2-2.8-16.2-12.5s3-7.2,9.7-7.2,6,.9,8.1,2.3l-.9,2.2c-2.2-1.5-4.9-2.2-7.2-2.2-4.8,0-6.9,2.1-6.9,4.8,0,7.2,16.2,2.8,16.2,12.4s-3.1,7.2-9.8,7.2-7.8-1.4-9.7-3.4Z"/><path class="st0" d="M512.3,209.1h-9.2v-2.4h21.2v2.4h-9.2v23.8h-2.8v-23.8Z"/><path class="st0" d="M538.1,206.7h2.8v26.2h-2.8v-26.2Z"/><path class="st0" d="M586.1,206.7v26.2h-2.7v-21l-10.3,17.7h-1.3l-10.3-17.5v20.9h-2.7v-26.2h2.3l11.4,19.5,11.3-19.5h2.3Z"/><path class="st0" d="M622.6,230.5v2.4h-18.6v-26.2h18v2.4h-15.2v9.3h13.6v2.4h-13.6v9.7h15.8Z"/><path class="st0" d="M660.4,206.7v26.2h-2.3l-16.9-21.3v21.3h-2.8v-26.2h2.3l16.9,21.3v-21.3h2.7Z"/><path class="st0" d="M683.4,209.1h-9.2v-2.4h21.2v2.4h-9.2v23.8h-2.8v-23.8Z"/><path class="st0" d="M706.5,219.8c0-7.6,5.8-13.3,13.8-13.3s13.8,5.7,13.8,13.3-5.9,13.3-13.8,13.3-13.8-5.7-13.8-13.3ZM731.3,219.8c0-6.3-4.7-10.9-11-10.9s-11.1,4.6-11.1,10.9,4.7,10.9,11.1,10.9,11-4.6,11-10.9Z"/><path class="st0" d="M747.2,229.7l1.1-2.1c1.9,1.8,5.2,3.2,8.7,3.2,4.9,0,7-2.1,7-4.6,0-7.2-16.2-2.8-16.2-12.5s3-7.2,9.7-7.2,6,.9,8.1,2.3l-.9,2.2c-2.2-1.5-4.9-2.2-7.2-2.2-4.8,0-6.9,2.1-6.9,4.8,0,7.2,16.2,2.8,16.2,12.4s-3.1,7.2-9.8,7.2-7.8-1.4-9.7-3.4Z"/>
+    </g><g>
+      <path class="st0" d="M399.2,162.4v-3.7c9.1-1.1,10.3-2.4,8.3-7.4-1.8-5.2-4.6-11.8-7.6-20.2h-30.4c-2.2,6-4.4,11.2-6.3,16.6-3.1,8.6-1.1,9.7,10.4,11v3.7h-32.5v-3.7c8.9-1.1,11.1-2,16-13.9l29.1-69.7,4.5-.8c8.9,22.7,18.5,47.8,27.4,70.8,4.5,11.6,5.8,12.6,15.7,13.7v3.7h-34.7ZM385.2,91.6c-4.5,11.4-9.3,23.5-13.5,34h26.3l-12.8-34Z"/><path class="st0" d="M545.2,140.3c-.8,4.1-5.1,17.9-6.5,22h-65.3v-3.7c12.8-1.2,13.9-1.9,13.9-13.1v-52.7c0-11.3-1.4-11.9-12.6-13v-3.7h37.7v3.7c-11.2,1.1-12.8,1.6-12.8,13v54c0,8.1,1.1,10,9.1,10.1.1,0,10.3.1,11.1.1,7.2,0,9.3-.8,12.5-4.1,3.5-3.5,6.5-8.8,8.6-13.7l4.4,1.1Z"/><path class="st0" d="M651.2,96.9c-1.3-4.2-3-8.6-4.5-11c-2.2-3.6-3.7-4.5-11.4-4.5h-14.1v64.7c0,10.4,1.1,11.8,14.5,12.6v3.7h-40.9v-3.7c13.1-.8,14.2-2.1,14.2-12.6v-64.7h-12.8c-7.7,0-10,.8-12.4,4.8-1.7,2.7-2.8,5.8-4.6,10.8h-4.2c.8-8.1,1.7-16.5,2.1-23.9h3.2c2.1,3.2,3.7,3.1,7.6,3.1h55.7c3.9,0,5.1-.5,7.2-3.1h3.4c0,6.2.6,15.8,1.3,23.5l-4.2.4Z"/><path class="st0" d="M749.6,74.2c24,0,45.5,17.4,45.5,43.8s-20.5,46.3-46.4,46.3-46.7-19.4-46.7-44.3,17.8-45.8,47.5-45.8ZM746.8,79.1c-15.7,0-30.1,12.5-30.1,37.3s14.3,42.9,34.3,42.9,29.8-11.9,29.8-37.6-15.6-42.6-34-42.6Z"/><path class="st0" d="M931.1,81c-9.3.9-12.1,2.1-17.4,14.7-4.4,10.2-18.8,43.1-29.2,68.1h-7.7c-3.9-10.4-22.2-55.9-28.1-70-4.4-10-6.2-12.1-15.3-12.9v-4.9h42.9v4.9c-10.4,1.3-10.4,2.3-8.2,7.8,4.4,11.2,14.9,38.5,19.7,50.2,8.4-19,16-37,19.3-45.7,3.5-9.2,2.5-11.2-9.3-12.3v-4.9h33.4v4.9Z"/><path class="st0" d="M1001.8,162.4v-4.9c8.9-1.2,8.9-2.7,6.9-8.4-1.4-4-3.7-10-5.8-15.3h-27.4c-1.5,4.1-3.5,9.2-4.9,13.3-3,8.4.4,9.4,11.5,10.4v4.9h-34.7v-4.9c8.9-1.1,11.1-2.3,15.9-13.4l29.2-68.6,6.7-1.2c9,23.1,18.6,46.7,27.7,68.9,5.2,12.3,6.5,13.3,15.6,14.3v4.9h-40.8ZM989.5,98.9c-4.1,9.6-8,18.5-11.5,28.1h22.3l-10.8-28.1Z"/><path class="st0" d="M1157.3,139c-1.1,5.7-5.1,19.8-6.3,23.4h-69.7v-4.9c12.4-.8,13.5-1.7,13.5-12.9v-50.6c0-11.2-1.4-12.2-11.9-13v-4.9h43.8v4.9c-11,.9-12.4,1.9-12.4,13v51.5c0,7.3.3,10.6,8,10.8.3.1,6.7.1,7.3.1,8,0,10.1-1.6,13.5-5.2,2.7-2.7,6.3-8.4,8.9-13.8l5.3,1.6Z"/><path class="st0" d="M1249.9,74.2c26,0,47.2,17.9,47.2,44.1s-21.4,46.1-47.9,46.1-48.5-19.4-48.5-45,17.1-45.1,49.2-45.1ZM1247.8,80.1c-14.3,0-24.9,13.3-24.9,36.8s9.4,41.7,28.4,41.7,23.8-12.2,23.8-36.5-11-41.9-27.3-41.9Z"/><path class="st0" d="M1432.8,163.2c-.8,0-2.5,0-4.2-.1-17.8-.8-23-4.4-27.3-10-5.6-7.3-9.7-15.4-14.5-23.4-2.1-3.6-4.1-4.4-8.6-4.4h-2.8c0-.1,0,19.2,0,19.2,0,10.8,1.4,11.7,11.9,12.9v4.9h-43v-4.9c10.7-1.1,11.9-2.1,11.9-12.9v-50.8c0-10.5-1.4-11.9-11.9-12.7v-4.9h40.8c12.5,0,19.7,1.3,25.4,5,5.6,3.6,9.4,9.4,9.4,17.7,0,11.8-8.3,18.1-17.6,21.5,2.1,4,7.6,12.6,11.8,18.7,4.9,7.3,8,10.9,10.7,13.8,3.2,3.5,4.8,4.5,8.9,5.8l-1,4.5ZM1379.3,119.8c6,0,10.7-.9,13.8-3.5,4.6-3.7,6.6-8.8,6.6-15.5,0-14.1-8.6-19.1-16.4-19.1s-5.6.5-6.5,1.3c-1,.8-1.3,2.4-1.3,5v31.7h3.8Z"/>
+    </g></g></g>
+    <g>
+      <path class="st0" d="M1702.9,177.1c-6.1-6.1-11.9-12.2-18-17.8-1.8-1.7-4.8-2.9-7.2-3-7.5-.4-15-.2-22.6-.1-1.3,0-2.6.2-4.4,1.3,12.1,11.7,24.3,23.5,36.8,35.6-12.1,11.8-24,23.3-36.6,35.5,1.9.3,2.9.6,3.9.6,7.9,0,15.9.2,23.8-.1,2.4-.1,5.1-1.4,6.9-3,5.8-5.3,11.1-10.9,16.3-16,5,4.6,10.3,8.8,14.8,13.8,3.6,3.9,7.3,5.7,12.7,5.4,8.2-.4,16.4-.1,24.7,0,1.3,0,2.7.1,4.2.5-11.8,5.3-12.2,15.7-12,26.4-.9.2-1.5.4-2.2.4-41.3,0-82.5,0-123.8-.1-16.4,0-26.3-10.6-26.3-27,0-54.6,0-109.3,0-163.9,0-15,9.3-25,24.3-25.9,4-.2,8.1-.4,12.1-.4,57.6,0,115.1-.1,172.7.1,6.3,0,12.9,1,18.7,3.2,8.4,3.1,12.9,10.6,13,19.3.3,37.9.1,75.8.1,113.7,0,.4-.1.7-.2,1.1-2.4-3.4-4.3-7.1-7.1-10-7.1-7.6-16.6-10.2-26.6-10.3-25.1-.3-50.2-.3-75.3,0-2,0-4.5,1.5-6,3.1-5.7,5.7-11.1,11.7-16.8,17.8Z"/><path class="st0" d="M1834.7,208.9c0,9,.8,18-.2,26.8-1.4,11.8-11.1,20.1-23.3,20.5-13.6.4-27.3,0-41.2,0v-27.5c3.4,0,6.6,0,9.9,0,8.8-.1,17.6.3,26.3-.5,12.8-1.2,23.1-6.8,28.5-19.4Z"/><path class="st0" d="M1769.7,206.8v-28.3c3.8,0,7.4,0,11.1,0,6.1,0,12.3-.2,18.4.1,10.5.5,16.1,7.1,14.8,16.9-.9,6.3-5.3,10.7-13.2,11.1-10.2.6-20.5.1-31.1.1Z"/><path class="st0" d="M1719.7,191.3c7.7-7.5,16.7-16.1,26.2-25.2v53.9c-9-9.9-17.4-19.1-26.2-28.7Z"/>
+    </g>
+  </svg>
+  <div class="header-right">
+    <span class="app-label">Gerador de Ata</span>
+    <span class="app-sub">Uso interno · v1.0</span>
+  </div>
+</header>
+
+<main>
+  <div class="panel panel-left">
+    <div class="panel-title">Dados da Reunião</div>
+    <div class="meta-grid">
+      <div class="field"><label>Data</label><input type="date" id="meeting-date"/></div>
+      <div class="field"><label>Horário</label><input type="text" id="meeting-time" placeholder="09:00 – 10:30"/></div>
+      <div class="field field-full"><label>Assunto / Título</label><input type="text" id="meeting-title" placeholder="ex: Revisão de Carteira — Família Silva"/></div>
+      <div class="field field-full"><label>Participantes</label><input type="text" id="meeting-participants" placeholder="ex: João Alves (AV), Maria Silva (Cliente)"/></div>
+      <div class="field field-full"><label>Local / Plataforma</label><input type="text" id="meeting-location" placeholder="ex: Google Meet / Escritório SP"/></div>
+    </div>
+
+    <div class="transcript-wrap">
+      <div class="transcript-top">
+        <span class="panel-title" style="margin-bottom:0">Transcrição / Notas</span>
+        <span class="char-count" id="char-count">0 car.</span>
+      </div>
+      <div class="mic-bar">
+        <button class="btn-mic" id="btn-mic" onclick="toggleMic()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+          </svg>
+          <span id="mic-btn-label">Gravar</span>
+        </button>
+        <span class="mic-status" id="mic-status">Transcrição ao vivo via microfone</span>
+        <select class="lang-select" id="lang-select">
+          <option value="pt-BR">PT-BR</option>
+          <option value="en-US">EN-US</option>
+          <option value="es-ES">ES</option>
+        </select>
+      </div>
+      <textarea id="transcript" placeholder="Cole aqui a transcrição automática (Google Meet, Teams, Otter…) ou suas anotações brutas da reunião.&#10;&#10;Ou use o botão Gravar para transcrever em tempo real durante a reunião."></textarea>
+    </div>
+
+    <button class="btn-generate" id="btn-generate" onclick="generateAta()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <span>Gerar Ata com IA</span>
+    </button>
+  </div>
+
+  <div class="panel">
+    <div class="output-toolbar">
+      <div class="output-status">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text">Aguardando</span>
+      </div>
+      <div class="output-actions">
+        <button class="btn-action" id="btn-copy" onclick="copyAta()" disabled>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copiar
+        </button>
+        <button class="btn-action" id="btn-download" onclick="downloadTxt()" disabled>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Exportar
+        </button>
+      </div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+      <div id="ata-output">
+        <div class="ata-placeholder">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <p>Preencha os dados e cole a transcrição<br>— ou grave ao vivo — e clique em<br><strong style="color:var(--green)">Gerar Ata com IA</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>Alto Valor Gestão de Patrimônio · Uso interno</p>
+  <p>Gerado por IA · Revisar antes de compartilhar</p>
+</footer>
+
+<script>
+document.getElementById('meeting-date').valueAsDate = new Date();
+document.getElementById('transcript').addEventListener('input', updateCC);
+function updateCC() {
+  document.getElementById('char-count').textContent = document.getElementById('transcript').value.length.toLocaleString('pt-BR') + ' car.';
+}
+
+// ── Mic / Speech Recognition ──────────────────────────
+let recognition = null, isRecording = false;
+
+function toggleMic() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('Reconhecimento de voz requer Google Chrome.\nNo Chrome, é nativo e gratuito — sem envio para servidores externos.');
+    return;
+  }
+  isRecording ? stopMic() : startMic();
+}
+
+function startMic() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = document.getElementById('lang-select').value;
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  const ta = document.getElementById('transcript');
+  let finalText = ta.value;
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) finalText += e.results[i][0].transcript + ' ';
+      else interim += e.results[i][0].transcript;
+    }
+    ta.value = finalText + interim;
+    updateCC();
+    ta.scrollTop = ta.scrollHeight;
+  };
+
+  recognition.onerror = (e) => { if (e.error !== 'no-speech') { setMicUI(false); isRecording = false; } };
+  recognition.onend   = () => { if (isRecording) recognition.start(); };
+  recognition.start();
+  isRecording = true;
+  setMicUI(true);
+}
+
+function stopMic() {
+  recognition?.stop(); recognition = null;
+  isRecording = false;
+  setMicUI(false);
+}
+
+function setMicUI(on) {
+  document.getElementById('btn-mic').classList.toggle('recording', on);
+  document.getElementById('mic-btn-label').textContent = on ? 'Parar' : 'Gravar';
+  const s = document.getElementById('mic-status');
+  s.textContent = on ? '● Gravando — fale normalmente' : 'Gravação encerrada';
+  s.className = 'mic-status' + (on ? ' active' : '');
+}
+
+// ── Generate ──────────────────────────────────────────
+let ataMarkdown = '';
+
+function setStatus(cls, txt) {
+  document.getElementById('status-dot').className = 'status-dot ' + (cls||'');
+  document.getElementById('status-text').textContent = txt;
+}
+
+async function generateAta() {
+  if (isRecording) stopMic();
+  const transcript = document.getElementById('transcript').value.trim();
+  if (!transcript) { alert('Insira a transcrição ou notas antes de gerar.'); return; }
+
+  const date  = document.getElementById('meeting-date').value;
+  const time  = document.getElementById('meeting-time').value;
+  const title = document.getElementById('meeting-title').value;
+  const parts = document.getElementById('meeting-participants').value;
+  const loc   = document.getElementById('meeting-location').value;
+
+  document.getElementById('btn-generate').disabled = true;
+  document.getElementById('btn-copy').disabled = true;
+  document.getElementById('btn-download').disabled = true;
+  setStatus('loading', 'Processando...');
+
+  const out = document.getElementById('ata-output');
+  out.innerHTML = `<div style="padding-top:8px">${Array(9).fill(0).map((_,i)=>`<div class="skeleton-line" style="width:${76+Math.random()*22}%;opacity:${1-i*0.06}"></div>`).join('')}</div>`;
+
+  const sys = `Você é especialista em redigir atas de reunião formais para a Alto Valor, escritório de gestão de patrimônio de alto padrão.
+Retorne SOMENTE um JSON válido, sem markdown, sem texto adicional:
+{"titulo":"string","data":"string","horario":"string","local":"string","participantes":["string"],"pauta":["string"],"resumo_executivo":"string","pontos_discutidos":[{"numero":1,"descricao":"string"}],"decisoes":[{"numero":1,"descricao":"string"}],"encaminhamentos":[{"descricao":"string","responsavel":"string","prazo":"string"}],"proxima_reuniao":"string ou null","observacoes":"string ou null"}
+Regras: linguagem formal; fiel ao conteúdo; prazo ausente = "A definir"; retorne APENAS o JSON.`;
+
+  const usr = `DATA: ${date||'—'}\nHORÁRIO: ${time||'—'}\nASSUNTO: ${title||'—'}\nPARTICIPANTES: ${parts||'—'}\nLOCAL: ${loc||'—'}\n\nTRANSCRIÇÃO:\n${transcript}`;
+
+  try {
+    const res  = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: usr }] })
+    });
+    const data = await res.json();
+    const raw  = data.content.map(b=>b.text||'').join('');
+    let ata;
+    try { ata = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch { throw new Error('Erro ao interpretar resposta da IA. Tente novamente.'); }
+
+    if (date)  ata.data          = fmtDate(date);
+    if (time)  ata.horario       = time;
+    if (parts) ata.participantes = parts.split(',').map(p=>p.trim());
+    if (loc)   ata.local         = loc;
+    if (title) ata.titulo        = title;
+
+    ataMarkdown = buildMD(ata);
+    renderAta(ata);
+    setStatus('active','Ata gerada');
+    document.getElementById('btn-copy').disabled = false;
+    document.getElementById('btn-download').disabled = false;
+  } catch(err) {
+    out.innerHTML = `<div style="color:#e05c5c;font-size:13px;padding:20px 0">${err.message}</div>`;
+    setStatus('','Erro');
+  } finally {
+    document.getElementById('btn-generate').disabled = false;
+  }
+}
+
+function fmtDate(s) {
+  return new Date(s+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
+
+function renderAta(a) {
+  const out = document.getElementById('ata-output');
+  let h = `<div class="ata-content"><div class="ata-header-block"><div class="ata-title">${x(a.titulo||'Ata de Reunião')}</div><div class="ata-meta-row">`;
+  if (a.data)    h += mi('Data',a.data);
+  if (a.horario) h += mi('Horário',a.horario);
+  if (a.local)   h += mi('Local',a.local);
+  h += `</div>`;
+  if (a.participantes?.length) h += `<div class="ata-meta-row" style="margin-top:10px">${mi('Participantes',a.participantes.join(' · '))}</div>`;
+  h += `</div>`;
+  if (a.resumo_executivo)       h += sec('Resumo Executivo',`<div class="ata-section-body">${x(a.resumo_executivo)}</div>`);
+  if (a.pauta?.length)          h += sec('Pauta',a.pauta.map((p,i)=>itm(i+1,p)).join(''));
+  if (a.pontos_discutidos?.length) h += sec('Pontos Discutidos',a.pontos_discutidos.map(p=>itm(p.numero,p.descricao)).join(''));
+  if (a.decisoes?.length)       h += sec('Decisões',a.decisoes.map(d=>itm(d.numero,d.descricao)).join(''));
+  if (a.encaminhamentos?.length) h += sec('Encaminhamentos',a.encaminhamentos.map(e=>`<div class="ata-encam"><div class="ata-encam-desc">${x(e.descricao)}</div><div class="ata-encam-resp">${x(e.responsavel||'—')}</div><div class="ata-encam-date">${x(e.prazo||'A definir')}</div></div>`).join(''));
+  if (a.proxima_reuniao)        h += sec('Próxima Reunião',`<div class="ata-section-body">${x(a.proxima_reuniao)}</div>`);
+  if (a.observacoes)            h += sec('Observações',`<div class="ata-section-body">${x(a.observacoes)}</div>`);
+  h += `</div>`;
+  out.innerHTML = h;
+}
+
+function sec(t,b)  { return `<div class="ata-section"><div class="ata-section-title">${t}</div>${b}</div>`; }
+function mi(k,v)   { return `<div class="ata-meta-item"><span class="ata-meta-key">${k}</span><span class="ata-meta-val">${x(v)}</span></div>`; }
+function itm(n,t)  { return `<div class="ata-item"><span class="ata-item-num">${String(n).padStart(2,'0')}</span><span class="ata-item-text">${x(t)}</span></div>`; }
+function x(s)      { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function buildMD(a) {
+  let m=`# ${a.titulo||'Ata de Reunião'}\n\n`;
+  if(a.data)    m+=`**Data:** ${a.data}  \n`;
+  if(a.horario) m+=`**Horário:** ${a.horario}  \n`;
+  if(a.local)   m+=`**Local:** ${a.local}  \n`;
+  if(a.participantes?.length) m+=`**Participantes:** ${a.participantes.join(', ')}  \n`;
+  m+='\n';
+  if(a.resumo_executivo) m+=`## Resumo Executivo\n${a.resumo_executivo}\n\n`;
+  if(a.pauta?.length){m+=`## Pauta\n`;a.pauta.forEach((p,i)=>m+=`${i+1}. ${p}\n`);m+='\n';}
+  if(a.pontos_discutidos?.length){m+=`## Pontos Discutidos\n`;a.pontos_discutidos.forEach(p=>m+=`${p.numero}. ${p.descricao}\n`);m+='\n';}
+  if(a.decisoes?.length){m+=`## Decisões\n`;a.decisoes.forEach(d=>m+=`${d.numero}. ${d.descricao}\n`);m+='\n';}
+  if(a.encaminhamentos?.length){m+=`## Encaminhamentos\n`;a.encaminhamentos.forEach(e=>m+=`- **${e.descricao}** | Resp: ${e.responsavel||'—'} | Prazo: ${e.prazo||'A definir'}\n`);m+='\n';}
+  if(a.proxima_reuniao) m+=`## Próxima Reunião\n${a.proxima_reuniao}\n\n`;
+  if(a.observacoes)     m+=`## Observações\n${a.observacoes}\n`;
+  return m;
+}
+
+function copyAta() {
+  navigator.clipboard.writeText(ataMarkdown).then(()=>{
+    const b=document.getElementById('btn-copy'), o=b.innerHTML;
+    b.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copiado';
+    setTimeout(()=>b.innerHTML=o,2000);
+  });
+}
+
+function downloadTxt() {
+  const blob=new Blob([ataMarkdown],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`ata_${(document.getElementById('meeting-date').value||new Date().toISOString().split('T')[0]).replace(/-/g,'')}.txt`;
+  a.click();
+}
+</script>
+</body>
+</html>
