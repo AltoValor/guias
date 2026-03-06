@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ratings Internos de Renda Fixa — Alto Valor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #08111c;
+    --white: #f4f4f4;
+    --green: #009974;
+    --border: rgba(244,244,244,0.07);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 48px 32px 80px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 56px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-area svg { width: 180px; height: auto; display: block; margin-bottom: 40px; }
+  .header-title { text-align: center; }
+  .header-title h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    background: rgba(244,244,244,0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px 10px 40px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input::placeholder { color: rgba(244,244,244,0.25); }
+  .search-input:focus { border-color: rgba(0,153,116,0.4); }
+
+  .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filter-btn {
+    background: rgba(244,244,244,0.05);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    color: rgba(244,244,244,0.4);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { color: rgba(244,244,244,0.7); border-color: rgba(244,244,244,0.15); }
+  .filter-btn.active { border-color: var(--green); color: var(--green); background: rgba(0,153,116,0.08); }
+
+  /* Stats */
+  .stats {
+    font-size: 11px;
+    color: rgba(244,244,244,0.25);
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+  .stats span { color: rgba(244,244,244,0.5); }
+
+  /* Table */
+  .table-wrap {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: rgba(244,244,244,0.04); }
+  thead th {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(244,244,244,0.3);
+    font-weight: 500;
+    padding: 13px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  thead th:hover { color: rgba(244,244,244,0.6); }
+  thead th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  thead th.sorted .sort-icon { opacity: 1; color: var(--green); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(0,153,116,0.04); }
+  td { padding: 12px 20px; font-size: 13px; vertical-align: middle; }
+
+  .td-emissor { color: var(--white); font-weight: 400; }
+  .td-data { color: rgba(244,244,244,0.35); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .badge-A { background: rgba(0,153,116,0.15); color: #00c994; border: 1px solid rgba(0,153,116,0.25); }
+  .badge-B { background: rgba(100,160,255,0.12); color: #7fb4ff; border: 1px solid rgba(100,160,255,0.2); }
+  .badge-C { background: rgba(255,190,50,0.1); color: #f5c842; border: 1px solid rgba(255,190,50,0.2); }
+  .badge-D { background: rgba(255,90,90,0.1); color: #ff7070; border: 1px solid rgba(255,90,90,0.2); }
+  .badge-SC { background: rgba(244,244,244,0.05); color: rgba(244,244,244,0.3); border: 1px solid var(--border); font-size: 9px; width: auto; padding: 0 8px; letter-spacing: 0.04em; font-weight: 400; }
+
+  /* Legend */
+  .legend {
+    margin-top: 40px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .legend-title {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(244,244,244,0.3);
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(244,244,244,0.03);
+  }
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .legend-row:last-child { border-bottom: none; }
+  .legend-desc { color: rgba(244,244,244,0.5); font-size: 12.5px; }
+
+  .no-results {
+    text-align: center;
+    padding: 48px 20px;
+    color: rgba(244,244,244,0.2);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+  }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: rgba(244,244,244,0.2);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1835 295.6"><defs><style>.st0{fill:#fff}</style></defs><g><g><path class="st0" d="M174.9,248.6c-20.4-40.4-27.6-85.1-39.9-128.1-8.6-30.1-7.5-30.2-38.5-30.2-7.7,0-11.5,2.4-14.5,9.7C55,165.2,32.9,232.3,0,295.6h65.6c15.3-57.1,40.6-108.9,61.3-162.6,1.4,0,1.5,0,2.8,0,1,2,2.4,3.9,3,6.1,4.9,18,9.8,36,14.4,54,6.3,24.1,14.6,47.3,26.5,68.9.4-.2.9-.5,1.3-.7,2.8-1.4,3.9-5,2.4-7.8s-1.7-3.2-2.5-4.9Z"/><path class="st0" d="M240.6,14.8c-15.2,57-40.7,109.2-61.5,163.2q-1.7,0-3.3,0c-1.3-3.9-2.8-7.8-4-11.8-9.3-31.3-16.7-63.4-28.3-93.9-11.5-30.2-28-55.6-52.2-72.3-.4,1.1-.9,2.1-1.4,3.1-1.5,2.9-.6,6.4,1.9,8.5.9.7,1.8,1.5,2.7,2.2,27.3,23.1,42.3,53.9,52.2,87.3,10.8,36.4,20.3,73.1,30,109.8,2,7.4,5.3,10.5,14.3,9,5.3-.9,10.8-1.2,16.1-.2,8.3,1.5,11.5-.7,14.1-7,27.6-65.9,49.7-134.2,83.2-197.9h-63.8Z"/></g><g><g><path class="st0" d="M345.5,206.7h2.8v26.2h-2.8v-26.2Z"/><path class="st0" d="M388.1,206.7v26.2h-2.3l-16.9-21.3v21.3h-2.8v-26.2h2.3l16.9,21.3v-21.3h2.7Z"/><path class="st0" d="M427.5,206.7l-11.6,26.2h-2.7l-11.6-26.2h3l10,22.8,10.1-22.8h2.8Z"/><path class="st0" d="M459.3,230.5v2.4h-18.6v-26.2h18v2.4h-15.2v9.3h13.6v2.4h-13.6v9.7h15.8Z"/><path class="st0" d="M472.6,229.7l1.1-2.1c1.9,1.8,5.2,3.2,8.7,3.2,4.9,0,7-2.1,7-4.6,0-7.2-16.2-2.8-16.2-12.5s3-7.2,9.7-7.2,6,.9,8.1,2.3l-.9,2.2c-2.2-1.5-4.9-2.2-7.2-2.2-4.8,0-6.9,2.1-6.9,4.8,0,7.2,16.2,2.8,16.2,12.4s-3.1,7.2-9.8,7.2-7.8-1.4-9.7-3.4Z"/><path class="st0" d="M512.3,209.1h-9.2v-2.4h21.2v2.4h-9.2v23.8h-2.8v-23.8Z"/><path class="st0" d="M538.1,206.7h2.8v26.2h-2.8v-26.2Z"/><path class="st0" d="M586.1,206.7v26.2h-2.7v-21l-10.3,17.7h-1.3l-10.3-17.5v20.9h-2.7v-26.2h2.3l11.4,19.5,11.3-19.5h2.3Z"/><path class="st0" d="M622.6,230.5v2.4h-18.6v-26.2h18v2.4h-15.2v9.3h13.6v2.4h-13.6v9.7h15.8Z"/><path class="st0" d="M660.4,206.7v26.2h-2.3l-16.9-21.3v21.3h-2.8v-26.2h2.3l16.9,21.3v-21.3h2.7Z"/><path class="st0" d="M683.4,209.1h-9.2v-2.4h21.2v2.4h-9.2v23.8h-2.8v-23.8Z"/><path class="st0" d="M706.5,219.8c0-7.6,5.8-13.3,13.8-13.3s13.8,5.7,13.8,13.3-5.9,13.3-13.8,13.3-13.8-5.7-13.8-13.3ZM731.3,219.8c0-6.3-4.7-10.9-11-10.9s-11.1,4.6-11.1,10.9,4.7,10.9,11.1,10.9,11-4.6,11-10.9Z"/><path class="st0" d="M747.2,229.7l1.1-2.1c1.9,1.8,5.2,3.2,8.7,3.2,4.9,0,7-2.1,7-4.6,0-7.2-16.2-2.8-16.2-12.5s3-7.2,9.7-7.2,6,.9,8.1,2.3l-.9,2.2c-2.2-1.5-4.9-2.2-7.2-2.2-4.8,0-6.9,2.1-6.9,4.8,0,7.2,16.2,2.8,16.2,12.4s-3.1,7.2-9.8,7.2-7.8-1.4-9.7-3.4Z"/></g><g><path class="st0" d="M399.2,162.4v-3.7c9.1-1.1,10.3-2.4,8.3-7.4-1.8-5.2-4.6-11.8-7.6-20.2h-30.4c-2.2,6-4.4,11.2-6.3,16.6-3.1,8.6-1.1,9.7,10.4,11v3.7h-32.5v-3.7c8.9-1.1,11.1-2,16-13.9l29.1-69.7,4.5-.8c8.9,22.7,18.5,47.8,27.4,70.8,4.5,11.6,5.8,12.6,15.7,13.7v3.7h-34.7ZM385.2,91.6c-4.5,11.4-9.3,23.5-13.5,34h26.3l-12.8-34Z"/><path class="st0" d="M545.2,140.3c-.8,4.1-5.1,17.9-6.5,22h-65.3v-3.7c12.8-1.2,13.9-1.9,13.9-13.1v-52.7c0-11.3-1.4-11.9-12.6-13v-3.7h37.7v3.7c-11.2,1.1-12.8,1.6-12.8,13v54c0,8.1,1.1,10,9.1,10.1.1,0,10.3.1,11.1.1,7.2,0,9.3-.8,12.5-4.1,3.5-3.5,6.5-8.8,8.6-13.7l4.4,1.1Z"/><path class="st0" d="M651.2,96.9c-1.3-4.2-3-8.6-4.5-11c-2.2-3.6-3.7-4.5-11.4-4.5h-14.1v64.7c0,10.4,1.1,11.8,14.5,12.6v3.7h-40.9v-3.7c13.1-.8,14.2-2.1,14.2-12.6v-64.7h-12.8c-7.7,0-10,.8-12.4,4.8-1.7,2.7-2.8,5.8-4.6,10.8h-4.2c.8-8.1,1.7-16.5,2.1-23.9h3.2c2.1,3.2,3.7,3.1,7.6,3.1h55.7c3.9,0,5.1-.5,7.2-3.1h3.4c0,6.2.6,15.8,1.3,23.5l-4.2.4Z"/><path class="st0" d="M749.6,74.2c24,0,45.5,17.4,45.5,43.8s-20.5,46.3-46.4,46.3-46.7-19.4-46.7-44.3,17.8-45.8,47.5-45.8ZM746.8,79.1c-15.7,0-30.1,12.5-30.1,37.3s14.3,42.9,34.3,42.9,29.8-11.9,29.8-37.6-15.6-42.6-34-42.6Z"/><path class="st0" d="M931.1,81c-9.3.9-12.1,2.1-17.4,14.7-4.4,10.2-18.8,43.1-29.2,68.1h-7.7c-3.9-10.4-22.2-55.9-28.1-70-4.4-10-6.2-12.1-15.3-12.9v-4.9h42.9v4.9c-10.4,1.3-10.4,2.3-8.2,7.8,4.4,11.2,14.9,38.5,19.7,50.2,8.4-19,16-37,19.3-45.7,3.5-9.2,2.5-11.2-9.3-12.3v-4.9h33.4v4.9Z"/><path class="st0" d="M1001.8,162.4v-4.9c8.9-1.2,8.9-2.7,6.9-8.4-1.4-4-3.7-10-5.8-15.3h-27.4c-1.5,4.1-3.5,9.2-4.9,13.3-3,8.4.4,9.4,11.5,10.4v4.9h-34.7v-4.9c8.9-1.1,11.1-2.3,15.9-13.4l29.2-68.6,6.7-1.2c9,23.1,18.6,46.7,27.7,68.9,5.2,12.3,6.5,13.3,15.6,14.3v4.9h-40.8ZM989.5,98.9c-4.1,9.6-8,18.5-11.5,28.1h22.3l-10.8-28.1Z"/><path class="st0" d="M1157.3,139c-1.1,5.7-5.1,19.8-6.3,23.4h-69.7v-4.9c12.4-.8,13.5-1.7,13.5-12.9v-50.6c0-11.2-1.4-12.2-11.9-13v-4.9h43.8v4.9c-11,.9-12.4,1.9-12.4,13v51.5c0,7.3.3,10.6,8,10.8.3.1,6.7.1,7.3.1,8,0,10.1-1.6,13.5-5.2,2.7-2.7,6.3-8.4,8.9-13.8l5.3,1.6Z"/><path class="st0" d="M1249.9,74.2c26,0,47.2,17.9,47.2,44.1s-21.4,46.1-47.9,46.1-48.5-19.4-48.5-45,17.1-45.1,49.2-45.1ZM1247.8,80.1c-14.3,0-24.9,13.3-24.9,36.8s9.4,41.7,28.4,41.7,23.8-12.2,23.8-36.5-11-41.9-27.3-41.9Z"/><path class="st0" d="M1432.8,163.2c-.8,0-2.5,0-4.2-.1-17.8-.8-23-4.4-27.3-10-5.6-7.3-9.7-15.4-14.5-23.4-2.1-3.6-4.1-4.4-8.6-4.4h-2.8c0-.1,0,19.2,0,19.2,0,10.8,1.4,11.7,11.9,12.9v4.9h-43v-4.9c10.7-1.1,11.9-2.1,11.9-12.9v-50.8c0-10.5-1.4-11.9-11.9-12.7v-4.9h40.8c12.5,0,19.7,1.3,25.4,5,5.6,3.6,9.4,9.4,9.4,17.7,0,11.8-8.3,18.1-17.6,21.5,2.1,4,7.6,12.6,11.8,18.7,4.9,7.3,8,10.9,10.7,13.8,3.2,3.5,4.8,4.5,8.9,5.8l-1,4.5ZM1379.3,119.8c6,0,10.7-.9,13.8-3.5,4.6-3.7,6.6-8.8,6.6-15.5,0-14.1-8.6-19.1-16.4-19.1s-5.6.5-6.5,1.3c-1,.8-1.3,2.4-1.3,5v31.7h3.8Z"/></g></g></g><g><path class="st0" d="M1702.9,177.1c-6.1-6.1-11.9-12.2-18-17.8-1.8-1.7-4.8-2.9-7.2-3-7.5-.4-15-.2-22.6-.1-1.3,0-2.6.2-4.4,1.3,12.1,11.7,24.3,23.5,36.8,35.6-12.1,11.8-24,23.3-36.6,35.5,1.9.3,2.9.6,3.9.6,7.9,0,15.9.2,23.8-.1,2.4-.1,5.1-1.4,6.9-3,5.8-5.3,11.1-10.9,16.3-16,5,4.6,10.3,8.8,14.8,13.8,3.6,3.9,7.3,5.7,12.7,5.4,8.2-.4,16.4-.1,24.7,0,1.3,0,2.7.1,4.2.5-11.8,5.3-12.2,15.7-12,26.4-.9.2-1.5.4-2.2.4-41.3,0-82.5,0-123.8-.1-16.4,0-26.3-10.6-26.3-27,0-54.6,0-109.3,0-163.9,0-15,9.3-25,24.3-25.9,4-.2,8.1-.4,12.1-.4,57.6,0,115.1-.1,172.7.1,6.3,0,12.9,1,18.7,3.2,8.4,3.1,12.9,10.6,13,19.3.3,37.9.1,75.8.1,113.7,0,.4-.1.7-.2,1.1-2.4-3.4-4.3-7.1-7.1-10-7.1-7.6-16.6-10.2-26.6-10.3-25.1-.3-50.2-.3-75.3,0-2,0-4.5,1.5-6,3.1-5.7,5.7-11.1,11.7-16.8,17.8Z"/><path class="st0" d="M1834.7,208.9c0,9,.8,18-.2,26.8-1.4,11.8-11.1,20.1-23.3,20.5-13.6.4-27.3,0-41.2,0v-27.5c3.4,0,6.6,0,9.9,0,8.8-.1,17.6.3,26.3-.5,12.8-1.2,23.1-6.8,28.5-19.4Z"/><path class="st0" d="M1769.7,206.8v-28.3c3.8,0,7.4,0,11.1,0,6.1,0,12.3-.2,18.4.1,10.5.5,16.1,7.1,14.8,16.9-.9,6.3-5.3,10.7-13.2,11.1-10.2.6-20.5.1-31.1.1Z"/><path class="st0" d="M1719.7,191.3c7.7-7.5,16.7-16.1,26.2-25.2v53.9c-9-9.9-17.4-19.1-26.2-28.7Z"/></g></svg></div>
+  <div class="header-title"><h2>Ratings Internos de Renda Fixa</h2></div>
+</header>
+
+<div class="legend" style="margin-bottom: 32px;">
+  <div class="legend-title">Legenda</div>
+  <div class="legend-row"><span class="badge badge-A">A</span><span class="legend-desc">Emissores high grade aprovados para alocação até 3% do PL.</span></div>
+  <div class="legend-row"><span class="badge badge-B">B</span><span class="legend-desc">Emissores high yield aprovados para alocação até 1,5% do PL.</span></div>
+  <div class="legend-row"><span class="badge badge-C">C</span><span class="legend-desc">Emissores que não recomendamos alocação.</span></div>
+  <div class="legend-row"><span class="badge badge-D">D</span><span class="legend-desc">Emissores considerados ruins, evitar e realizar venda se possível.</span></div>
+  <div class="legend-row"><span class="badge badge-SC">S/C</span><span class="legend-desc">Não cobrimos análise sobre este emissor.</span></div>
+  <div class="legend-row" style="background:rgba(244,244,244,0.02)"><span style="font-size:11px;color:rgba(244,244,244,0.3);font-style:italic;">Os parâmetros para rating são objetivos de acordo com a qualidade da empresa como um todo, não levam em consideração prazo de vencimento, duration, condições de venda ou particularidades de cada investidor.</span></div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input class="search-input" type="text" id="search" placeholder="Buscar emissor..." oninput="render()">
+  </div>
+  <div class="filter-btns">
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">Todos</button>
+    <button class="filter-btn" data-filter="A" onclick="setFilter('A', this)">A</button>
+    <button class="filter-btn" data-filter="B" onclick="setFilter('B', this)">B</button>
+    <button class="filter-btn" data-filter="C" onclick="setFilter('C', this)">C</button>
+    <button class="filter-btn" data-filter="D" onclick="setFilter('D', this)">D</button>
+    <button class="filter-btn" data-filter="Sem cobertura" onclick="setFilter('Sem cobertura', this)">Sem cobertura</button>
+  </div>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th onclick="sortBy('emissor')" id="th-emissor">Emissor <span class="sort-icon">↕</span></th>
+        <th onclick="sortBy('rating')" id="th-rating">Rating <span class="sort-icon">↕</span></th>
+        <th onclick="sortBy('data')" id="th-data">Última atualização <span class="sort-icon">↕</span></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+
+<footer>Alto Valor Investimentos &nbsp;·&nbsp; Ratings Internos</footer>
+
+<script>
+const DATA = [{"emissor": "JBS", "rating": "A", "data": "01/01/2026"}, {"emissor": "SABESP", "rating": "A", "data": "01/01/2026"}, {"emissor": "Minerva", "rating": "A", "data": "01/01/2026"}, {"emissor": "Brava Energia", "rating": "A", "data": "01/01/2026"}, {"emissor": "Marfrig", "rating": "A", "data": "01/01/2026"}, {"emissor": "PETROBRAS", "rating": "A", "data": "01/01/2026"}, {"emissor": "Ecopetrol", "rating": "A", "data": "01/01/2026"}, {"emissor": "CEMIG", "rating": "A", "data": "01/01/2026"}, {"emissor": "Ultrapar", "rating": "A", "data": "01/01/2026"}, {"emissor": "ALIANSCE SONAE", "rating": "A", "data": "01/01/2026"}, {"emissor": "Eletrobras", "rating": "A", "data": "01/01/2026"}, {"emissor": "Rede Dor", "rating": "A", "data": "01/01/2026"}, {"emissor": "Klabin", "rating": "A", "data": "01/01/2026"}, {"emissor": "Pemex", "rating": "A", "data": "01/01/2026"}, {"emissor": "ELETRONORTE", "rating": "A", "data": "01/01/2026"}, {"emissor": "BTG", "rating": "A", "data": "01/01/2026"}, {"emissor": "SÃO MARTINHO", "rating": "A", "data": "01/01/2026"}, {"emissor": "TAESA", "rating": "A", "data": "01/01/2026"}, {"emissor": "Itau", "rating": "A", "data": "01/01/2026"}, {"emissor": "DIRECIONAL", "rating": "A", "data": "01/01/2026"}, {"emissor": "Equatorial", "rating": "A", "data": "01/01/2026"}, {"emissor": "ENEVA", "rating": "A", "data": "01/01/2026"}, {"emissor": "ELEKTRO", "rating": "A", "data": "01/01/2026"}, {"emissor": "ENGIE", "rating": "A", "data": "01/01/2026"}, {"emissor": "Vale", "rating": "A", "data": "01/01/2026"}, {"emissor": "Santos Brasil", "rating": "A", "data": "01/01/2026"}, {"emissor": "ENERGISA", "rating": "A", "data": "01/01/2026"}, {"emissor": "SUZANO", "rating": "A", "data": "01/01/2026"}, {"emissor": "CPFL", "rating": "A", "data": "01/01/2026"}, {"emissor": "COPEL", "rating": "A", "data": "01/01/2026"}, {"emissor": "CTEEP", "rating": "A", "data": "01/01/2026"}, {"emissor": "MULTIPLAN", "rating": "A", "data": "01/01/2026"}, {"emissor": "Bradesco", "rating": "A", "data": "01/01/2026"}, {"emissor": "JHSF", "rating": "A", "data": "01/01/2026"}, {"emissor": "CYRELA", "rating": "A", "data": "01/01/2026"}, {"emissor": "Neoenergia", "rating": "A", "data": "01/01/2026"}, {"emissor": "Votorantim", "rating": "A", "data": "01/01/2026"}, {"emissor": "Jalles Machado", "rating": "A", "data": "01/01/2026"}, {"emissor": "PRIO", "rating": "A", "data": "01/01/2026"}, {"emissor": "ALUPAR", "rating": "A", "data": "01/01/2026"}, {"emissor": "Banco ABC", "rating": "A", "data": "01/01/2026"}, {"emissor": "INSS", "rating": "A", "data": "01/01/2026"}, {"emissor": "ENEL", "rating": "A", "data": "01/01/2026"}, {"emissor": "XP", "rating": "A", "data": "01/01/2026"}, {"emissor": "Tim", "rating": "A", "data": "01/01/2026"}, {"emissor": "SANEPAR", "rating": "A", "data": "01/01/2026"}, {"emissor": "MOURA DUBEUX", "rating": "A", "data": "01/01/2026"}, {"emissor": "IGUATEMI", "rating": "A", "data": "01/01/2026"}, {"emissor": "COPASA", "rating": "A", "data": "01/01/2026"}, {"emissor": "Mercado Livre", "rating": "A", "data": "01/01/2026"}, {"emissor": "Grupo Simpar", "rating": "B", "data": "01/01/2026"}, {"emissor": "FS Bio", "rating": "B", "data": "01/01/2026"}, {"emissor": "Grupo CSN", "rating": "B", "data": "01/01/2026"}, {"emissor": "Aegea", "rating": "B", "data": "01/01/2026"}, {"emissor": "LOCALIZA", "rating": "B", "data": "01/01/2026"}, {"emissor": "SierraCol", "rating": "B", "data": "01/01/2026"}, {"emissor": "Portobello", "rating": "B", "data": "01/01/2026"}, {"emissor": "Tupy", "rating": "B", "data": "01/01/2026"}, {"emissor": "Karoon Energy", "rating": "B", "data": "01/01/2026"}, {"emissor": "Geopark", "rating": "B", "data": "01/01/2026"}, {"emissor": "TENDA", "rating": "B", "data": "01/01/2026"}, {"emissor": "ASSAI", "rating": "B", "data": "01/01/2026"}, {"emissor": "Victoria's Secret", "rating": "B", "data": "01/01/2026"}, {"emissor": "CCR", "rating": "B", "data": "01/01/2026"}, {"emissor": "Arcos Dorados", "rating": "B", "data": "01/01/2026"}, {"emissor": "Kohls", "rating": "B", "data": "01/01/2026"}, {"emissor": "AES Panamá", "rating": "B", "data": "01/01/2026"}, {"emissor": "ITAPOA", "rating": "B", "data": "01/01/2026"}, {"emissor": "BARTIRA", "rating": "B", "data": "01/01/2026"}, {"emissor": "CURY", "rating": "B", "data": "01/01/2026"}, {"emissor": "Natura", "rating": "B", "data": "01/01/2026"}, {"emissor": "AGIBANK", "rating": "B", "data": "01/01/2026"}, {"emissor": "Ford", "rating": "B", "data": "01/01/2026"}, {"emissor": "BRASIL TERRENOS", "rating": "B", "data": "01/01/2026"}, {"emissor": "COMGAS", "rating": "B", "data": "01/01/2026"}, {"emissor": "Atacadão", "rating": "B", "data": "01/01/2026"}, {"emissor": "Volvo", "rating": "B", "data": "01/01/2026"}, {"emissor": "Nissan", "rating": "B", "data": "01/01/2026"}, {"emissor": "SLC", "rating": "B", "data": "01/01/2026"}, {"emissor": "TEREOS", "rating": "C", "data": "01/01/2026"}, {"emissor": "ZILOR", "rating": "C", "data": "01/01/2026"}, {"emissor": "UNIDAS", "rating": "C", "data": "01/01/2026"}, {"emissor": "Grupo Cosan", "rating": "C", "data": "01/01/2026"}, {"emissor": "MRV", "rating": "C", "data": "01/01/2026"}, {"emissor": "IRANI", "rating": "C", "data": "01/01/2026"}, {"emissor": "M Dias Branco", "rating": "C", "data": "01/01/2026"}, {"emissor": "Usiminas", "rating": "C", "data": "01/01/2026"}, {"emissor": "Globo", "rating": "C", "data": "01/01/2026"}, {"emissor": "IGUA", "rating": "C", "data": "01/01/2026"}, {"emissor": "Hidrovias", "rating": "C", "data": "01/01/2026"}, {"emissor": "J Macedo", "rating": "C", "data": "01/01/2026"}, {"emissor": "José Alves", "rating": "C", "data": "01/01/2026"}, {"emissor": "Kedrion", "rating": "C", "data": "01/01/2026"}, {"emissor": "COGNA", "rating": "C", "data": "01/01/2026"}, {"emissor": "JF Citrus", "rating": "C", "data": "01/01/2026"}, {"emissor": "Iochpe", "rating": "C", "data": "01/01/2026"}, {"emissor": "PIRACANJUBA", "rating": "C", "data": "01/01/2026"}, {"emissor": "MRS Logistica", "rating": "C", "data": "01/01/2026"}, {"emissor": "Foot Locker", "rating": "C", "data": "01/01/2026"}, {"emissor": "TIROLEZ", "rating": "C", "data": "01/01/2026"}, {"emissor": "OBA HORTIFRUTI", "rating": "C", "data": "01/01/2026"}, {"emissor": "Sendas", "rating": "C", "data": "01/01/2026"}, {"emissor": "COCAL", "rating": "C", "data": "01/01/2026"}, {"emissor": "PATRIMAR", "rating": "C", "data": "01/01/2026"}, {"emissor": "Origem Energia", "rating": "C", "data": "01/01/2026"}, {"emissor": "MANTIQUEIRA", "rating": "C", "data": "01/01/2026"}, {"emissor": "NATURAL ONE", "rating": "C", "data": "01/01/2026"}, {"emissor": "Via Brasil", "rating": "C", "data": "01/01/2026"}, {"emissor": "CAMIL", "rating": "C", "data": "01/01/2026"}, {"emissor": "SALTA", "rating": "D", "data": "01/01/2026"}, {"emissor": "Ânima", "rating": "D", "data": "01/01/2026"}, {"emissor": "Lar Cooperativa", "rating": "D", "data": "01/01/2026"}, {"emissor": "Boa Safra", "rating": "D", "data": "01/01/2026"}, {"emissor": "Qualicorp", "rating": "D", "data": "01/01/2026"}, {"emissor": "GPA", "rating": "D", "data": "01/01/2026"}, {"emissor": "Braskem", "rating": "D", "data": "01/01/2026"}, {"emissor": "ONCOCLINICAS", "rating": "D", "data": "01/01/2026"}, {"emissor": "RIO+", "rating": "D", "data": "01/01/2026"}, {"emissor": "LIGHT", "rating": "D", "data": "01/01/2026"}, {"emissor": "UBYFOL", "rating": "D", "data": "01/01/2026"}, {"emissor": "Grupo Aval", "rating": "D", "data": "01/01/2026"}, {"emissor": "AIZ", "rating": "D", "data": "01/01/2026"}, {"emissor": "PATENSE", "rating": "D", "data": "01/01/2026"}, {"emissor": "AGROGALAXY", "rating": "D", "data": "01/01/2026"}, {"emissor": "HAPVIDA", "rating": "D", "data": "01/01/2026"}, {"emissor": "DASA", "rating": "D", "data": "01/01/2026"}, {"emissor": "Mateus", "rating": "D", "data": "01/01/2026"}, {"emissor": "Rota das Bandeiras", "rating": "D", "data": "01/01/2026"}, {"emissor": "LITORAL SUL", "rating": "D", "data": "01/01/2026"}, {"emissor": "VALE DO TIJUCO", "rating": "D", "data": "01/01/2026"}, {"emissor": "BRK", "rating": "D", "data": "01/01/2026"}, {"emissor": "ZAMP", "rating": "D", "data": "01/01/2026"}, {"emissor": "ARTERIS", "rating": "D", "data": "01/01/2026"}, {"emissor": "LAVORO", "rating": "D", "data": "01/01/2026"}, {"emissor": "PROMETEON", "rating": "D", "data": "01/01/2026"}, {"emissor": "CORURIPE", "rating": "D", "data": "01/01/2026"}, {"emissor": "ADECOAGRO", "rating": "D", "data": "01/01/2026"}, {"emissor": "UISA", "rating": "D", "data": "01/01/2026"}, {"emissor": "BILD", "rating": "D", "data": "01/01/2026"}, {"emissor": "Januba", "rating": "Sem cobertura", "data": "—"}, {"emissor": "CARAMURU", "rating": "Sem cobertura", "data": "—"}, {"emissor": "ACHE", "rating": "Sem cobertura", "data": "—"}, {"emissor": "CENTRAIS EOLICAS", "rating": "Sem cobertura", "data": "—"}, {"emissor": "PRATI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "GDM", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Rodobens", "rating": "Sem cobertura", "data": "—"}, {"emissor": "UTE GNA", "rating": "Sem cobertura", "data": "—"}, {"emissor": "GIRASSOL", "rating": "Sem cobertura", "data": "—"}, {"emissor": "DELTA", "rating": "Sem cobertura", "data": "—"}, {"emissor": "SANEATINS", "rating": "Sem cobertura", "data": "—"}, {"emissor": "UHE São Simao", "rating": "Sem cobertura", "data": "—"}, {"emissor": "MERCANTIL", "rating": "Sem cobertura", "data": "—"}, {"emissor": "EVEN", "rating": "Sem cobertura", "data": "—"}, {"emissor": "JB", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Brookfield", "rating": "Sem cobertura", "data": "—"}, {"emissor": "ECHOENERGIA", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Bem Brasil", "rating": "Sem cobertura", "data": "—"}, {"emissor": "SELMI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "ARMAC", "rating": "Sem cobertura", "data": "—"}, {"emissor": "EUCATEX", "rating": "A", "data": "15/01/2026"}, {"emissor": "CESP", "rating": "Sem cobertura", "data": "—"}, {"emissor": "OLFAR", "rating": "Sem cobertura", "data": "—"}, {"emissor": "ENTREVIAS", "rating": "Sem cobertura", "data": "—"}, {"emissor": "VALE DO PONTAL", "rating": "Sem cobertura", "data": "—"}, {"emissor": "ACP Bioenergia", "rating": "Sem cobertura", "data": "—"}, {"emissor": "ILUMISOL", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Fazendão", "rating": "Sem cobertura", "data": "—"}, {"emissor": "TRISUL", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Norte Brasil", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Vale Cooperativa", "rating": "Sem cobertura", "data": "—"}, {"emissor": "São Salvador", "rating": "Sem cobertura", "data": "—"}, {"emissor": "LTTE", "rating": "Sem cobertura", "data": "—"}, {"emissor": "São Carlos", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Prime Agro", "rating": "Sem cobertura", "data": "—"}, {"emissor": "SOLFACIL", "rating": "Sem cobertura", "data": "—"}, {"emissor": "LAVVI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "PLANO & PLANO", "rating": "Sem cobertura", "data": "—"}, {"emissor": "BELO MONTE TRANSMISSORA", "rating": "Sem cobertura", "data": "—"}, {"emissor": "CASHME", "rating": "Sem cobertura", "data": "—"}, {"emissor": "NTS", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Super ABC", "rating": "Sem cobertura", "data": "—"}, {"emissor": "ARAGUAIA", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Mez Energia", "rating": "Sem cobertura", "data": "—"}, {"emissor": "VERO", "rating": "Sem cobertura", "data": "—"}, {"emissor": "BMG", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Rota do Atlantico", "rating": "Sem cobertura", "data": "—"}, {"emissor": "PIRAPORA SOLAR", "rating": "Sem cobertura", "data": "—"}, {"emissor": "BELENUS", "rating": "Sem cobertura", "data": "—"}, {"emissor": "ITAREMA", "rating": "Sem cobertura", "data": "—"}, {"emissor": "MITRE", "rating": "Sem cobertura", "data": "—"}, {"emissor": "SEMPRE SEMENTES", "rating": "Sem cobertura", "data": "—"}, {"emissor": "HAVAN", "rating": "Sem cobertura", "data": "—"}, {"emissor": "TANAC", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Durli Couros", "rating": "Sem cobertura", "data": "—"}, {"emissor": "EDTE", "rating": "Sem cobertura", "data": "—"}, {"emissor": "C&A", "rating": "Sem cobertura", "data": "—"}, {"emissor": "MAESTRO", "rating": "Sem cobertura", "data": "—"}, {"emissor": "PANVEL", "rating": "Sem cobertura", "data": "—"}, {"emissor": "AGROINSUMOS", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Cerradão", "rating": "Sem cobertura", "data": "—"}, {"emissor": "True", "rating": "Sem cobertura", "data": "—"}, {"emissor": "REDE SIM", "rating": "Sem cobertura", "data": "—"}, {"emissor": "PAMPA SUL", "rating": "Sem cobertura", "data": "—"}, {"emissor": "VIARONDON", "rating": "Sem cobertura", "data": "—"}, {"emissor": "PACAEMBU", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Vert", "rating": "Sem cobertura", "data": "—"}, {"emissor": "CHESF", "rating": "Sem cobertura", "data": "—"}, {"emissor": "MASUTTI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "SÃO MANOEL ENERGIA", "rating": "Sem cobertura", "data": "—"}, {"emissor": "CERRADINHO", "rating": "Sem cobertura", "data": "—"}, {"emissor": "CREDITAS", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Usina Batatais", "rating": "Sem cobertura", "data": "—"}, {"emissor": "FARO ENERGY", "rating": "Sem cobertura", "data": "—"}, {"emissor": "POTENGI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "NARDINI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "LOG", "rating": "Sem cobertura", "data": "—"}, {"emissor": "PIVOT", "rating": "Sem cobertura", "data": "—"}, {"emissor": "TP Norte", "rating": "Sem cobertura", "data": "—"}, {"emissor": "EAB ENERGIAS", "rating": "Sem cobertura", "data": "—"}, {"emissor": "VIX", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Maqcampo", "rating": "Sem cobertura", "data": "—"}, {"emissor": "SCHERER", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Faber Castell", "rating": "Sem cobertura", "data": "—"}, {"emissor": "NISSEI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Calango 6", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Rogga", "rating": "Sem cobertura", "data": "—"}, {"emissor": "PLUMA", "rating": "Sem cobertura", "data": "—"}, {"emissor": "AGRO QUARTZO", "rating": "Sem cobertura", "data": "—"}, {"emissor": "MITSUI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "PLANAGRI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "ALIANÇA ENERGIA", "rating": "Sem cobertura", "data": "—"}, {"emissor": "ADAMI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "CONX", "rating": "Sem cobertura", "data": "—"}, {"emissor": "AGRO CRESTANI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "Termoelétrica Pernambuco", "rating": "Sem cobertura", "data": "—"}, {"emissor": "COPAGRI", "rating": "Sem cobertura", "data": "—"}, {"emissor": "SUPERVIA", "rating": "Sem cobertura", "data": "—"}];
+let currentFilter = 'all';
+let sortField = 'rating';
+let sortAsc = true;
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function sortBy(field) {
+  if (sortField === field) sortAsc = !sortAsc;
+  else { sortField = field; sortAsc = true; }
+  document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
+  document.getElementById('th-' + field).classList.add('sorted');
+  render();
+}
+
+function badgeHtml(r) {
+  if (r === 'A') return '<span class="badge badge-A">A</span>';
+  if (r === 'B') return '<span class="badge badge-B">B</span>';
+  if (r === 'C') return '<span class="badge badge-C">C</span>';
+  if (r === 'D') return '<span class="badge badge-D">D</span>';
+  return '<span class="badge badge-SC">S/C</span>';
+}
+
+const ratingOrder = {'A':0,'B':1,'C':2,'D':3,'Sem cobertura':4};
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  let rows = DATA.filter(d => {
+    const matchFilter = currentFilter === 'all' || d.rating === currentFilter;
+    const matchSearch = !q || d.emissor.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+
+  rows.sort((a, b) => {
+    let va = a[sortField], vb = b[sortField];
+    if (sortField === 'rating') {
+      va = ratingOrder[va] ?? 99;
+      vb = ratingOrder[vb] ?? 99;
+    } else {
+      va = va.toLowerCase(); vb = vb.toLowerCase();
+    }
+    if (va < vb) return sortAsc ? -1 : 1;
+    if (va > vb) return sortAsc ? 1 : -1;
+    return 0;
+  });
+
+  const tbody = document.getElementById('tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="3" class="no-results">Nenhum emissor encontrado</td></tr>';
+  } else {
+    tbody.innerHTML = rows.map(d => `
+      <tr>
+        <td class="td-emissor">${d.emissor}</td>
+        <td>${badgeHtml(d.rating)}</td>
+        <td class="td-data">${d.data}</td>
+      </tr>`).join('');
+  }
+
+  document.getElementById('stats').innerHTML =
+    `Exibindo <span>${rows.length}</span> de <span>${DATA.length}</span> emissores`;
+}
+
+render();
+</script>
+</body>
+</html>
