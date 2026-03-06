@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia Internacional — Alto Valor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #08111c;
+    --white: #f4f4f4;
+    --green: #009974;
+    --green-light: #009974;
+    --green-dim: rgba(0,153,116,0.08);
+    --border: rgba(244,244,244,0.07);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 48px 32px 80px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  header {
+    margin-bottom: 64px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-area svg {
+    width: 180px;
+    height: auto;
+    display: block;
+    margin-bottom: 40px;
+  }
+
+  .header-title {
+    text-align: center;
+  }
+
+  .header-title h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--white);
+  }
+
+  /* Section title */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 20px;
+    margin-top: 52px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Table */
+  .table-wrap {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead tr {
+    background: rgba(244,244,244,0.04);
+  }
+
+  thead th {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(244,244,244,0.4);
+    font-weight: 500;
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(0,153,116,0.05); }
+
+  td {
+    padding: 14px 20px;
+    font-size: 13.5px;
+    vertical-align: middle;
+    line-height: 1.45;
+  }
+
+  .td-produto {
+    font-weight: 500;
+    color: rgba(244,244,244,0.7);
+    white-space: nowrap;
+  }
+
+  .td-ativo {
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .td-comentario {
+    color: rgba(244,244,244,0.55);
+    font-size: 12.5px;
+  }
+
+  /* Badge para tipo de produto */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .badge-treasury,
+  .badge-bonds,
+  .badge-etf,
+  .badge-mutual,
+  .badge-cd        { background: rgba(244,244,244,0.06); color: rgba(244,244,244,0.45); border: 1px solid rgba(244,244,244,0.08); }
+
+  /* Highlighted row */
+  tr.highlight td {
+    background: rgba(0,153,116,0.07);
+  }
+  tr.highlight .td-ativo {
+    color: var(--green-light);
+  }
+
+  /* Notes section */
+  .notes {
+    margin-top: 48px;
+  }
+
+  .note-item {
+    display: flex;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .note-item:last-child { border-bottom: none; }
+
+  .note-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--green-dim);
+    border: 1px solid rgba(0,153,116,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--green);
+  }
+
+  .note-text {
+    font-size: 13px;
+    line-height: 1.65;
+    color: rgba(244,244,244,0.55);
+  }
+
+  /* Legend highlight */
+  .legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: var(--green-light);
+    background: rgba(0,153,116,0.1);
+    border: 1px solid rgba(0,153,116,0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    margin-bottom: 14px;
+  }
+  .legend-dot { width:8px; height:8px; border-radius:50%; background: var(--green); }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: rgba(244,244,244,0.2);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1835 295.6"><defs><style>.st0{fill:#fff}</style></defs><g><g><path class="st0" d="M174.9,248.6c-20.4-40.4-27.6-85.1-39.9-128.1-8.6-30.1-7.5-30.2-38.5-30.2-7.7,0-11.5,2.4-14.5,9.7C55,165.2,32.9,232.3,0,295.6h65.6c15.3-57.1,40.6-108.9,61.3-162.6,1.4,0,1.5,0,2.8,0,1,2,2.4,3.9,3,6.1,4.9,18,9.8,36,14.4,54,6.3,24.1,14.6,47.3,26.5,68.9.4-.2.9-.5,1.3-.7,2.8-1.4,3.9-5,2.4-7.8s-1.7-3.2-2.5-4.9Z"/><path class="st0" d="M240.6,14.8c-15.2,57-40.7,109.2-61.5,163.2q-1.7,0-3.3,0c-1.3-3.9-2.8-7.8-4-11.8-9.3-31.3-16.7-63.4-28.3-93.9-11.5-30.2-28-55.6-52.2-72.3-.4,1.1-.9,2.1-1.4,3.1-1.5,2.9-.6,6.4,1.9,8.5.9.7,1.8,1.5,2.7,2.2,27.3,23.1,42.3,53.9,52.2,87.3,10.8,36.4,20.3,73.1,30,109.8,2,7.4,5.3,10.5,14.3,9,5.3-.9,10.8-1.2,16.1-.2,8.3,1.5,11.5-.7,14.1-7,27.6-65.9,49.7-134.2,83.2-197.9h-63.8Z"/></g><g><g><path class="st0" d="M345.5,206.7h2.8v26.2h-2.8v-26.2Z"/><path class="st0" d="M388.1,206.7v26.2h-2.3l-16.9-21.3v21.3h-2.8v-26.2h2.3l16.9,21.3v-21.3h2.7Z"/><path class="st0" d="M427.5,206.7l-11.6,26.2h-2.7l-11.6-26.2h3l10,22.8,10.1-22.8h2.8Z"/><path class="st0" d="M459.3,230.5v2.4h-18.6v-26.2h18v2.4h-15.2v9.3h13.6v2.4h-13.6v9.7h15.8Z"/><path class="st0" d="M472.6,229.7l1.1-2.1c1.9,1.8,5.2,3.2,8.7,3.2,4.9,0,7-2.1,7-4.6,0-7.2-16.2-2.8-16.2-12.5s3-7.2,9.7-7.2,6,.9,8.1,2.3l-.9,2.2c-2.2-1.5-4.9-2.2-7.2-2.2-4.8,0-6.9,2.1-6.9,4.8,0,7.2,16.2,2.8,16.2,12.4s-3.1,7.2-9.8,7.2-7.8-1.4-9.7-3.4Z"/><path class="st0" d="M512.3,209.1h-9.2v-2.4h21.2v2.4h-9.2v23.8h-2.8v-23.8Z"/><path class="st0" d="M538.1,206.7h2.8v26.2h-2.8v-26.2Z"/><path class="st0" d="M586.1,206.7v26.2h-2.7v-21l-10.3,17.7h-1.3l-10.3-17.5v20.9h-2.7v-26.2h2.3l11.4,19.5,11.3-19.5h2.3Z"/><path class="st0" d="M622.6,230.5v2.4h-18.6v-26.2h18v2.4h-15.2v9.3h13.6v2.4h-13.6v9.7h15.8Z"/><path class="st0" d="M660.4,206.7v26.2h-2.3l-16.9-21.3v21.3h-2.8v-26.2h2.3l16.9,21.3v-21.3h2.7Z"/><path class="st0" d="M683.4,209.1h-9.2v-2.4h21.2v2.4h-9.2v23.8h-2.8v-23.8Z"/><path class="st0" d="M706.5,219.8c0-7.6,5.8-13.3,13.8-13.3s13.8,5.7,13.8,13.3-5.9,13.3-13.8,13.3-13.8-5.7-13.8-13.3ZM731.3,219.8c0-6.3-4.7-10.9-11-10.9s-11.1,4.6-11.1,10.9,4.7,10.9,11.1,10.9,11-4.6,11-10.9Z"/><path class="st0" d="M747.2,229.7l1.1-2.1c1.9,1.8,5.2,3.2,8.7,3.2,4.9,0,7-2.1,7-4.6,0-7.2-16.2-2.8-16.2-12.5s3-7.2,9.7-7.2,6,.9,8.1,2.3l-.9,2.2c-2.2-1.5-4.9-2.2-7.2-2.2-4.8,0-6.9,2.1-6.9,4.8,0,7.2,16.2,2.8,16.2,12.4s-3.1,7.2-9.8,7.2-7.8-1.4-9.7-3.4Z"/></g><g><path class="st0" d="M399.2,162.4v-3.7c9.1-1.1,10.3-2.4,8.3-7.4-1.8-5.2-4.6-11.8-7.6-20.2h-30.4c-2.2,6-4.4,11.2-6.3,16.6-3.1,8.6-1.1,9.7,10.4,11v3.7h-32.5v-3.7c8.9-1.1,11.1-2,16-13.9l29.1-69.7,4.5-.8c8.9,22.7,18.5,47.8,27.4,70.8,4.5,11.6,5.8,12.6,15.7,13.7v3.7h-34.7ZM385.2,91.6c-4.5,11.4-9.3,23.5-13.5,34h26.3l-12.8-34Z"/><path class="st0" d="M545.2,140.3c-.8,4.1-5.1,17.9-6.5,22h-65.3v-3.7c12.8-1.2,13.9-1.9,13.9-13.1v-52.7c0-11.3-1.4-11.9-12.6-13v-3.7h37.7v3.7c-11.2,1.1-12.8,1.6-12.8,13v54c0,8.1,1.1,10,9.1,10.1.1,0,10.3.1,11.1.1,7.2,0,9.3-.8,12.5-4.1,3.5-3.5,6.5-8.8,8.6-13.7l4.4,1.1Z"/><path class="st0" d="M651.2,96.9c-1.3-4.2-3-8.6-4.5-11c-2.2-3.6-3.7-4.5-11.4-4.5h-14.1v64.7c0,10.4,1.1,11.8,14.5,12.6v3.7h-40.9v-3.7c13.1-.8,14.2-2.1,14.2-12.6v-64.7h-12.8c-7.7,0-10,.8-12.4,4.8-1.7,2.7-2.8,5.8-4.6,10.8h-4.2c.8-8.1,1.7-16.5,2.1-23.9h3.2c2.1,3.2,3.7,3.1,7.6,3.1h55.7c3.9,0,5.1-.5,7.2-3.1h3.4c0,6.2.6,15.8,1.3,23.5l-4.2.4Z"/><path class="st0" d="M749.6,74.2c24,0,45.5,17.4,45.5,43.8s-20.5,46.3-46.4,46.3-46.7-19.4-46.7-44.3,17.8-45.8,47.5-45.8ZM746.8,79.1c-15.7,0-30.1,12.5-30.1,37.3s14.3,42.9,34.3,42.9,29.8-11.9,29.8-37.6-15.6-42.6-34-42.6Z"/><path class="st0" d="M931.1,81c-9.3.9-12.1,2.1-17.4,14.7-4.4,10.2-18.8,43.1-29.2,68.1h-7.7c-3.9-10.4-22.2-55.9-28.1-70-4.4-10-6.2-12.1-15.3-12.9v-4.9h42.9v4.9c-10.4,1.3-10.4,2.3-8.2,7.8,4.4,11.2,14.9,38.5,19.7,50.2,8.4-19,16-37,19.3-45.7,3.5-9.2,2.5-11.2-9.3-12.3v-4.9h33.4v4.9Z"/><path class="st0" d="M1001.8,162.4v-4.9c8.9-1.2,8.9-2.7,6.9-8.4-1.4-4-3.7-10-5.8-15.3h-27.4c-1.5,4.1-3.5,9.2-4.9,13.3-3,8.4.4,9.4,11.5,10.4v4.9h-34.7v-4.9c8.9-1.1,11.1-2.3,15.9-13.4l29.2-68.6,6.7-1.2c9,23.1,18.6,46.7,27.7,68.9,5.2,12.3,6.5,13.3,15.6,14.3v4.9h-40.8ZM989.5,98.9c-4.1,9.6-8,18.5-11.5,28.1h22.3l-10.8-28.1Z"/><path class="st0" d="M1157.3,139c-1.1,5.7-5.1,19.8-6.3,23.4h-69.7v-4.9c12.4-.8,13.5-1.7,13.5-12.9v-50.6c0-11.2-1.4-12.2-11.9-13v-4.9h43.8v4.9c-11,.9-12.4,1.9-12.4,13v51.5c0,7.3.3,10.6,8,10.8.3.1,6.7.1,7.3.1,8,0,10.1-1.6,13.5-5.2,2.7-2.7,6.3-8.4,8.9-13.8l5.3,1.6Z"/><path class="st0" d="M1249.9,74.2c26,0,47.2,17.9,47.2,44.1s-21.4,46.1-47.9,46.1-48.5-19.4-48.5-45,17.1-45.1,49.2-45.1ZM1247.8,80.1c-14.3,0-24.9,13.3-24.9,36.8s9.4,41.7,28.4,41.7,23.8-12.2,23.8-36.5-11-41.9-27.3-41.9Z"/><path class="st0" d="M1432.8,163.2c-.8,0-2.5,0-4.2-.1-17.8-.8-23-4.4-27.3-10-5.6-7.3-9.7-15.4-14.5-23.4-2.1-3.6-4.1-4.4-8.6-4.4h-2.8c0-.1,0,19.2,0,19.2,0,10.8,1.4,11.7,11.9,12.9v4.9h-43v-4.9c10.7-1.1,11.9-2.1,11.9-12.9v-50.8c0-10.5-1.4-11.9-11.9-12.7v-4.9h40.8c12.5,0,19.7,1.3,25.4,5,5.6,3.6,9.4,9.4,9.4,17.7,0,11.8-8.3,18.1-17.6,21.5,2.1,4,7.6,12.6,11.8,18.7,4.9,7.3,8,10.9,10.7,13.8,3.2,3.5,4.8,4.5,8.9,5.8l-1,4.5ZM1379.3,119.8c6,0,10.7-.9,13.8-3.5,4.6-3.7,6.6-8.8,6.6-15.5,0-14.1-8.6-19.1-16.4-19.1s-5.6.5-6.5,1.3c-1,.8-1.3,2.4-1.3,5v31.7h3.8Z"/></g></g></g><g><path class="st0" d="M1702.9,177.1c-6.1-6.1-11.9-12.2-18-17.8-1.8-1.7-4.8-2.9-7.2-3-7.5-.4-15-.2-22.6-.1-1.3,0-2.6.2-4.4,1.3,12.1,11.7,24.3,23.5,36.8,35.6-12.1,11.8-24,23.3-36.6,35.5,1.9.3,2.9.6,3.9.6,7.9,0,15.9.2,23.8-.1,2.4-.1,5.1-1.4,6.9-3,5.8-5.3,11.1-10.9,16.3-16,5,4.6,10.3,8.8,14.8,13.8,3.6,3.9,7.3,5.7,12.7,5.4,8.2-.4,16.4-.1,24.7,0,1.3,0,2.7.1,4.2.5-11.8,5.3-12.2,15.7-12,26.4-.9.2-1.5.4-2.2.4-41.3,0-82.5,0-123.8-.1-16.4,0-26.3-10.6-26.3-27,0-54.6,0-109.3,0-163.9,0-15,9.3-25,24.3-25.9,4-.2,8.1-.4,12.1-.4,57.6,0,115.1-.1,172.7.1,6.3,0,12.9,1,18.7,3.2,8.4,3.1,12.9,10.6,13,19.3.3,37.9.1,75.8.1,113.7,0,.4-.1.7-.2,1.1-2.4-3.4-4.3-7.1-7.1-10-7.1-7.6-16.6-10.2-26.6-10.3-25.1-.3-50.2-.3-75.3,0-2,0-4.5,1.5-6,3.1-5.7,5.7-11.1,11.7-16.8,17.8Z"/><path class="st0" d="M1834.7,208.9c0,9,.8,18-.2,26.8-1.4,11.8-11.1,20.1-23.3,20.5-13.6.4-27.3,0-41.2,0v-27.5c3.4,0,6.6,0,9.9,0,8.8-.1,17.6.3,26.3-.5,12.8-1.2,23.1-6.8,28.5-19.4Z"/><path class="st0" d="M1769.7,206.8v-28.3c3.8,0,7.4,0,11.1,0,6.1,0,12.3-.2,18.4.1,10.5.5,16.1,7.1,14.8,16.9-.9,6.3-5.3,10.7-13.2,11.1-10.2.6-20.5.1-31.1.1Z"/><path class="st0" d="M1719.7,191.3c7.7-7.5,16.7-16.1,26.2-25.2v53.9c-9-9.9-17.4-19.1-26.2-28.7Z"/></g></svg>
+  </div>
+  <div class="header-title"><h2>Guia de Produtos Internacionais</h2></div>
+</header>
+
+<!-- RENDA FIXA -->
+<div class="section-label">Renda Fixa</div>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Ativo</th>
+        <th>Comentário</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="td-produto"><span class="badge badge-treasury">Treasury</span></td>
+        <td class="td-ativo">Treasury — até 2029</td>
+        <td class="td-comentario">Tesouro do Governo Norte Americano</td>
+      </tr>
+      <tr>
+        <td class="td-produto"><span class="badge badge-bonds">Bonds</span></td>
+        <td class="td-ativo">Bonds — até 2031</td>
+        <td class="td-comentario">Crédito Privado — evitar empresas brasileiras</td>
+      </tr>
+      <tr class="highlight">
+        <td class="td-produto"><span class="badge badge-etf">ETF</span></td>
+        <td class="td-ativo">BIL</td>
+        <td class="td-comentario">Treasury de curtíssimo prazo ("pós-fixado") — com dividendos</td>
+      </tr>
+      <tr class="highlight">
+        <td class="td-produto"><span class="badge badge-etf">ETF</span></td>
+        <td class="td-ativo">SHV</td>
+        <td class="td-comentario">Treasury 0–12 meses — com dividendos</td>
+      </tr>
+      <tr>
+        <td class="td-produto"><span class="badge badge-etf">ETF</span></td>
+        <td class="td-ativo">SHY</td>
+        <td class="td-comentario">Treasury 1–3 anos — com dividendos</td>
+      </tr>
+      <tr class="highlight">
+        <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
+        <td class="td-ativo">BlackRock US Dollar Reserve (A2)</td>
+        <td class="td-comentario">Fundo Money Market ("Fundo DI")</td>
+      </tr>
+      <tr>
+        <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
+        <td class="td-ativo">JP Morgan Global High Yield Bond (A)</td>
+        <td class="td-comentario">Crédito Privado — Duration 2,5</td>
+      </tr>
+      <tr>
+        <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
+        <td class="td-ativo">MS INVF Global Asset Backed Securities (A)</td>
+        <td class="td-comentario">Mortgage Securities — Duration 4,5</td>
+      </tr>
+      <tr>
+        <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
+        <td class="td-ativo">MS Global Fixed Income Opportunities (A)</td>
+        <td class="td-comentario">Crédito Global — Duration 3,5</td>
+      </tr>
+      <tr>
+        <td class="td-produto"><span class="badge badge-cd">CD</span></td>
+        <td class="td-ativo">CD — 1 ano</td>
+        <td class="td-comentario">"CDB" — sem liquidez</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- RENDA VARIÁVEL -->
+<div class="section-label">Renda Variável</div>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Ativo</th>
+        <th>Comentário</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td class="td-produto"><span class="badge badge-etf">ETF</span></td>
+        <td class="td-ativo">QQQ</td>
+        <td class="td-comentario">Nasdaq — com dividendos</td>
+      </tr>
+      <tr class="highlight">
+        <td class="td-produto"><span class="badge badge-etf">ETF</span></td>
+        <td class="td-ativo">IVV / SPY</td>
+        <td class="td-comentario">S&P 500 — com dividendos</td>
+      </tr>
+      <tr>
+        <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
+        <td class="td-ativo">JP Morgan US Technology (A)</td>
+        <td class="td-comentario">Nasdaq — acumulação</td>
+      </tr>
+      <tr>
+        <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
+        <td class="td-ativo">JP Morgan US Select Equities (A)</td>
+        <td class="td-comentario">S&P 500 — acumulação</td>
+      </tr>
+      <tr>
+        <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
+        <td class="td-ativo">Morgan Stanley Global Opportunity (A)</td>
+        <td class="td-comentario">Ações Globais</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- NOTAS -->
+<div class="notes">
+  <div class="section-label">Observações</div>
+  <div class="legend"><span class="legend-dot"></span> Destacados em verde = mais adequados para o momento atual</div>
+
+  <div class="note-item">
+    <div class="note-icon">1</div>
+    <p class="note-text">O portfólio 60/40 (RF/RV) nos EUA funciona muito bem, de forma diferente do Brasil. Pequenos ajustes conforme o perfil do cliente. Consulte o <strong style="color:rgba(244,244,244,0.8)">Relatório de Alocação Internacional</strong> para a distribuição por classe de ativos e cenário.</p>
+  </div>
+  <div class="note-item">
+    <div class="note-icon">2</div>
+    <p class="note-text">Todos os ETFs são obrigados a distribuir dividendos, com <strong style="color:rgba(244,244,244,0.8)">IR de 30% na fonte</strong>. A menos que seja uma carteira de renda, prefira os Mutual Funds.</p>
+  </div>
+  <div class="note-item">
+    <div class="note-icon">3</div>
+    <p class="note-text">O imposto de renda de todos os produtos (exceto dividendos) é pago anualmente. A calculadora <strong style="color:rgba(244,244,244,0.8)">My Capital Internacional</strong> é gratuita no app XP.</p>
+  </div>
+</div>
+
+<footer>Alto Valor Investimentos &nbsp;·&nbsp; Guia de Produtos Internacionais</footer>
+
+</body>
+</html>
