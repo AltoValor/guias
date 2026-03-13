@@ -1,0 +1,2496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alto Valor — Academia Comercial</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #08111c;
+  --bg2: #0d1a27;
+  --bg3: #112234;
+  --bg4: #163045;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --green: #009974;
+  --green2: #00b589;
+  --green-dim: rgba(0,153,116,0.15);
+  --green-glow: rgba(0,153,116,0.08);
+  --text: #f4f4f4;
+  --text2: #7a9ab0;
+  --text3: #3d5a6e;
+  --pos: #00b589;
+  --pos-dim: rgba(0,181,137,0.12);
+  --neg: #f87171;
+  --neg-dim: rgba(248,113,113,0.12);
+  --warn: #fbbf24;
+  --sidebar-w: 220px;
+  --radius: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+
+/* LOGIN */
+#login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background: radial-gradient(ellipse at 30% 50%, rgba(0,153,116,0.07) 0%, transparent 60%), var(--bg); }
+.login-box { width:420px; padding:48px; background:var(--bg2); border:1px solid var(--border2); border-radius:20px; box-shadow:0 40px 80px rgba(0,0,0,0.6); }
+.login-logo { display:flex; align-items:center; gap:12px; margin-bottom:36px; }
+.logo-mark { width:44px; height:44px; background:var(--green); border-radius:10px; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:#fff; }
+.login-logo-text h1 { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; line-height:1; }
+.login-logo-text span { font-size:12px; color:var(--text2); }
+.login-box h2 { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; margin-bottom:6px; }
+.login-box > p { color:var(--text2); font-size:14px; margin-bottom:28px; }
+.profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.profile-card { padding:14px; background:var(--bg3); border:2px solid var(--border); border-radius:var(--radius); cursor:pointer; transition:all .2s; text-align:center; }
+.profile-card:hover, .profile-card.selected { border-color:var(--green); background:var(--green-dim); }
+.profile-avatar { width:36px; height:36px; border-radius:50%; background:var(--bg4); margin:0 auto 8px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.profile-card .name { font-size:13px; font-weight:600; }
+.profile-card .role { font-size:11px; color:var(--text2); margin-top:2px; }
+.input-group { margin-bottom:16px; }
+.input-group label { display:block; font-size:12px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.input-group input { width:100%; padding:12px 16px; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--radius); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color .2s; }
+.input-group input:focus { border-color:var(--green); }
+.btn-primary { width:100%; padding:14px; background:var(--green); color:#fff; border:none; border-radius:var(--radius); font-family:'Syne',sans-serif; font-size:15px; font-weight:700; cursor:pointer; transition:all .2s; margin-top:8px; }
+.btn-primary:hover { background:var(--green2); transform:translateY(-1px); }
+.btn-primary:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+.api-key-notice { margin-top:20px; padding:12px 16px; background:var(--green-glow); border:1px solid rgba(0,153,116,.2); border-radius:8px; font-size:12px; color:var(--green); }
+.login-error { margin-top:12px; padding:10px 14px; background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.3); border-radius:8px; font-size:13px; color:var(--neg); display:none; }
+
+/* ADMIN MODAL */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:1000; display:none; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal-box { width:520px; max-height:80vh; overflow-y:auto; background:var(--bg2); border:1px solid var(--border2); border-radius:20px; padding:36px; box-shadow:0 40px 80px rgba(0,0,0,.6); }
+.modal-box h2 { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; margin-bottom:6px; }
+.modal-box > p { color:var(--text2); font-size:13px; margin-bottom:24px; }
+.modal-close { position:absolute; top:0; right:0; transform:translate(50%,-50%); width:32px; height:32px; background:var(--bg3); border:1px solid var(--border2); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; color:var(--text2); }
+.modal-close:hover { color:var(--text); border-color:var(--text2); }
+.modal-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; }
+.user-list { display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
+.user-row { display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); }
+.user-row-info { flex:1; }
+.user-row-login { font-size:14px; font-weight:600; }
+.user-row-role { font-size:12px; color:var(--text2); }
+.user-row-badge { font-size:11px; padding:2px 8px; background:var(--green-dim); color:var(--green); border-radius:20px; font-weight:600; }
+.user-row-badge.admin { background:rgba(251,191,36,.12); color:var(--warn); }
+.btn-delete { padding:6px 12px; background:transparent; border:1px solid rgba(248,113,113,.3); color:var(--neg); border-radius:6px; font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; }
+.btn-delete:hover { background:rgba(248,113,113,.1); border-color:var(--neg); }
+.add-user-form { border-top:1px solid var(--border); padding-top:20px; }
+.add-user-form h3 { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; margin-bottom:16px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.admin-nav-btn { display:flex; align-items:center; gap:8px; padding:8px 14px; background:var(--bg3); border:1px solid var(--border2); border-radius:8px; color:var(--text2); font-size:13px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; }
+.admin-nav-btn:hover { color:var(--text); border-color:var(--text2); }
+
+/* APP */
+#app { display:none; }
+#app.active { display:flex; min-height:100vh; }
+
+/* SIDEBAR */
+.sidebar { width:var(--sidebar-w); min-height:100vh; background:var(--bg2); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; left:0; top:0; bottom:0; z-index:100; }
+.sidebar-logo { padding:24px 20px 20px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border); }
+.sidebar-logo .logo-mark { width:32px; height:32px; font-size:12px; }
+.sidebar-logo-text { font-family:'Syne',sans-serif; }
+.sidebar-logo-text .brand { font-size:14px; font-weight:700; }
+.sidebar-logo-text .sub { font-size:11px; color:var(--text2); }
+.sidebar-nav { flex:1; padding:16px 12px; overflow-y:auto; }
+.nav-section-label { font-size:10px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:1px; padding:12px 8px 6px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; cursor:pointer; transition:all .15s; color:var(--text2); font-size:13px; font-weight:500; margin-bottom:2px; border:none; background:none; width:100%; text-align:left; }
+.nav-item:hover { background:var(--bg3); color:var(--text); }
+.nav-item.active { background:var(--green-dim); color:var(--green); }
+.nav-item .icon { font-size:15px; width:20px; text-align:center; }
+.sidebar-user { padding:16px; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+.user-avatar { width:34px; height:34px; background:var(--green-dim); border:1px solid var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; }
+.user-info .uname { font-size:13px; font-weight:600; }
+.user-info .urole { font-size:11px; color:var(--text2); }
+
+/* MAIN */
+.main { margin-left:var(--sidebar-w); flex:1; min-height:100vh; background:var(--bg); }
+.page { display:none; padding:32px; max-width:1000px; }
+.page.active { display:block; }
+.page-header { margin-bottom:28px; }
+.page-header h1 { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; line-height:1.2; }
+.page-header p { color:var(--text2); font-size:14px; margin-top:6px; }
+
+/* CARDS */
+.cards-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+.metric-card { padding:20px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); }
+.metric-card .label { font-size:12px; color:var(--text2); font-weight:500; margin-bottom:10px; }
+.metric-card .value { font-family:'Syne',sans-serif; font-size:32px; font-weight:800; line-height:1; color:var(--green); }
+.metric-card .delta { font-size:12px; color:var(--pos); margin-top:6px; }
+.metric-card .delta.neg { color:var(--neg); }
+
+/* GRID */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+
+/* PANEL */
+.panel { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:20px; }
+.panel-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+
+/* COMPETÊNCIAS */
+.comp-item { margin-bottom:14px; }
+.comp-header { display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px; }
+.comp-bar { height:6px; background:var(--bg4); border-radius:3px; overflow:hidden; }
+.comp-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--green),var(--green2)); transition:width 1s ease; }
+
+/* IA REC */
+.ia-rec { background:var(--green-glow); border:1px solid rgba(0,153,116,.2); border-radius:var(--radius); padding:18px; font-size:14px; line-height:1.6; }
+.ia-rec-label { font-size:11px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+
+/* CHAT */
+.chat-suggestions { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+.suggestion-pill { padding:8px 14px; background:var(--bg3); border:1px solid var(--border2); border-radius:20px; font-size:13px; cursor:pointer; color:var(--text2); transition:all .15s; }
+.suggestion-pill:hover { border-color:var(--green); color:var(--text); background:var(--green-dim); }
+.chat-box { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); display:flex; flex-direction:column; height:480px; }
+.chat-messages { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px; scroll-behavior:smooth; }
+.chat-messages::-webkit-scrollbar { width:4px; }
+.chat-messages::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+.msg { display:flex; flex-direction:column; max-width:85%; }
+.msg.user { align-self:flex-end; align-items:flex-end; }
+.msg.ai { align-self:flex-start; }
+.msg-bubble { padding:12px 16px; border-radius:14px; font-size:14px; line-height:1.6; }
+.msg.user .msg-bubble { background:var(--green); color:#fff; font-weight:500; border-bottom-right-radius:4px; }
+.msg.ai .msg-bubble { background:var(--bg3); border:1px solid var(--border); border-bottom-left-radius:4px; }
+.msg-label { font-size:11px; color:var(--text3); margin-bottom:4px; padding:0 4px; }
+.chat-input-row { padding:16px; border-top:1px solid var(--border); display:flex; gap:10px; }
+.chat-input { flex:1; background:var(--bg3); border:1px solid var(--border2); border-radius:10px; padding:12px 16px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; resize:none; transition:border-color .2s; }
+.chat-input:focus { border-color:var(--green); }
+.btn-send { padding:12px 20px; background:var(--green); color:#fff; border:none; border-radius:10px; font-family:'Syne',sans-serif; font-weight:700; font-size:13px; cursor:pointer; transition:all .2s; white-space:nowrap; }
+.btn-send:hover { background:var(--green2); }
+.btn-send:disabled { opacity:.5; cursor:not-allowed; }
+.typing-indicator { display:flex; gap:4px; align-items:center; padding:12px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:14px; border-bottom-left-radius:4px; width:fit-content; }
+.typing-dot { width:6px; height:6px; border-radius:50%; background:var(--text2); animation:typingBounce 1.2s infinite; }
+.typing-dot:nth-child(2) { animation-delay:.2s; }
+.typing-dot:nth-child(3) { animation-delay:.4s; }
+@keyframes typingBounce { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-6px);opacity:1} }
+
+/* SIMULADOR */
+.client-profiles { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px; }
+.client-card { padding:18px; background:var(--bg2); border:2px solid var(--border); border-radius:var(--radius); cursor:pointer; transition:all .2s; }
+.client-card:hover { border-color:var(--border2); }
+.client-card.selected { border-color:var(--green); background:var(--green-dim); }
+.client-icon { font-size:24px; margin-bottom:10px; }
+.client-name { font-size:14px; font-weight:700; margin-bottom:4px; }
+.client-desc { font-size:12px; color:var(--text2); line-height:1.4; }
+.custom-client-box { background:var(--bg2); border:2px dashed var(--border2); border-radius:var(--radius); padding:20px; margin-bottom:16px; }
+.custom-client-box.selected-custom { border-color:var(--green); border-style:solid; background:var(--green-dim); }
+.custom-client-box h4 { font-size:14px; font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:8px; }
+.custom-client-box p { font-size:12px; color:var(--text2); margin-bottom:12px; }
+.custom-client-box textarea { width:100%; padding:12px; background:var(--bg3); border:1px solid var(--border2); border-radius:8px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; outline:none; resize:vertical; min-height:70px; transition:border-color .2s; }
+.custom-client-box textarea:focus { border-color:var(--green); }
+.sim-active { display:none; }
+.sim-active.on { display:block; }
+.sim-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:16px; }
+.sim-client-info { display:flex; align-items:center; gap:12px; }
+.sim-client-icon { font-size:24px; }
+.sim-client-name { font-size:14px; font-weight:700; }
+.sim-client-sub { font-size:12px; color:var(--text2); }
+.btn-outline { padding:8px 16px; background:transparent; border:1px solid var(--border2); border-radius:8px; color:var(--text2); font-size:13px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; }
+.btn-outline:hover { border-color:var(--text2); color:var(--text); }
+.feedback-box { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-top:16px; display:none; }
+.feedback-box.show { display:block; }
+.feedback-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:16px; }
+.feedback-scores { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:20px; }
+.feedback-score-item { text-align:center; }
+.feedback-score-val { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; }
+.feedback-score-label { font-size:11px; color:var(--text2); margin-top:4px; }
+
+/* TRILHA */
+.trilha-progress { display:flex; align-items:center; gap:8px; margin-bottom:24px; padding:20px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); }
+.trilha-step { display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; }
+.step-circle { width:36px; height:36px; border-radius:50%; background:var(--bg3); border:2px solid var(--border2); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; transition:all .3s; }
+.step-circle.done { background:var(--pos-dim); border-color:var(--pos); color:var(--pos); }
+.step-circle.active { background:var(--green-dim); border-color:var(--green); color:var(--green); }
+.step-label { font-size:10px; color:var(--text2); text-align:center; }
+.trilha-connector { flex:0 0 20px; height:2px; background:var(--border); }
+.trilha-connector.done { background:var(--pos); }
+.module-list { display:flex; flex-direction:column; gap:10px; }
+.module-item { padding:20px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); cursor:pointer; transition:all .2s; display:flex; align-items:center; gap:16px; }
+.module-item:hover { border-color:var(--border2); }
+.module-item.locked { opacity:.5; cursor:not-allowed; }
+.module-item.current { border-color:var(--green); background:var(--green-glow); }
+.module-num { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:16px; font-weight:800; flex-shrink:0; }
+.module-num.done { background:var(--pos-dim); color:var(--pos); }
+.module-num.active { background:var(--green-dim); color:var(--green); }
+.module-num.locked { background:var(--bg3); color:var(--text3); }
+.module-info { flex:1; }
+.module-name { font-size:15px; font-weight:600; margin-bottom:4px; }
+.module-sub { font-size:13px; color:var(--text2); }
+.module-status { font-size:12px; padding:4px 12px; border-radius:20px; font-weight:600; }
+.module-status.done { background:var(--pos-dim); color:var(--pos); }
+.module-status.active { background:var(--green-dim); color:var(--green); }
+.module-status.locked { background:var(--bg3); color:var(--text3); }
+.module-detail { display:none; }
+.module-detail.active { display:block; }
+.module-content-box { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:20px; font-size:14px; line-height:1.8; color:var(--text2); }
+.module-content-box h3 { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; color:var(--text); margin:16px 0 8px; }
+.module-content-box h3:first-child { margin-top:0; }
+.module-content-box strong { color:var(--text); }
+.module-content-box ul { padding-left:20px; margin:8px 0; }
+.module-content-box li { margin-bottom:6px; }
+.sub-module-list { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+.sub-module-item { padding:14px 18px; background:var(--bg2); border:1px solid var(--border); border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:12px; transition:all .15s; }
+.sub-module-item:hover { border-color:var(--green); }
+.sub-module-item.active-sub { border-color:var(--green); background:var(--green-dim); }
+.sub-check { width:22px; height:22px; border-radius:50%; border:2px solid var(--border2); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:11px; }
+.sub-check.done { background:var(--pos-dim); border-color:var(--pos); color:var(--pos); }
+.sub-module-name { font-size:14px; font-weight:500; }
+
+/* FORMS */
+.form-group { margin-bottom:16px; }
+.form-group label { display:block; font-size:12px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.form-group input, .form-group textarea, .form-group select { width:100%; padding:12px 16px; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--radius); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color .2s; }
+.form-group textarea { resize:vertical; min-height:100px; }
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color:var(--green); }
+.form-group select option { background:var(--bg3); }
+.result-box { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-top:20px; display:none; font-size:14px; line-height:1.8; }
+.result-box.show { display:block; }
+.result-box h3 { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; margin:16px 0 8px; color:var(--green); }
+.result-box h3:first-child { margin-top:0; }
+
+/* LIDER */
+.leader-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+.assessor-row { display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--border); }
+.assessor-row:last-child { border-bottom:none; }
+.assessor-avatar { width:34px; height:34px; border-radius:50%; background:var(--bg3); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.assessor-name { font-size:14px; font-weight:600; }
+.assessor-meta { font-size:12px; color:var(--text2); }
+.assessor-bars { flex:1; }
+.mini-bar { height:4px; background:var(--bg4); border-radius:2px; overflow:hidden; margin-bottom:4px; }
+.mini-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,var(--green),var(--green2)); }
+.assessor-score { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--green); min-width:40px; text-align:right; }
+.alert-item { padding:16px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px; display:flex; gap:12px; }
+.alert-item.warning { border-color:rgba(251,191,36,.3); background:rgba(251,191,36,.05); }
+.alert-item.danger { border-color:rgba(248,113,113,.3); background:rgba(248,113,113,.05); }
+.alert-item.success { border-color:rgba(0,181,137,.3); background:rgba(0,181,137,.05); }
+.alert-icon { font-size:18px; }
+.alert-title { font-size:14px; font-weight:600; margin-bottom:4px; }
+.alert-desc { font-size:13px; color:var(--text2); line-height:1.5; }
+
+/* API CONFIG */
+.api-config { position:fixed; bottom:20px; right:20px; z-index:200; }
+.api-config-btn { width:40px; height:40px; border-radius:50%; background:var(--bg3); border:1px solid var(--border2); color:var(--text2); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+.api-config-btn:hover { border-color:var(--green); color:var(--green); }
+.api-config-panel { display:none; position:absolute; bottom:48px; right:0; width:300px; background:var(--bg2); border:1px solid var(--border2); border-radius:var(--radius); padding:16px; box-shadow:0 20px 40px rgba(0,0,0,.5); }
+.api-config-panel.show { display:block; }
+.api-config-panel h4 { font-size:14px; font-weight:700; margin-bottom:10px; }
+.api-config-panel input { width:100%; padding:10px 14px; background:var(--bg3); border:1px solid var(--border2); border-radius:8px; color:var(--text); font-size:13px; font-family:monospace; outline:none; margin-bottom:10px; }
+.api-config-panel input:focus { border-color:var(--green); }
+.btn-sm { padding:8px 14px; background:var(--green); color:#fff; border:none; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; font-family:'Syne',sans-serif; }
+.btn-back { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; background:var(--bg3); border:1px solid var(--border2); border-radius:8px; font-size:13px; color:var(--text2); cursor:pointer; margin-bottom:20px; transition:all .15s; }
+.btn-back:hover { color:var(--text); border-color:var(--text2); }
+.loader { display:inline-flex; gap:4px; }
+.loader span { width:6px; height:6px; border-radius:50%; background:var(--green); animation:loaderPulse 1s infinite; }
+.loader span:nth-child(2) { animation-delay:.2s; }
+.loader span:nth-child(3) { animation-delay:.4s; }
+@keyframes loaderPulse { 0%,100%{opacity:.3;transform:scale(.8)} 50%{opacity:1;transform:scale(1)} }
+.score-high { color:var(--pos); }
+.score-mid { color:var(--green); }
+.score-low { color:var(--neg); }
+.score-empty { color:var(--text3); }
+@media(max-width:768px){ .sidebar{transform:translateX(-100%)} .main{margin-left:0} .cards-row,.leader-cards{grid-template-columns:1fr 1fr} .client-profiles{grid-template-columns:1fr 1fr} }
+
+/* ===== LESSON CONTENT STYLES ===== */
+.lesson-block { margin-bottom:24px; border-radius:var(--radius); overflow:hidden; }
+.lesson-tag { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; margin-bottom:14px; opacity:.8; }
+.lesson-block.concept { background:var(--bg2); border:1px solid var(--border); padding:24px; }
+.lesson-block.antiexample { background:rgba(248,113,113,.05); border:1px solid rgba(248,113,113,.2); padding:24px; }
+.lesson-block.exercise { background:rgba(0,153,116,.06); border:1px solid rgba(0,153,116,.2); padding:24px; }
+.lesson-block h3 { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; margin:0 0 12px; color:var(--text); }
+.lesson-block p { font-size:14px; line-height:1.8; color:var(--text2); margin-bottom:12px; }
+.lesson-block ul { padding-left:20px; margin:8px 0 12px; }
+.lesson-block li { font-size:14px; line-height:1.7; color:var(--text2); margin-bottom:4px; }
+.highlight-box { background:var(--green-glow); border:1px solid rgba(0,153,116,.25); border-radius:10px; padding:16px 18px; font-size:13px; line-height:1.8; color:var(--text2); margin-top:16px; }
+.highlight-box.red { background:rgba(248,113,113,.06); border-color:rgba(248,113,113,.25); }
+.highlight-box strong { color:var(--text); }
+
+/* Compare grid */
+.compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0; }
+.compare-col { padding:16px; border-radius:10px; }
+.compare-col.bad { background:rgba(248,113,113,.07); border:1px solid rgba(248,113,113,.2); }
+.compare-col.good { background:rgba(0,181,137,.07); border:1px solid rgba(0,181,137,.2); }
+.compare-header { font-size:13px; font-weight:700; margin-bottom:10px; }
+.compare-col.bad .compare-header { color:var(--neg); }
+.compare-col.good .compare-header { color:var(--pos); }
+.compare-col ul { padding-left:16px; }
+.compare-col li { font-size:13px; color:var(--text2); margin-bottom:6px; }
+
+/* Dialogue */
+.dialogue { background:var(--bg3); border-radius:10px; padding:16px; margin:14px 0; border:1px solid var(--border); }
+.bad-dialogue { background:rgba(248,113,113,.05); border-color:rgba(248,113,113,.15); }
+.dialogue-line { padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; line-height:1.6; }
+.dialogue-line:last-child { border-bottom:none; }
+.who { font-weight:700; color:var(--green); margin-right:6px; }
+.bad-dialogue .who { color:var(--text2); }
+.antiexample-lesson { font-size:13px; color:var(--text2); line-height:1.7; margin-top:12px; padding-top:12px; border-top:1px solid rgba(248,113,113,.2); }
+.antiexample-lesson strong { color:var(--text); }
+
+/* Checklist */
+.checklist { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+.check-item { padding:10px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; font-size:13px; color:var(--text2); display:flex; align-items:center; gap:10px; }
+.check-item::before { content:'○'; color:var(--text3); flex-shrink:0; }
+
+/* Exercise steps */
+.exercise-steps { display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+.ex-step { display:flex; gap:14px; align-items:flex-start; font-size:14px; color:var(--text2); line-height:1.6; }
+.step-num { width:26px; height:26px; border-radius:50%; background:var(--green-dim); border:1px solid var(--green); color:var(--green); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+.ex-step strong { color:var(--text); }
+
+/* Beliefs grid */
+.beliefs-grid { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.belief-card { padding:14px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; }
+.belief-wrong { font-size:13px; color:var(--neg); font-style:italic; margin-bottom:8px; }
+.belief-right { font-size:13px; color:var(--text2); line-height:1.6; }
+.belief-right strong { color:var(--pos); }
+
+/* Routine grid */
+.routine-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+.routine-block { padding:16px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; }
+.routine-time { font-size:12px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px; }
+.routine-block ul { padding-left:16px; }
+.routine-block li { font-size:13px; color:var(--text2); margin-bottom:5px; }
+
+/* Value list */
+.value-list { list-style:none; padding:0; display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+.value-list li { display:flex; align-items:flex-start; gap:12px; padding:12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; font-size:14px; }
+.vl-icon { font-size:18px; flex-shrink:0; }
+
+/* Sequence steps */
+.sequence-steps { display:flex; flex-direction:column; gap:10px; margin:16px 0; }
+.seq-step { display:flex; gap:14px; align-items:flex-start; padding:14px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; }
+.seq-num { width:28px; height:28px; border-radius:50%; background:var(--green); color:#fff; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.seq-step div { font-size:14px; color:var(--text2); line-height:1.7; }
+.seq-step strong { color:var(--text); display:block; margin-bottom:4px; }
+
+/* Pitch structure */
+.pitch-structure { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.pitch-part { padding:16px 18px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; }
+.pitch-num { font-size:11px; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.pitch-text { font-size:14px; color:var(--text2); line-height:1.7; font-style:italic; }
+
+/* Technique cards */
+.technique-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+.tech-card { padding:16px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; }
+.tech-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:8px; }
+.tech-card p { font-size:13px; color:var(--text2); line-height:1.6; margin:0; }
+
+/* SPIN grid */
+.spin-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+.spin-card { display:flex; gap:14px; padding:16px; border-radius:10px; border:1px solid var(--border); }
+.spin-card.s { background:rgba(59,130,246,.06); border-color:rgba(59,130,246,.2); }
+.spin-card.p { background:rgba(251,191,36,.06); border-color:rgba(251,191,36,.2); }
+.spin-card.i { background:rgba(248,113,113,.06); border-color:rgba(248,113,113,.2); }
+.spin-card.n { background:rgba(0,181,137,.06); border-color:rgba(0,181,137,.2); }
+.spin-letter { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; opacity:.8; flex-shrink:0; }
+.spin-card.s .spin-letter { color:#3b82f6; }
+.spin-card.p .spin-letter { color:#fbbf24; }
+.spin-card.i .spin-letter { color:var(--neg); }
+.spin-card.n .spin-letter { color:var(--pos); }
+.spin-title { font-size:13px; font-weight:700; margin-bottom:6px; }
+.spin-examples { display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+.spin-ex { font-size:12px; color:var(--text2); padding:6px 10px; background:rgba(255,255,255,.03); border-radius:6px; font-style:italic; line-height:1.5; }
+.spin-content p { font-size:13px; color:var(--text2); margin-bottom:6px; line-height:1.5; }
+
+/* Follow-up types */
+.followup-types { display:flex; flex-direction:column; gap:10px; margin:16px 0; }
+.fu-type { padding:14px 16px; border-radius:10px; font-size:13px; color:var(--text2); line-height:1.6; }
+.fu-type.good { background:rgba(0,181,137,.06); border:1px solid rgba(0,181,137,.2); }
+.fu-type.bad { background:rgba(248,113,113,.06); border:1px solid rgba(248,113,113,.2); }
+.fu-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.fu-type.good .fu-label { color:var(--pos); }
+.fu-type.bad .fu-label { color:var(--neg); }
+
+/* Steps flow */
+.steps-flow { display:flex; flex-direction:column; align-items:center; margin:16px 0; gap:0; }
+.flow-step { display:flex; gap:14px; align-items:center; padding:14px 18px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; width:100%; }
+.flow-num { width:30px; height:30px; border-radius:50%; background:var(--green); color:#fff; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.flow-content { font-size:14px; color:var(--text2); line-height:1.6; }
+.flow-content strong { color:var(--text); }
+.flow-arrow { color:var(--text3); font-size:16px; padding:4px 0; }
+
+/* Onboarding */
+.onboarding-steps { display:flex; flex-direction:column; gap:10px; margin:16px 0; }
+.ob-step { display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; }
+.ob-num { font-size:11px; font-weight:700; color:var(--green); white-space:nowrap; min-width:70px; padding-top:2px; }
+.ob-content { font-size:13px; color:var(--text2); line-height:1.6; }
+.ob-content strong { color:var(--text); }
+
+/* Cycle grid */
+.cycle-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:16px 0; }
+.cycle-card { padding:18px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; text-align:center; }
+.cycle-card.highlight-cycle { background:var(--green-dim); border-color:var(--green); }
+.cycle-tier { font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text2); letter-spacing:.5px; margin-bottom:8px; }
+.cycle-num { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--green); margin-bottom:8px; }
+.cycle-desc { font-size:12px; color:var(--text2); line-height:1.5; }
+
+/* Crisis steps */
+.crisis-steps { display:flex; flex-direction:column; gap:10px; margin:16px 0; }
+.crisis-step { display:flex; gap:12px; align-items:flex-start; padding:12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; font-size:14px; color:var(--text2); line-height:1.6; }
+.crisis-icon { font-size:18px; flex-shrink:0; }
+.crisis-step strong { color:var(--text); }
+
+/* 3 SIM technique */
+.sim-technique { display:flex; flex-direction:column; gap:10px; margin:16px 0; }
+.sim-step { display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; font-size:13px; color:var(--text2); line-height:1.6; }
+.sim-num { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--green); white-space:nowrap; min-width:50px; padding-top:1px; }
+
+/* Product matrix */
+.product-matrix { margin:16px 0; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.prod-row { display:grid; grid-template-columns:1.2fr 1.5fr 1.5fr; gap:0; border-bottom:1px solid var(--border); }
+.prod-row:last-child { border-bottom:none; }
+.prod-row > div { padding:12px 14px; font-size:13px; color:var(--text2); border-right:1px solid var(--border); }
+.prod-row > div:last-child { border-right:none; }
+.prod-row.header > div { background:var(--bg3); font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text3); letter-spacing:.5px; }
+.prod-row:nth-child(even) > div { background:rgba(255,255,255,.01); }
+
+/* RV concepts */
+.rv-concepts { display:flex; flex-direction:column; gap:10px; margin:16px 0; }
+.rv-concept { padding:14px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; }
+.rv-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:6px; }
+.rv-concept p { font-size:13px; color:var(--text2); line-height:1.6; margin:0; }
+
+/* Previdencia cards */
+.pgbl-vgbl { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0; }
+.prev-card { padding:18px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; }
+.prev-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--green); margin-bottom:10px; }
+.prev-card p { font-size:13px; color:var(--text2); line-height:1.8; margin:0; }
+
+/* Global points */
+.global-points { display:flex; flex-direction:column; gap:10px; margin:16px 0; }
+.global-point { padding:14px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:10px; font-size:13px; color:var(--text2); line-height:1.6; }
+.global-point strong { color:var(--text); display:block; margin-bottom:4px; }
+
+/* Links externos */
+.external-links { margin-top:20px; padding-top:16px; border-top:1px solid var(--border); }
+.ext-links-title { font-size:12px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px; }
+.ext-links-list { display:flex; flex-wrap:wrap; gap:8px; }
+.ext-link-item { display:flex; align-items:center; gap:8px; padding:8px 14px; background:var(--bg3); border:1px solid var(--border2); border-radius:8px; font-size:13px; color:var(--text2); text-decoration:none; transition:all .15s; }
+.ext-link-item:hover { border-color:var(--green); color:var(--green); }
+.ext-link-type { font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700; }
+.ext-link-type.yt { background:rgba(255,0,0,.15); color:#f87171; }
+.ext-link-type.pdf { background:rgba(248,113,113,.15); color:#f87171; }
+.ext-link-type.ppt { background:rgba(251,191,36,.15); color:#fbbf24; }
+.ext-link-type.link { background:var(--green-dim); color:var(--green); }
+
+
+/* ===== CASE STUDY + SIM LAUNCH STYLES ===== */
+.case-profile { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:16px; margin:14px 0; }
+.case-info { font-size:13px; color:var(--text2); line-height:1.7; padding:4px 0; }
+.case-label { font-weight:700; color:var(--text); margin-right:6px; }
+.case-findings { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+.finding-item { font-size:13px; color:var(--text2); padding:10px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; line-height:1.6; }
+.finding-item strong { color:var(--text); }
+
+.sim-launch { background:var(--green-glow); border:1px solid rgba(0,153,116,.2); border-radius:10px; padding:18px; margin-top:14px; }
+.sim-desc { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:14px; font-style:italic; }
+.btn-sim-launch { background:var(--green); color:#fff; border:none; border-radius:8px; padding:10px 20px; font-size:13px; font-weight:700; cursor:pointer; transition:all .15s; font-family:'DM Sans',sans-serif; }
+.btn-sim-launch:hover { background:var(--green2); transform:translateY(-1px); }
+
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-mark">AV</div>
+      <div class="login-logo-text"><h1>Alto Valor</h1><span>Academia Comercial</span></div>
+    </div>
+    <h2>Bem-vindo de volta</h2>
+    <p>Entre com seu login e senha para continuar</p>
+    <div class="input-group"><label>Login</label><input type="text" id="login-user" placeholder="seu login" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"></div>
+    <div class="input-group"><label>Senha</label><input type="password" id="login-pass" placeholder="sua senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="login-error" id="login-error">Login ou senha incorretos. Tente novamente.</div>
+    <button class="btn-primary" onclick="doLogin()">Entrar na plataforma</button>
+    <div class="api-key-notice">💡 Cole sua chave da API Anthropic nas configurações (⚙) após entrar para ativar a IA.</div>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div class="modal-overlay" id="admin-modal">
+  <div class="modal-box" style="position:relative">
+    <div class="modal-header">
+      <div>
+        <h2>⚙ Gerenciar Usuários</h2>
+        <p>Crie e remova acessos à plataforma</p>
+      </div>
+      <button class="admin-nav-btn" onclick="closeAdminModal()">✕ Fechar</button>
+    </div>
+    <div class="user-list" id="admin-user-list"></div>
+    <div class="add-user-form">
+      <h3>Adicionar novo usuário</h3>
+      <div class="form-row">
+        <div class="input-group" style="margin:0"><label>Login</label><input type="text" id="new-login" placeholder="ex: joao.silva"></div>
+        <div class="input-group" style="margin:0"><label>Senha</label><input type="password" id="new-pass" placeholder="senha de acesso"></div>
+      </div>
+      <div class="form-row">
+        <div class="input-group" style="margin:0"><label>Nome completo</label><input type="text" id="new-name" placeholder="ex: João Silva"></div>
+        <div class="input-group" style="margin:0"><label>Cargo</label><input type="text" id="new-role" placeholder="ex: Assessor Júnior"></div>
+      </div>
+      <div class="input-group" style="margin-bottom:0">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;font-size:13px">
+          <input type="checkbox" id="new-is-admin" style="width:auto;padding:0"> Acesso de administrador (pode gerenciar usuários)
+        </label>
+      </div>
+      <button class="btn-primary" style="margin-top:16px" onclick="addUser()">Criar usuário</button>
+      <div class="login-error" id="admin-error" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">AV</div>
+      <div class="sidebar-logo-text"><div class="brand">Alto Valor</div><div class="sub">Academia</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <button class="nav-item active" onclick="navigate('painel',this)"><span class="icon">◈</span> Meu Painel</button>
+      <button class="nav-item" onclick="navigate('tutor',this)"><span class="icon">◎</span> Tutor de IA</button>
+      <button class="nav-item" onclick="navigate('simulador',this)"><span class="icon">⬡</span> Simulador</button>
+      <button class="nav-item" onclick="navigate('trilha',this)"><span class="icon">▤</span> Trilha de Formação</button>
+      <div class="nav-section-label">Ferramentas</div>
+      <button class="nav-item" onclick="navigate('reuniao',this)"><span class="icon">◇</span> Preparar Reunião</button>
+      <button class="nav-item" onclick="navigate('poscall',this)"><span class="icon">◈</span> Análise Pós-Call</button>
+      <div class="nav-section-label" id="leader-section" style="display:none">Gestão</div>
+      <button class="nav-item" id="leader-btn" style="display:none" onclick="navigate('lider',this)"><span class="icon">▦</span> Dashboard Líder</button>
+      <button class="nav-item" id="admin-btn" style="display:none" onclick="openAdminModal()"><span class="icon">⚙</span> Gerenciar Usuários</button>
+    </nav>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-avatar">👨‍💼</div>
+      <div class="user-info"><div class="uname" id="sidebar-name">Lucas Ferreira</div><div class="urole" id="sidebar-role">Assessor Júnior</div></div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- PAINEL -->
+    <div class="page active" id="page-painel">
+      <div class="page-header">
+        <h1 id="painel-greeting">Bom dia 👋</h1>
+        <p id="painel-sub">Acompanhe seu progresso e continue evoluindo</p>
+      </div>
+      <div class="cards-row">
+        <div class="metric-card"><div class="label">Score Geral</div><div class="value" id="p-score">—</div><div class="delta" id="p-score-sub">Faça simulações para calcular</div></div>
+        <div class="metric-card"><div class="label">Simulações</div><div class="value" id="p-sims">0</div><div class="delta" id="p-sims-sub">nesta sessão</div></div>
+        <div class="metric-card"><div class="label">Módulos</div><div class="value">1<span style="font-size:18px;color:var(--text2)">/8</span></div><div class="delta" style="color:var(--green)">Em andamento</div></div>
+        <div class="metric-card"><div class="label">Última simulação</div><div class="value" style="font-size:16px" id="p-last-sim">—</div><div class="delta" id="p-last-sub">Nenhuma ainda</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Competências <span style="font-size:11px;color:var(--text2);font-family:'DM Sans';font-weight:400">Média acumulada das suas simulações</span></div>
+        <div id="comp-empty" style="color:var(--text3);font-size:14px;padding:8px 0">Faça pelo menos uma simulação para ver suas competências calculadas.</div>
+        <div id="comp-bars" style="display:none">
+          <div class="comp-item"><div class="comp-header"><span>Diagnóstico</span><span id="c-diag">—</span></div><div class="comp-bar"><div class="comp-fill" id="cb-diag" style="width:0%"></div></div></div>
+          <div class="comp-item"><div class="comp-header"><span>Objeções</span><span id="c-obj">—</span></div><div class="comp-bar"><div class="comp-fill" id="cb-obj" style="width:0%"></div></div></div>
+          <div class="comp-item"><div class="comp-header"><span>Empatia</span><span id="c-emp">—</span></div><div class="comp-bar"><div class="comp-fill" id="cb-emp" style="width:0%"></div></div></div>
+          <div class="comp-item"><div class="comp-header"><span>Condução comercial</span><span id="c-cond">—</span></div><div class="comp-bar"><div class="comp-fill" id="cb-cond" style="width:0%"></div></div></div>
+          <div class="comp-item"><div class="comp-header"><span>Encerramento</span><span id="c-enc">—</span></div><div class="comp-bar"><div class="comp-fill" id="cb-enc" style="width:0%"></div></div></div>
+        </div>
+      </div>
+      <div class="ia-rec" id="ia-rec-painel">
+        <div class="ia-rec-label">💡 Recomendação</div>
+        <div id="painel-rec">Complete pelo menos uma simulação para receber uma recomendação personalizada baseada no seu desempenho real.</div>
+      </div>
+    </div>
+
+    <!-- TUTOR -->
+    <div class="page" id="page-tutor">
+      <div class="page-header"><h1>Tutor de IA</h1><p>Pergunte qualquer coisa sobre comercial, clientes ou processos — não há limite de tema</p></div>
+      <div class="chat-suggestions">
+        <span class="suggestion-pill" onclick="sendSuggestion('Como conduzo primeira reunião com cliente conservador?')">Primeira reunião com conservador</span>
+        <span class="suggestion-pill" onclick="sendSuggestion('Como responder quando cliente diz que já investe sozinho?')">Cliente investe sozinho</span>
+        <span class="suggestion-pill" onclick="sendSuggestion('Como pedir indicação sem soar artificial?')">Pedir indicação</span>
+        <span class="suggestion-pill" onclick="sendSuggestion('Como explicar taxa de administração para cliente resistente?')">Explicar taxa</span>
+        <span class="suggestion-pill" onclick="sendSuggestion('Como conduzir cliente que está comparando com concorrente?')">Comparando com concorrente</span>
+        <span class="suggestion-pill" onclick="sendSuggestion('Me dê as 4 perguntas SPIN para um médico de 50 anos com patrimônio em CDB')">Perguntas SPIN para médico</span>
+        <span class="suggestion-pill" onclick="sendSuggestion('Quais perguntas fazer no diagnóstico patrimonial?')">Diagnóstico patrimonial</span>
+        <span class="suggestion-pill" onclick="sendSuggestion('Como fazer onboarding de novo cliente seguindo o método XP?')">Onboarding XP</span>
+        <span class="suggestion-pill" onclick="sendSuggestion('O que é o ciclo 8-3-1 e como aplicar na minha carteira?')">Ciclo 8-3-1</span>
+        <span class="suggestion-pill" onclick="sendSuggestion('Como aplicar a técnica dos 5 passos para contornar objeção?')">Técnica dos 5 passos</span>
+      </div>
+      <div class="chat-box">
+        <div class="chat-messages" id="tutor-messages">
+          <div class="msg ai"><div class="msg-label">Tutor Alto Valor</div><div class="msg-bubble">Olá! Sou seu tutor comercial.<br><br>Pode me perguntar qualquer coisa — abordagem de clientes, objeções, SPIN Selling, scripts XP, diagnóstico patrimonial, como pedir indicação, onboarding, gestão de carteira, ciclo 8-3-1 ou qualquer situação do dia a dia.<br><br>Respondo sempre no método do Alto Valor.</div></div>
+        </div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="tutor-input" placeholder="Digite qualquer dúvida..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendTutor()}"></textarea>
+          <button class="btn-send" id="tutor-send" onclick="sendTutor()">Enviar →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIMULADOR -->
+    <div class="page" id="page-simulador">
+      <div class="page-header"><h1>Simulador de Conversas</h1><p>Pratique com qualquer cliente — perfis pré-definidos ou crie o seu próprio</p></div>
+      <div id="sim-select">
+        <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Escolha um perfil pré-definido ou descreva o cliente que quer simular</p>
+        <div class="client-profiles">
+          <div class="client-card" onclick="selectClient(this,'conservador')"><div class="client-icon">🛡️</div><div class="client-name">Conservador desconfiado</div><div class="client-desc">Roberto, 52 anos. R$800k em CDB. Desconfia de bolsa e assessores.</div></div>
+          <div class="client-card" onclick="selectClient(this,'taxa')"><div class="client-icon">💸</div><div class="client-name">Questionando taxa</div><div class="client-desc">Carla, 38 anos. Viu cobrança na fatura e não entende o que está pagando.</div></div>
+          <div class="client-card" onclick="selectClient(this,'concorrente')"><div class="client-icon">⚖️</div><div class="client-name">Comparando concorrente</div><div class="client-desc">Henrique, 45 anos, médico. Recebeu proposta do BTG. Quer ser convencido.</div></div>
+          <div class="client-card" onclick="selectClient(this,'sozinho')"><div class="client-icon">📱</div><div class="client-name">Investe sozinho</div><div class="client-desc">Rafael, 32 anos. Usa app do banco. Curioso mas resistente a pagar assessor.</div></div>
+          <div class="client-card" onclick="selectClient(this,'queda')"><div class="client-icon">📉</div><div class="client-name">Insatisfeito após queda</div><div class="client-desc">Paulo, 55 anos. Carteira caiu 8%. Quer explicação e considera sair.</div></div>
+          <div class="client-card" onclick="selectClient(this,'frio')"><div class="client-icon">💬</div><div class="client-name">Primeira abordagem</div><div class="client-desc">Juliana, 29 anos. Lead frio. Nunca teve assessor. Recebeu WhatsApp.</div></div>
+        </div>
+        <div class="custom-client-box" id="custom-box" onclick="selectClient(null,'custom')">
+          <h4>✏️ Criar cliente personalizado <span style="font-size:11px;font-weight:400;color:var(--text2)">(clique para selecionar)</span></h4>
+          <p>Descreva o cliente que você vai atender de verdade. A IA cria o personagem na hora.</p>
+          <textarea id="custom-client-desc" placeholder="Ex: Empresário de 60 anos, dono de construtora, R$3MM em banco, já teve assessor antes e saiu por mal atendimento. É direto, não tem paciência para rodeios, mas valoriza quem demonstra conhecimento técnico..." onclick="event.stopPropagation()"></textarea>
+        </div>
+        <div style="text-align:center;margin-top:16px">
+          <button class="btn-primary" style="width:auto;padding:14px 40px" onclick="startSimulation()">Iniciar simulação →</button>
+        </div>
+      </div>
+      <div id="sim-active" class="sim-active">
+        <div class="sim-header">
+          <div class="sim-client-info">
+            <div class="sim-client-icon" id="sim-icon">🛡️</div>
+            <div><div class="sim-client-name" id="sim-name">—</div><div class="sim-client-sub" id="sim-sub">—</div></div>
+          </div>
+          <button class="btn-outline" onclick="endSimulation()">Encerrar e ver feedback</button>
+        </div>
+        <div class="chat-box">
+          <div class="chat-messages" id="sim-messages"></div>
+          <div class="chat-input-row">
+            <textarea class="chat-input" id="sim-input" placeholder="Responda ao cliente..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendSim()}"></textarea>
+            <button class="btn-send" id="sim-send" onclick="sendSim()">Enviar →</button>
+          </div>
+        </div>
+        <div class="feedback-box" id="sim-feedback">
+          <div class="feedback-title">📊 Feedback da simulação</div>
+          <div class="feedback-scores" id="feedback-scores"></div>
+          <div id="feedback-text"></div>
+          <div style="margin-top:20px;text-align:center">
+            <button class="btn-primary" style="width:auto;padding:12px 32px" onclick="resetSim()">Nova simulação</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRILHA -->
+    <div class="page" id="page-trilha">
+      <div class="page-header"><h1>Trilha de Formação</h1><p>Jornada estruturada com base nos materiais do Alto Valor e XP</p></div>
+      <div id="trilha-main">
+        <div class="trilha-progress">
+          <div class="trilha-step"><div class="step-circle done">✓</div><div class="step-label">Fundamentos</div></div>
+          <div class="trilha-connector done"></div>
+          <div class="trilha-step"><div class="step-circle active">3</div><div class="step-label">Comercial</div></div>
+          <div class="trilha-connector"></div>
+          <div class="trilha-step"><div class="step-circle">4</div><div class="step-label">Objeções</div></div>
+          <div class="trilha-connector"></div>
+          <div class="trilha-step"><div class="step-circle">5</div><div class="step-label">1ª Reunião</div></div>
+          <div class="trilha-connector"></div>
+          <div class="trilha-step"><div class="step-circle">6</div><div class="step-label">2ª Reunião</div></div>
+          <div class="trilha-connector"></div>
+          <div class="trilha-step"><div class="step-circle">7</div><div class="step-label">FP Completo</div></div>
+          <div class="trilha-connector"></div>
+          <div class="trilha-step"><div class="step-circle">8</div><div class="step-label">Experiência</div></div>
+          <div class="trilha-connector"></div>
+          <div class="trilha-step"><div class="step-circle locked">9</div><div class="step-label">Produtos</div></div>
+        </div>
+        <div class="module-list">
+          <div class="module-item" onclick="openModule(1)"><div class="module-num done">✓</div><div class="module-info"><div class="module-name">Fundamentos: quem você é e o que entrega</div><div class="module-sub">Mentalidade consultiva · Crenças · Rotina · Proposta de valor · Taxa</div></div><span class="module-status done">Concluído</span></div>
+          <div class="module-item current" onclick="openModule(3)"><div class="module-num active">3</div><div class="module-info"><div class="module-name">Processo Comercial Alto Valor</div><div class="module-sub">ICP · Prospecção · Rapport · SPIN Selling · Fechamento · Follow-up</div></div><span class="module-status active">Em andamento</span></div>
+          <div class="module-item" onclick="openModule(4)"><div class="module-num">4</div><div class="module-info"><div class="module-name">Objeções mais comuns</div><div class="module-sub">5 passos · Taxa · Concorrente · Bolsa · Cônjuge · Manual XP</div></div><span class="module-status">Disponível</span></div>
+          <div class="module-item" onclick="openModule(5)"><div class="module-num">5</div><div class="module-info"><div class="module-name">Primeira Reunião (R1)</div><div class="module-sub">Pré-work · Abertura · Diagnóstico 5 dimensões · Garantir a R2</div></div><span class="module-status">Disponível</span></div>
+          <div class="module-item" onclick="openModule(6)"><div class="module-num">6</div><div class="module-info"><div class="module-name">Segunda Reunião (R2)</div><div class="module-sub">Devolutiva · Proposta consultiva · Fechamento</div></div><span class="module-status">Disponível</span></div>
+          <div class="module-item" onclick="openModule(7)"><div class="module-num">7</div><div class="module-info"><div class="module-name">Financial Planning Completo</div><div class="module-sub">Seguro · Proteção empresarial · Consórcio · Planejamento sucessório</div></div><span class="module-status">Disponível</span></div>
+          <div class="module-item" onclick="openModule(8)"><div class="module-num">8</div><div class="module-info"><div class="module-name">Experiência do Cliente</div><div class="module-sub">Onboarding · Ciclo 8-3-1 · Gestão de crise · Indicação · Retenção</div></div><span class="module-status">Disponível</span></div>
+          <div class="module-item locked"><div class="module-num locked">9</div><div class="module-info"><div class="module-name">Produtos e Soluções</div><div class="module-sub">Renda fixa · Multimercado · Previdência · Internacionalização</div></div><span class="module-status locked">Em breve</span></div>
+        </div>
+      </div>
+      <div id="module-detail" class="module-detail">
+        <button class="btn-back" onclick="closeModule()">← Voltar à trilha</button>
+        <div class="page-header"><h1 id="module-title">—</h1><p id="module-desc">—</p></div>
+        <div class="sub-module-list" id="sub-module-list"></div>
+        <div id="module-content-area"></div>
+        <div class="panel" style="margin-top:20px">
+          <div class="panel-title">💬 Pergunte ao tutor sobre este módulo</div>
+          <div class="chat-box" style="height:320px">
+            <div class="chat-messages" id="module-chat"></div>
+            <div class="chat-input-row">
+              <textarea class="chat-input" id="module-input" placeholder="Dúvida sobre este módulo..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendModuleChat()}"></textarea>
+              <button class="btn-send" id="module-send" onclick="sendModuleChat()">→</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREPARAR REUNIÃO -->
+    <div class="page" id="page-reuniao">
+      <div class="page-header"><h1>Preparar Reunião</h1><p>Descreva o cliente e a IA monta a estrutura ideal com perguntas SPIN e antecipação de objeções</p></div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-title">Dados do cliente</div>
+          <div class="form-group"><label>Profissão / Perfil</label><input type="text" id="r-perfil" placeholder="Ex: Médico cardiologista, Empresário do setor imobiliário..."></div>
+          <div class="form-group"><label>Idade aproximada</label><input type="text" id="r-idade" placeholder="Ex: 48 anos"></div>
+          <div class="form-group"><label>Patrimônio estimado</label><input type="text" id="r-patrimonio" placeholder="Ex: R$500k, ~R$1,5MM, não sei ainda"></div>
+          <div class="form-group"><label>Tipo de reunião</label>
+            <select id="r-contexto">
+              <option value="primeira">Primeira reunião (lead frio)</option>
+              <option value="diagnostico">Diagnóstico patrimonial (R1)</option>
+              <option value="proposta">Apresentação de proposta (R2)</option>
+              <option value="revisao">Revisão de carteira</option>
+              <option value="retencao">Retenção (cliente insatisfeito)</option>
+            </select>
+          </div>
+          <div class="form-group"><label>O que já sabe sobre ele</label><textarea id="r-info" placeholder="Objeções anteriores, interesses, situação atual, como chegou até você..."></textarea></div>
+          <button class="btn-primary" onclick="gerarPreparacao()">Gerar preparação →</button>
+        </div>
+        <div>
+          <div class="result-box show" id="r-result" style="min-height:300px">
+            <div style="color:var(--text3);font-size:14px;display:flex;align-items:center;justify-content:center;height:200px">Preencha os dados e clique em "Gerar preparação"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PÓS-CALL -->
+    <div class="page" id="page-poscall">
+      <div class="page-header"><h1>Análise Pós-Call</h1><p>Cole o resumo da reunião e receba feedback estruturado no método Alto Valor</p></div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-title">Resumo da reunião</div>
+          <div class="form-group"><label>Como foi a conversa</label><textarea id="pc-resumo" rows="10" placeholder="Pode ser informal. Ex: Reunião com Roberto, empresário 52 anos. Falei sobre a situação dos investimentos dele em CDB no Itaú. Ele mostrou resistência quando falei em diversificação. Apresentei a solução de renda variável antes de entender bem os objetivos dele e ele travou na conversa..."></textarea></div>
+          <button class="btn-primary" onclick="analisarCall()">Analisar reunião →</button>
+        </div>
+        <div>
+          <div class="result-box show" id="pc-result" style="min-height:300px">
+            <div style="color:var(--text3);font-size:14px;display:flex;align-items:center;justify-content:center;height:200px">Cole o resumo e clique em "Analisar reunião"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD LÍDER -->
+    <div class="page" id="page-lider">
+      <div class="page-header"><h1>Dashboard — Líder</h1><p>Acompanhe a evolução de todos os assessores</p></div>
+      <div class="leader-cards">
+        <div class="metric-card"><div class="label">Assessores ativos</div><div class="value">11<span style="font-size:18px;color:var(--text2)">/14</span></div><div class="delta">↑ 3 vs semana passada</div></div>
+        <div class="metric-card"><div class="label">Simulações hoje</div><div class="value">38</div><div class="delta">↑ +12 vs ontem</div></div>
+        <div class="metric-card"><div class="label">Score médio</div><div class="value score-mid">61</div><div class="delta">↑ +4 esta semana</div></div>
+        <div class="metric-card"><div class="label">Maior lacuna</div><div class="value" style="font-size:16px;color:var(--neg)">Objeções</div><div class="delta neg">6 abaixo de 50</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-title">Assessores</div>
+          <div class="assessor-row"><div class="assessor-avatar">👨‍💼</div><div style="flex:1"><div class="assessor-name">Lucas Ferreira</div><div class="assessor-meta">Júnior · 47 dias · 🔥 7 streak</div><div class="assessor-bars" style="margin-top:6px"><div class="mini-bar"><div class="mini-fill" style="width:62%"></div></div></div></div><div class="assessor-score">62</div></div>
+          <div class="assessor-row"><div class="assessor-avatar">👩‍💼</div><div style="flex:1"><div class="assessor-name">Ana Beatriz</div><div class="assessor-meta">Assessora · 120 dias · 🔥 15 streak</div><div class="assessor-bars" style="margin-top:6px"><div class="mini-bar"><div class="mini-fill" style="width:78%"></div></div></div></div><div class="assessor-score score-high">78</div></div>
+          <div class="assessor-row"><div class="assessor-avatar">👨‍💼</div><div style="flex:1"><div class="assessor-name">Pedro Alves</div><div class="assessor-meta">Assessor · 85 dias · 🔥 3 streak</div><div class="assessor-bars" style="margin-top:6px"><div class="mini-bar"><div class="mini-fill" style="width:55%"></div></div></div></div><div class="assessor-score score-mid">55</div></div>
+          <div class="assessor-row"><div class="assessor-avatar">👩‍💼</div><div style="flex:1"><div class="assessor-name">Mariana Costa</div><div class="assessor-meta">Assessora · 210 dias · 🔥 22 streak</div><div class="assessor-bars" style="margin-top:6px"><div class="mini-bar"><div class="mini-fill" style="width:85%"></div></div></div></div><div class="assessor-score score-high">85</div></div>
+          <div class="assessor-row"><div class="assessor-avatar">👨‍💼</div><div style="flex:1"><div class="assessor-name">Felipe Santos</div><div class="assessor-meta">Assessor · 60 dias · ❌ 0 streak</div><div class="assessor-bars" style="margin-top:6px"><div class="mini-bar"><div class="mini-fill" style="width:38%;background:linear-gradient(90deg,var(--neg),#fb923c)"></div></div></div></div><div class="assessor-score score-low">38</div></div>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:16px">
+            <div class="panel-title">Maiores lacunas da equipe</div>
+            <div class="comp-item"><div class="comp-header"><span>Condução comercial</span><span style="color:var(--neg)">Média: 44</span></div><div class="comp-bar"><div class="comp-fill" style="width:44%;background:linear-gradient(90deg,var(--neg),#fb923c)"></div></div></div>
+            <div class="comp-item"><div class="comp-header"><span>Objeções</span><span style="color:var(--neg)">Média: 52</span></div><div class="comp-bar"><div class="comp-fill" style="width:52%;background:linear-gradient(90deg,#fb923c,#fbbf24)"></div></div></div>
+            <div class="comp-item"><div class="comp-header"><span>Encerramento</span><span style="color:var(--green)">Média: 58</span></div><div class="comp-bar"><div class="comp-fill" style="width:58%"></div></div></div>
+            <div class="comp-item"><div class="comp-header"><span>Diagnóstico</span><span style="color:var(--green)">Média: 67</span></div><div class="comp-bar"><div class="comp-fill" style="width:67%"></div></div></div>
+            <div class="comp-item"><div class="comp-header"><span>Empatia</span><span style="color:var(--pos)">Média: 73</span></div><div class="comp-bar"><div class="comp-fill" style="width:73%;background:linear-gradient(90deg,var(--pos),#86efac)"></div></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Alertas da semana</div>
+            <div class="alert-item warning"><div class="alert-icon">⚠️</div><div><div class="alert-title">Felipe Santos — 3 dias sem acessar</div><div class="alert-desc">Última simulação há 4 dias. Score caindo. Recomendado: conversa de check-in.</div></div></div>
+            <div class="alert-item danger"><div class="alert-icon">📉</div><div><div class="alert-title">Carolina Lima — Score de objeções caindo</div><div class="alert-desc">Nota em objeções caiu de 61 para 44. Dificuldade com cliente conservador.</div></div></div>
+            <div class="alert-item success"><div class="alert-icon">🌟</div><div><div class="alert-title">Lucas Ferreira — Pronto para mais desafios</div><div class="alert-desc">Score subiu por 7 dias consecutivos. Empatia acima de 80.</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- API CONFIG -->
+<div class="api-config" id="api-config-widget" style="display:none">
+  <div class="api-config-panel" id="api-panel">
+    <h4>🔑 Chave da API Anthropic</h4>
+    <input type="password" id="api-key-input" placeholder="sk-ant-...">
+    <button class="btn-sm" onclick="saveApiKey()">Salvar</button>
+    <div style="font-size:11px;color:var(--text3);margin-top:8px">Chave armazenada só nesta sessão</div>
+  </div>
+  <button class="api-config-btn" onclick="toggleApiPanel()">⚙</button>
+</div>
+
+<script>
+// ═══════ ESTADO ═══════
+let state = {
+  user: { name:'Lucas Ferreira', role:'Assessor Júnior', emoji:'👨‍💼', isLeader:false },
+  apiKey: '',
+  currentSim: null,
+  simMessages: [],
+  tutorMessages: [],
+  moduleChat: [],
+  scores: { diagnostico:[], objecoes:[], empatia:[], conducao:[], encerramento:[] },
+  simCount: 0
+};
+
+// ═══════ SYSTEM PROMPT — BASE DOS MATERIAIS ═══════
+const SYSTEM_TUTOR = `Você é o tutor comercial da Academia Alto Valor, escritório de assessoria de investimentos.
+
+BASE DE CONHECIMENTO (use sempre que relevante):
+
+MÉTODO SPIN SELLING (Neil Rackham):
+- S – Situação: mapear o patrimônio atual, onde está investido, quanto, em qual banco
+- P – Problema: identificar insatisfações com rendimento, liquidez, taxa, falta de acompanhamento
+- I – Implicação: fazer o cliente sentir o custo real do problema ("quanto você está deixando de ganhar por mês?")
+- N – Necessidade: fazer o CLIENTE verbalizar o que precisa antes de apresentar qualquer solução
+- REGRA: nunca apresente produto antes de completar S-P-I
+
+PROCESSO XP (roteiros do Guia de Bolso Ultra B2B e Playbook):
+- CONEXÃO: rapport, pergunta de agenda, objetivo do encontro
+- DIAGNÓSTICO (R1): perguntas de mapeamento (família, renda, patrimônio, objetivos, riscos, sonhos), Financial Planning
+- PROPOSTA (R2): apresentar solução baseada no diagnóstico, não antes
+- PEDIDO DE INDICAÇÃO: técnica dos 3 SIM — 3 perguntas que levam ao sim antes de pedir a indicação
+- CICLO 8-3-1: 8 contatos/ano para clientes standard, 3x/ano para médios, 1x/mês para top
+- SEGMENTAÇÃO: Tier 1 (<300k mesa digital), Tier 2 (300k-1MM), Tier 3 (1MM-10MM), Tier 4 (+10MM)
+
+TÉCNICA DOS 5 PASSOS PARA OBJEÇÕES (Sessão 3):
+1. VALIDAR a objeção com empatia ("Entendo sua preocupação com isso...")
+2. PERGUNTAR para entender a origem real ("Quando você diz X, o que exatamente te preocupa?")
+3. APROFUNDAR — descascar a objeção como cebola até chegar na objeção real
+4. RESPONDER com argumento específico e concreto (não genérico)
+5. CONFIRMAR se a objeção foi resolvida ("Isso faz sentido para você?")
+
+OBJEÇÕES MAIS COMUNS (Manual OSV):
+- "Taxa é alta": perguntar o que eles estão recebendo hoje em troca, calcular o custo da oportunidade
+- "Já invisto sozinho": validar, perguntar quanto tempo dedicam, mostrar o que o assessor faz que eles não fazem
+- "Preciso pensar": é quase sempre objeção falsa — descascar para encontrar a real
+- "Recebi proposta mais barata": não brigar por taxa, mostrar diferença de valor e resultado
+- "Não confio em bolsa": entender a experiência passada, não tentar converter, trabalhar com o perfil real
+- "Preciso falar com minha esposa/sócio": validar, agendar próximo passo incluindo o cônjuge
+
+FECHAMENTO CONSULTIVO (SPIN + Bora Vender + O Vendedor):
+- Objetivo de cada reunião = avanço concreto com data (não "vou pensar")
+- Nunca pressionar em patrimônio — vira gatilho de desconfiança
+- Perguntar pelo próximo passo, não pedir aprovação
+- Se não houve avanço, a reunião falhou independente do rapport
+
+G4 — GESTÃO COMERCIAL:
+- ICP (Ideal Customer Profile): quem paga mais, fica mais, indica mais
+- Hunter/Farmer: Hunter prospecta, Farmer retém e expande
+- Onboarding estruturado: ramp-up gradual com metas claras
+
+MENTALIDADE (Bora Vender + Dobre seus Lucros):
+- Vendas é habilidade, não dom — se aprende praticando
+- Disciplina de rotina supera talento no longo prazo
+- Foco no cliente, não na comissão
+
+Responda SEMPRE:
+- Em português do Brasil
+- De forma prática e direta com exemplos reais
+- No método Alto Valor (consultivo, não de corretor)
+- Com scripts e perguntas prontas quando cabível`;
+
+// ═══════ CLIENTES PRÉ-DEFINIDOS ═══════
+const CLIENTS = {
+  conservador: {
+    icon:'🛡️', name:'Roberto Mendes', sub:'Empresário · 52 anos · R$800k em CDB · Conservador',
+    system:`Você é Roberto Mendes, empresário de 52 anos. Tem R$800k em CDB do Bradesco. Desconfia de assessores — já tentou dois e sentiu que só queriam a comissão. Perdeu dinheiro em ações em 2008 e desde então não toca em renda variável. É direto e cético. Faz perguntas difíceis. Responde curto quando não confia. Se abre quando sente que o assessor realmente o ouviu antes de falar de produto. Reage mal quando apresentam solução antes de entender sua situação. Não aceita argumento de rentabilidade sem entender o risco. Em português. Não quebre o personagem.`
+  },
+  taxa: {
+    icon:'💸', name:'Carla Souza', sub:'Funcionária pública · 38 anos · Cliente há 3 meses · Questionando taxa',
+    system:`Você é Carla Souza, 38 anos, funcionária pública. É cliente há 3 meses. Acabou de ver uma cobrança de R$1.200 na fatura do cartão de crédito e não sabe o que é. Está irritada. Quer clareza. Se o assessor der respostas vagas ou ficar se esquivando, fica mais brava. Se o assessor explicar com clareza o valor que ela recebeu em troca, ouve. É justa, não quer sair, mas quer entender. Em português. Não quebre o personagem.`
+  },
+  concorrente: {
+    icon:'⚖️', name:'Henrique Lima', sub:'Médico cirurgião · 45 anos · Proposta do BTG em mãos',
+    system:`Você é Henrique Lima, 45 anos, médico cirurgião. Tem R$1,2MM investido. Recebeu uma proposta do BTG com taxa 0,1% menor. Está avaliando migrar. Coloca pressão direta sobre preço. Valoriza quem demonstra competência técnica. Não se convence com argumento emocional — precisa de valor concreto e diferencial real. Se o assessor abaixar a taxa rápido demais, você perde o respeito por ele e vai embora. Em português. Não quebre o personagem.`
+  },
+  sozinho: {
+    icon:'📱', name:'Rafael Torres', sub:'Analista de TI · 32 anos · Investe pelo app do banco',
+    system:`Você é Rafael Torres, 32 anos, analista de TI. Tem R$150k investido no Nubank e no Inter. Acha que não precisa de assessor porque "já faz sozinho". É curioso sobre finanças e lê bastante, mas resistente a pagar por um serviço que acha que consegue fazer. Aceita conversa mas questiona o valor da assessoria a cada argumento. Se o assessor mostrar algo concreto que ele não consegue fazer sozinho, abre. Em português. Não quebre o personagem.`
+  },
+  queda: {
+    icon:'📉', name:'Paulo Gomes', sub:'Aposentado · 55 anos · Carteira caiu 8% · Insatisfeito',
+    system:`Você é Paulo Gomes, 55 anos, aposentado. Sua carteira caiu 8% no último mês. Está preocupado e irritado. Quer uma explicação clara do que aconteceu e por que o assessor não te avisou. Se o assessor culpar o mercado sem assumir responsabilidade, você ameaça sair. Se ele for transparente, mostrar o que aconteceu, reconhecer onde poderia ter agido melhor e apresentar um plano, você ouve. Em português. Não quebre o personagem.`
+  },
+  frio: {
+    icon:'💬', name:'Juliana Rocha', sub:'Designer · 29 anos · Lead frio · Nunca teve assessor',
+    system:`Você é Juliana Rocha, 29 anos, designer. Tem R$30k guardado na poupança. Recebeu uma mensagem no WhatsApp de um assessor que não conhece. É desconfiada — acha que todo mundo quer te vender algo. Se o assessor for muito vendedor ou apressado, fecha. Se ele for educativo, sem pressão, mostrando que entende sua situação, abre gradualmente. Nunca teve assessor e não sabe muito de investimentos mas está curiosa. Em português. Não quebre o personagem.`
+  }
+};
+
+// ═══════ CONTEÚDO DOS MÓDULOS (baseado nos materiais) ═══════
+const MODULE_CONTENT = {
+  1: {
+    title:'Fundamentos: quem você é e o que entrega',
+    desc:'Mentalidade consultiva, postura de alta performance e proposta de valor do assessor Alto Valor',
+    subs:[
+      {
+        name:'Assessor consultivo vs. corretor de produto',
+        done:true, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>A diferença que muda tudo</h3>
+  <p>A diferença entre assessor consultivo e corretor não está nos produtos — está em <strong>como você chega neles</strong>. O corretor começa com o produto e busca clientes. O consultivo começa com o cliente e busca a solução.</p>
+  <div class="compare-grid">
+    <div class="compare-col bad"><div class="compare-header">❌ Corretor de produto</div><ul><li>Começa apresentando produto</li><li>Fala de rentabilidade antes do objetivo</li><li>Perde para qualquer concorrente mais barato</li><li>O cliente é meio para atingir meta</li></ul></div>
+    <div class="compare-col good"><div class="compare-header">✓ Assessor consultivo</div><ul><li>Começa entendendo o contexto completo</li><li>Apresenta produto depois do diagnóstico</li><li>O cliente defende você quando atacam o preço</li><li>A comissão é consequência do valor entregue</li></ul></div>
+  </div>
+  <div class="highlight-box"><strong>Dado XP:</strong> 53% da decisão de compra é influenciada pela experiência da venda — não pelo produto, não pela taxa. Pelo <em>como</em> o assessor se comportou.</div>
+</div>
+<div class="lesson-block concept">
+  <div class="lesson-tag">📋 Caso prático</div>
+  <h3>Roberto — o mesmo cliente, dois assessores</h3>
+  <div class="compare-grid">
+    <div class="compare-col bad"><div class="compare-header">❌ Assessor A</div><p style="font-size:13px;color:var(--text2);font-style:italic">"Roberto, tenho um CDB a 115% do CDI — melhor que o banco. Quer aplicar?"</p><p style="font-size:12px;color:var(--neg);margin-top:8px">Roberto: "Vou pensar." [some]</p></div>
+    <div class="compare-col good"><div class="compare-header">✓ Assessor B</div><p style="font-size:13px;color:var(--text2);font-style:italic">"Roberto, antes de falar de qualquer produto — me conta como está organizado hoje e o que você quer construir nos próximos anos."</p><p style="font-size:12px;color:var(--pos);margin-top:8px">Roberto: "Na verdade tenho uma dúvida sobre o que fazer com o lucro da empresa..."</p></div>
+  </div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule uma primeira abordagem com Roberto sem mencionar produto nas primeiras 3 mensagens.</div><button class="btn-sim-launch" onclick="launchSimulator('Roberto, empresário 50 anos, R$400k em CDB no banco. Primeira abordagem via indicação. Está aberto mas vai testar se você é mais um que quer vender produto.')">→ Abrir Simulador — abordagem consultiva</button></div>
+</div>`
+      },
+      {
+        name:'Crenças limitantes e mentalidade vencedora',
+        done:true, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>As 5 crenças que travam bons assessores</h3>
+  <div class="beliefs-grid">
+    <div class="belief-card"><div class="belief-wrong">"Não sou bom em vendas"</div><div class="belief-right">✓ Vendas é habilidade, não dom. Thiago Concer tinha medo de ligar. Alfredo Soares levou 3 anos para ser bom. <strong>Aprende-se praticando.</strong></div></div>
+    <div class="belief-card"><div class="belief-wrong">"A taxa é alta demais para defender"</div><div class="belief-right">✓ Você não defende taxa — demonstra valor. Quem pede desconto é quem não viu valor suficiente ainda.</div></div>
+    <div class="belief-card"><div class="belief-wrong">"Preciso saber mais antes de prospectar"</div><div class="belief-right">✓ O cliente compra o assessor antes do produto. Confiança e método valem mais que enciclopédia.</div></div>
+    <div class="belief-card"><div class="belief-wrong">"Não quero parecer insistente"</div><div class="belief-right">✓ Follow-up com valor não é insistência — é cuidado. Quem não volta é o assessor que não tem propósito no contato.</div></div>
+    <div class="belief-card"><div class="belief-wrong">"O cliente vai achar que estou empurrando"</div><div class="belief-right">✓ Quem empurra é quem pula o diagnóstico. Solução depois do diagnóstico = consequência natural.</div></div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <h3>O perfeccionismo disfarçado de responsabilidade</h3>
+  <p>Pedro tem 6 meses de escritório, sabe bastante de produtos, mas não prospecta porque "ainda não está preparado". Ana, com 3 meses, já tem 12 clientes porque aprende na prática.</p>
+  <div class="highlight-box red"><strong>Regra:</strong> Você nunca vai estar "pronto". A preparação vem com a prática, não antes dela.</div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">💪 Exercício</div>
+  <h3>Desconstrua sua crença principal</h3>
+  <div class="exercise-steps">
+    <div class="ex-step"><span class="step-num">1</span>Qual crença mais ressoa com você? Escreva com suas palavras.</div>
+    <div class="ex-step"><span class="step-num">2</span>De onde veio? Uma experiência ruim? Comparação?</div>
+    <div class="ex-step"><span class="step-num">3</span>Cite 2 momentos onde você provou que ela é falsa.</div>
+    <div class="ex-step"><span class="step-num">4</span>Reescreva a crença oposta e leia em voz alta por 7 dias.</div>
+  </div>
+</div>`
+      },
+      {
+        name:'Rotina e disciplina de alta performance',
+        done:true, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Alta performance é sistema, não talento</h3>
+  <p>Os melhores assessores não são os mais inteligentes — são os mais consistentes. A diferença entre mediano e top 5% é quase sempre de rotina.</p>
+  <div class="routine-grid">
+    <div class="routine-block"><div class="routine-time">Manhã (30 min)</div><ul><li>Revisão de carteira priority</li><li>Morning call + agenda do dia</li><li>Objetivo claro de cada reunião</li></ul></div>
+    <div class="routine-block"><div class="routine-time">Bloco Hunter (fixo, 1-2h)</div><ul><li>Prospecção — novos contatos e follow-ups</li><li>Zero interrupção de clientes ativos</li><li>Meta diária de tentativas</li></ul></div>
+    <div class="routine-block"><div class="routine-time">Bloco Farmer</div><ul><li>Reuniões e atendimento da carteira</li><li>CRM atualizado imediatamente após reunião</li><li>Próximo passo definido com data</li></ul></div>
+    <div class="routine-block"><div class="routine-time">Ciclo 8-3-1 (XP)</div><ul><li>Standard: 8 contatos/ano</li><li>Médios: 3 contatos/ano</li><li>Top: 1 contato/mês</li></ul></div>
+  </div>
+  <div class="highlight-box">Contato <strong>proativo</strong> (você liga antes de precisar) vale 3x mais para retenção do que contato reativo.</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <p>Marcos é brilhante mas trabalha "quando bate a inspiração" — média de 2-3 contatos/dia. Rafael é menos brilhante mas faz 5 contatos toda manhã das 9h às 11h, sem falta. Em 6 meses Rafael tem o dobro de clientes.</p>
+  <div class="highlight-box red"><strong>Consistência mediana supera brilhantismo inconsistente. Sempre.</strong></div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">💪 Monte sua rotina agora</div>
+  <div class="exercise-steps">
+    <div class="ex-step"><span class="step-num">1</span>Defina seu bloco Hunter fixo (ex: 9h-10h30). Bloqueie na agenda.</div>
+    <div class="ex-step"><span class="step-num">2</span>Defina meta diária de tentativas (sugestão: 8-10/dia).</div>
+    <div class="ex-step"><span class="step-num">3</span>Liste os 5 clientes top que precisam de contato proativo este mês.</div>
+    <div class="ex-step"><span class="step-num">4</span>Ao final de cada dia registre: contatos feitos, reuniões agendadas, aprendizado principal.</div>
+  </div>
+</div>`
+      },
+      {
+        name:'Proposta de valor: o que diferencia o Alto Valor',
+        done:true, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>O diferencial não é o produto — é o assessor</h3>
+  <p>CDB, fundos, Tesouro — qualquer plataforma tem. O que o cliente não encontra em outro lugar é um profissional que:</p>
+  <ul class="value-list">
+    <li><span class="vl-icon">🧭</span><div><strong>Conhece o conjunto</strong> — banco cuida do produto, não do patrimônio total</div></li>
+    <li><span class="vl-icon">📞</span><div><strong>É proativo</strong> — avisa antes de precisar, não depois de acontecer</div></li>
+    <li><span class="vl-icon">🎓</span><div><strong>Traduz o mercado</strong> — converte informação em decisão para a vida real</div></li>
+    <li><span class="vl-icon">🤝</span><div><strong>Divide responsabilidade</strong> — não some quando o mercado cai</div></li>
+  </ul>
+  <div class="highlight-box"><strong>Pirâmide de compradores (Chet Holmes):</strong> 3% prontos agora · 7% abertos · 30% não estão pensando · 30% acham que não precisam · 30% jamais comprarão. A maioria dos assessores só fala com os 3%. Os melhores educam os 37%.</div>
+</div>
+<div class="lesson-block concept">
+  <div class="lesson-tag">📋 Pitch em 3 partes</div>
+  <div class="pitch-structure">
+    <div class="pitch-part"><div class="pitch-num">Parte 1 — Empatia (30s)</div><div class="pitch-text">"A maioria das pessoas com patrimônio acima de R$300k tem o dinheiro aplicado em produtos... mas não tem ninguém que cuide do conjunto. Banco cuida do produto, não do cliente."</div></div>
+    <div class="pitch-part"><div class="pitch-num">Parte 2 — Diferencial (60s)</div><div class="pitch-text">"O que faço é diferente: primeiro entendo sua situação completa — objetivos, prazo, preocupações. Só depois falo de produto. E acompanho de forma proativa, não só quando você liga."</div></div>
+    <div class="pitch-part"><div class="pitch-num">Parte 3 — Próximo passo (30s)</div><div class="pitch-text">"Me dá 45 minutos para um diagnóstico sem compromisso. Se no final você achar que não agrega nada, você sai sem dever nada."</div></div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "A diferença do Alto Valor é plataforma aberta com produtos exclusivos e time de especialistas."</div>
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "O BTG também tem isso."</div>
+  </div>
+  <p class="antiexample-lesson">Diferencial genérico = sem diferencial. O cliente não compra "plataforma aberta" — compra a certeza de que <em>você especificamente</em> vai cuidar melhor do patrimônio dele.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Teste seu pitch de 3 partes em uma abordagem fria. O cliente vai testar se você é diferente do banco.</div><button class="btn-sim-launch" onclick="launchSimulator('Lead frio, 44 anos, gerente de TI. Tem dinheiro no banco mas nunca quis falar com assessor. Diz que não vê diferença entre banco e assessoria.')">→ Abrir Simulador — pitch de diferencial</button></div>
+</div>`
+      },
+      {
+        name:'Defendendo a taxa sem dar desconto',
+        done:true, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Taxa não se explica — valor se demonstra</h3>
+  <p>Erro mais comum: explicar taxa <em>antes</em> de mostrar valor. Resultado: parece que você está justificando custo em vez de demonstrar benefício.</p>
+  <div class="sequence-steps">
+    <div class="seq-step"><span class="seq-num">1</span><div><strong>Mapeie o custo de oportunidade antes de falar taxa</strong><br><span style="color:var(--text2)">Calcule o quanto ele está perdendo hoje. Mostre o número em reais.</span></div></div>
+    <div class="seq-step"><span class="seq-num">2</span><div><strong>Mostre o que o assessor entrega concretamente</strong><br><span style="color:var(--text2)">Planejamento, acesso exclusivo, acompanhamento proativo, proteção em queda.</span></div></div>
+    <div class="seq-step"><span class="seq-num">3</span><div><strong>Coloque a taxa em perspectiva</strong><br><span style="color:var(--text2)">"A pergunta não é se a taxa vale — é o que você vai deixar de ganhar sem planejamento profissional."</span></div></div>
+  </div>
+  <div class="highlight-box"><strong>Ancoragem:</strong> "Você tem R$500k. 1% ao ano = R$5.000. Nossa taxa é X. O que você vai deixar de construir nos próximos 5 anos sem um planejamento profissional?"</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "Taxa parece alta."</div>
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Posso ver o que consigo negociar..."</div>
+  </div>
+  <p class="antiexample-lesson">Ceder imediatamente passa: 1) a taxa original era injusta 2) você não acredita no seu próprio serviço. Mostre valor primeiro — sempre.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule a objeção de taxa: use custo de oportunidade antes de qualquer defesa de número.</div><button class="btn-sim-launch" onclick="launchSimulator('Carla, 38 anos, R$600k em CDB. Perguntou sobre a taxa de assessoria e achou alta. Quer comparar com outras opções. Você precisa mostrar valor antes de qualquer número.')">→ Abrir Simulador — defesa de taxa</button></div>
+</div>`
+      }
+    ]
+  },
+  3: {
+    title:'Processo Comercial Alto Valor',
+    desc:'Prospecção, ICP, funil, rapport, SPIN Selling, fechamento e follow-up — do primeiro contato ao sim',
+    subs:[
+      {
+        name:'ICP e qualificação: com quem você deve falar',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Prospectar sem ICP é atirar no escuro</h3>
+  <p>ICP (Ideal Customer Profile) não é segmentação de marketing — é a pergunta: "Quem, quando eu atendo, gera mais resultado com menos esforço e fica mais tempo?" (G4/Wiser). Assessor sem ICP claro gasta o mesmo tempo em clientes que vão embora que em clientes que ficam 20 anos.</p>
+  <div class="technique-cards">
+    <div class="tech-card"><div class="tech-title">Critérios quantitativos</div><p>Ticket mínimo de patrimônio, faixa de renda, tipo de renda (PF/PJ), faixa etária, localização.</p></div>
+    <div class="tech-card"><div class="tech-title">Critérios qualitativos</div><p>Comportamento (toma decisão ou procrastina?), fit cultural (confia em assessor ou DIY?), dores principais (aposentadoria, herança, crescimento?).</p></div>
+    <div class="tech-card"><div class="tech-title">Análise da base atual</div><p>Quem paga mais? Quem indica mais? Quem ficou mais tempo? Quem nunca reclama? Esse é o seu ICP.</p></div>
+    <div class="tech-card"><div class="tech-title">Qualificação antes de reunião</div><p>Perguntas mínimas antes de marcar R1: "Como você está organizado hoje financeiramente?" — filtra quem está no perfil sem desgastar.</p></div>
+  </div>
+  <div class="highlight-box"><strong>G4 — Jornada de compra:</strong> 5 etapas: Consciência → Interesse → Consideração → Decisão → Fidelização. Sua prospecção deve atingir a etapa certa — não empurrar quem está na etapa errada.</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <h3>Prospectar "todo mundo com dinheiro"</h3>
+  <p>Assessor sem ICP aceita qualquer reunião, gasta horas com clientes que nunca vão fechar e fica sem energia para os que têm fit real. Resultado: pipeline cheio, fechamento vazio.</p>
+  <div class="highlight-box red"><strong>Regra:</strong> 20% dos clientes geram 80% do resultado. Defina quem são esses 20% e concentre a prospecção neles.</div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">💪 Exercício — Construa seu ICP</div>
+  <div class="exercise-steps">
+    <div class="ex-step"><span class="step-num">1</span>Liste seus 5 melhores clientes atuais. O que têm em comum?</div>
+    <div class="ex-step"><span class="step-num">2</span>Escreva 3 critérios quantitativos e 3 qualitativos do seu ICP.</div>
+    <div class="ex-step"><span class="step-num">3</span>Para cada lead atual: ele está no ICP? Se não, qual o próximo passo correto?</div>
+  </div>
+</div>`
+      },
+      {
+        name:'Prospecção ativa: canais e abordagem',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Os 4 canais que funcionam para assessor consultivo</h3>
+  <div class="routine-grid">
+    <div class="routine-block"><div class="routine-time">Indicação (melhor ROI)</div><ul><li>Pede de forma estruturada (técnica 3 SIM)</li><li>Cliente satisfeito indica sem pedir — mas pedir dobra a taxa</li><li>Indicação chega com confiança pré-construída</li></ul></div>
+    <div class="routine-block"><div class="routine-time">LinkedIn (prospecção fria qualificada)</div><ul><li>Conecta com perfil do ICP</li><li>Não vende direto — entrega valor primeiro (artigo, insight)</li><li>Abre conversa com pergunta relevante ao perfil</li></ul></div>
+    <div class="routine-block"><div class="routine-time">Eventos e networking</div><ul><li>Onde o ICP está: associações, CRM, OAB, CRM</li><li>Objetivo do evento: 1 conversa boa > 10 cartões</li><li>Follow-up dentro de 24h com gancho da conversa</li></ul></div>
+    <div class="routine-block"><div class="routine-time">Base fria (retomada)</div><ul><li>Clientes antigos que saíram ou pararam de responder</li><li>Gancho real: notícia de mercado, mudança de cenário</li><li>Tom de cuidado, não de venda</li></ul></div>
+  </div>
+  <div class="highlight-box"><strong>Thiago Concer:</strong> o assessor que espera o cliente aparecer é o que fica embaixo. Prospecção ativa é a única forma de controlar o pipeline — não sorte, não indicação passiva.</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo — LinkedIn errado</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Olá! Sou assessor de investimentos no Alto Valor. Temos produtos exclusivos e taxas competitivas. Podemos conversar?"</div>
+    <div class="dialogue-line client"><span class="who">Lead:</span> <em>[sem resposta]</em></div>
+  </div>
+  <p class="antiexample-lesson">Primeira mensagem com produto = bloqueio imediato. LinkedIn funciona quando você entrega valor antes de pedir atenção. Comente, compartilhe algo relevante ao perfil, inicie conversa sobre o trabalho dele — não sobre o seu produto.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">💪 Exercício</div>
+  <div class="exercise-steps">
+    <div class="ex-step"><span class="step-num">1</span>Defina seu canal principal de prospecção esta semana.</div>
+    <div class="ex-step"><span class="step-num">2</span>Escreva a mensagem de abertura para LinkedIn — sem mencionar produto nas primeiras 2 mensagens.</div>
+    <div class="ex-step"><span class="step-num">3</span>Meta: 5 novos contatos qualificados esta semana pelo canal escolhido.</div>
+  </div>
+</div>`
+      },
+      {
+        name:'Rapport e escuta ativa',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Rapport não é conversa fiada — é fazer o cliente se sentir compreendido</h3>
+  <p>Sem rapport você ouve a versão que ele quer te contar. Com rapport você ouve o que ele realmente precisa. São coisas diferentes.</p>
+  <div class="technique-cards">
+    <div class="tech-card"><div class="tech-title">Pergunta de agenda</div><p>"Antes de começar — o que você espera desta conversa?" Mostra que você está ali para servir, não para apresentar.</p></div>
+    <div class="tech-card"><div class="tech-title">Espelhamento</div><p>Adapte ritmo e vocabulário ao do cliente. Cliente direto? Seja direto. Cauteloso? Desacelere. Técnico? Use linguagem técnica.</p></div>
+    <div class="tech-card"><div class="tech-title">Silêncio estratégico</div><p>Depois de uma resposta importante, espere. Silêncio gera mais conteúdo do que qualquer pergunta.</p></div>
+    <div class="tech-card"><div class="tech-title">Confirmação de entendimento</div><p>"Se entendi bem, você está dizendo que... é isso?" O cliente sente que foi ouvido de verdade.</p></div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo — Rapport de script</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Como estão a família e os negócios?" <em>[sorri mecanicamente enquanto abre o computador]</em></div>
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "Tudo bem."</div>
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Ótimo! Então, queria te apresentar uma oportunidade..."</div>
+  </div>
+  <p class="antiexample-lesson">Interesse de script é pior do que ir direto ao ponto — cria desconfiança. Rapport falso é detectado em segundos.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Construa rapport com um cliente conservador e desconfiado — sem falar de produto nos primeiros 5 turnos.</div><button class="btn-sim-launch" onclick="launchSimulator('Paulo, 55 anos, engenheiro aposentado. É cético com assessores — já teve uma experiência ruim. Está na defensiva mas aceitou a reunião por indicação de amigo. Você precisa ganhar a confiança dele antes de qualquer assunto de investimentos.')">→ Abrir Simulador — rapport com cético</button></div>
+</div>`
+      },
+      {
+        name:'SPIN Selling: as 4 camadas do diagnóstico',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>SPIN: da situação à urgência</h3>
+  <p>SPIN não é roteiro — é lógica. Você vai de fatos para sentimentos, de situação para urgência. O objetivo é fazer o cliente <strong>verbalizar o problema e a necessidade com as próprias palavras</strong>. Quando ele faz isso, ele se convence.</p>
+  <div class="spin-grid">
+    <div class="spin-card s"><div class="spin-letter">S</div><div class="spin-content"><div class="spin-title">Situação — Fatos</div><div class="spin-examples"><div class="spin-ex">"Onde você tem seus investimentos hoje?"</div><div class="spin-ex">"Há quanto tempo está com esse perfil?"</div><div class="spin-ex">"Você tem investimentos em mais de uma instituição?"</div></div></div></div>
+    <div class="spin-card p"><div class="spin-letter">P</div><div class="spin-content"><div class="spin-title">Problema — Insatisfações</div><div class="spin-examples"><div class="spin-ex">"O que você sente que poderia ser melhor?"</div><div class="spin-ex">"Tem algo que te preocupa quando pensa nos seus investimentos?"</div><div class="spin-ex">"O que você não gosta na forma atual?"</div></div></div></div>
+    <div class="spin-card i"><div class="spin-letter">I</div><div class="spin-content"><div class="spin-title">Implicação — Custo do problema</div><div class="spin-examples"><div class="spin-ex">"Se isso continuar por mais 5 anos, onde você vai estar?"</div><div class="spin-ex">"Quanto você calcula que está deixando de ganhar por mês?"</div><div class="spin-ex">"Como isso afeta seus planos de longo prazo?"</div></div></div></div>
+    <div class="spin-card n"><div class="spin-letter">N</div><div class="spin-content"><div class="spin-title">Necessidade — Cliente se convence</div><div class="spin-examples"><div class="spin-ex">"O que seria ideal para você nesse cenário?"</div><div class="spin-ex">"Se pudesse mudar uma coisa agora, o que seria?"</div><div class="spin-ex">"O que você precisaria ver para sentir que está no caminho certo?"</div></div></div></div>
+  </div>
+  <div class="highlight-box"><strong>Regra de ouro:</strong> Só apresente a solução depois que o cliente verbalizou a necessidade. Se apresentar antes, é produto. Se apresentar depois, é solução.</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo — Pular I e N</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Você tem R$500k no CDB do Bradesco. Tenho um fundo que rende muito mais."</div>
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "Não estou pensando em mudar agora."</div>
+  </div>
+  <p class="antiexample-lesson">Fez S, pulou P, I e N, foi direto para a solução. O cliente não reconheceu problema, não sentiu implicação — não tem motivo para mudar.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Conduza um SPIN completo — todas as 4 camadas — antes de mencionar qualquer produto. Só apresente solução quando o cliente verbalizar a necessidade.</div><button class="btn-sim-launch" onclick="launchSimulator('Henrique, 45 anos, médico, R$800k em CDB de banco grande. Está satisfeito com o status quo mas aceitou a reunião por curiosidade. Você precisa fazer ele reconhecer as lacunas com as próprias palavras.')">→ Abrir Simulador — SPIN completo</button></div>
+</div>`
+      },
+      {
+        name:'Apresentação e proposta de valor',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Como apresentar depois do diagnóstico</h3>
+  <p>Chegou a hora de apresentar — mas a forma importa tanto quanto o conteúdo. Proposta consultiva conecta cada item a um problema que o cliente reconheceu. Proposta de catálogo lista produtos.</p>
+  <div class="compare-grid">
+    <div class="compare-col bad"><div class="compare-header">❌ Catálogo</div><p style="font-size:13px;color:var(--text2);font-style:italic">"Proponho: CDB 113% CDI, Fundo Multimercado, LCI isenta de IR e PGBL para aposentadoria."</p></div>
+    <div class="compare-col good"><div class="compare-header">✓ Consultivo</div><p style="font-size:13px;color:var(--text2);font-style:italic">"Para o problema que você mencionou de rentabilidade abaixo da inflação: [solução + impacto em R$]. Para a aposentadoria em 10 anos que é sua prioridade: [solução + projeção]."</p></div>
+  </div>
+  <div class="highlight-box"><strong>Estrutura de cada item:</strong> 1. O problema que você identificou → 2. A solução proposta → 3. O impacto esperado em números → 4. "Faz sentido para você?"</div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Apresente uma proposta conectada ao diagnóstico. O cliente vai questionar 2 itens — você precisa reconectar ao problema que ele verbalizou.</div><button class="btn-sim-launch" onclick="launchSimulator('Após SPIN completo com Henrique (médico, R$800k). Ele reconheceu 2 lacunas: rentabilidade abaixo da inflação e ausência de planejamento para aposentadoria. Agora apresente a proposta conectada a essas duas lacunas.')">→ Abrir Simulador — apresentação de proposta</button></div>
+</div>`
+      },
+      {
+        name:'Fechamento: como transformar interesse em decisão',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Fechamento é consequência — não esforço</h3>
+  <p>Se o diagnóstico foi bem feito, o fechamento é quase automático. Quando é difícil fechar, quase sempre é sinal de diagnóstico incompleto — não técnica de fechamento ruim.</p>
+  <div class="technique-cards">
+    <div class="tech-card"><div class="tech-title">Fechamento por próximo passo</div><p>"O que faz mais sentido como próximo passo?" — não "quer assinar?". Coloca o cliente no controle sem dar espaço para "vou pensar".</p></div>
+    <div class="tech-card"><div class="tech-title">Fechamento por resumo</div><p>"Você disse que X te preocupa, Y seria ideal e Z é seu prazo. O que estou propondo resolve exatamente isso. Podemos avançar?"</p></div>
+    <div class="tech-card"><div class="tech-title">Sinal de compra</div><p>Quando o cliente começa a perguntar sobre operação ("como funciona a transferência?"), ele decidiu. Pare de vender — comece a fechar.</p></div>
+    <div class="tech-card"><div class="tech-title">"Vou pensar" — resposta certa</div><p>"O que especificamente você quer pensar? Posso te ajudar com isso agora?" — "vou pensar" quase sempre tem uma objeção não verbalizada.</p></div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "Vou pensar e te retorno."</div>
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Claro, sem problema! Fico à disposição."</div>
+  </div>
+  <p class="antiexample-lesson">"Vou pensar" = objeção não verbalizada. Aceitar sem explorar é perder o cliente educadamente.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">O cliente está interessado mas pede para pensar. Você precisa descobrir a objeção real e fechar com próximo passo concreto.</div><button class="btn-sim-launch" onclick="launchSimulator('Rafael, 39 anos, empresário. Proposta apresentada e bem recebida. Mas diz que precisa pensar. Há uma objeção não verbalizada — pode ser o sócio, pode ser o preço, pode ser insegurança com a mudança. Você precisa descobrir e fechar.')">→ Abrir Simulador — fechar quem diz vou pensar</button></div>
+</div>`
+      },
+      {
+        name:'Follow-up que gera resposta',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Follow-up eficaz tem propósito real — não é "só checando"</h3>
+  <div class="followup-types">
+    <div class="fu-type good"><div class="fu-label">✓ Follow-up com gancho de mercado</div><p>"Oi Roberto, o Copom subiu 0,5% ontem. Isso impacta diretamente o CDB que conversamos. Vale 15 minutos essa semana?"</p></div>
+    <div class="fu-type good"><div class="fu-label">✓ Follow-up com conteúdo relevante</div><p>"Lembrei de você nessa análise sobre fundos de infraestrutura — encaixa no que você mencionou sobre diversificação. Posso te mandar?"</p></div>
+    <div class="fu-type good"><div class="fu-label">✓ Follow-up de reativação</div><p>"Faz 2 meses que não conversamos. Queria saber como você está e ver se surgiu alguma novidade. 20 minutos esta semana?"</p></div>
+    <div class="fu-type bad"><div class="fu-label">❌ Follow-up inútil</div><p>"Oi! Tudo bem? Só passando para saber se já pensou naquela proposta..."</p></div>
+  </div>
+  <div class="highlight-box"><strong>Estrutura:</strong> Gancho real (por que agora?) + Mensagem curta (máx 3 linhas) + Próximo passo embutido.</div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">💪 Exercício</div>
+  <div class="exercise-steps">
+    <div class="ex-step"><span class="step-num">1</span>Liste 5 leads parados há mais de 2 semanas.</div>
+    <div class="ex-step"><span class="step-num">2</span>Para cada um, encontre um gancho real: notícia, algo que ele disse, conteúdo relevante.</div>
+    <div class="ex-step"><span class="step-num">3</span>Escreva mensagem de máx 3 linhas com gancho + próximo passo claro.</div>
+    <div class="ex-step"><span class="step-num">4</span>Envie e registre o que funcionou.</div>
+  </div>
+</div>`
+      }
+    ]
+  },
+  4: {
+    title:'Objeções mais comuns',
+    desc:'Técnica dos 5 passos aplicada a cada objeção real — com scripts, anti-exemplos e simulações',
+    subs:[
+      {
+        name:'Técnica dos 5 passos (a base de tudo)',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>90% das primeiras objeções são falsas</h3>
+  <p>A primeira objeção é quase sempre uma forma de ganhar tempo ou testar o assessor. "Vou pensar" raramente significa pensar — significa que há uma dúvida real não verbalizada. A técnica dos 5 passos descobre a objeção real antes de responder.</p>
+  <div class="steps-flow">
+    <div class="flow-step"><div class="flow-num">1</div><div class="flow-content"><strong>VALIDAR</strong><br><span style="color:var(--text2)">"Entendo. Faz todo sentido querer ter clareza sobre isso."</span></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">2</div><div class="flow-content"><strong>PERGUNTAR</strong><br><span style="color:var(--text2)">"Quando você diz X, o que especificamente te preocupa?"</span></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">3</div><div class="flow-content"><strong>APROFUNDAR</strong><br><span style="color:var(--text2)">Descasque como cebola. Pergunte 2-3 vezes até chegar na objeção real.</span></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">4</div><div class="flow-content"><strong>RESPONDER</strong><br><span style="color:var(--text2)">Argumento específico para a objeção REAL — não a primeira.</span></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">5</div><div class="flow-content"><strong>CONFIRMAR</strong><br><span style="color:var(--text2)">"Isso faz sentido para você?" — não avance sem confirmar.</span></div></div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "A taxa parece alta."</div>
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Na verdade é 0,5%, bem competitiva. O BTG cobra 0,6%..."</div>
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "Mas a XP direta é 0%."</div>
+  </div>
+  <p class="antiexample-lesson">Respondeu sem perguntar o que estava por trás. Talvez o cliente não soubesse o que paga hoje. Talvez tivesse medo de mudar. A objeção "taxa" raramente é sobre taxa — é sobre valor não percebido.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule os 5 passos com a objeção "quero pensar". Descubra o que está realmente por baixo antes de responder.</div><button class="btn-sim-launch" onclick="launchSimulator('Cliente disse: quero pensar. Você precisa aplicar os 5 passos para descobrir a objeção real. Pode ser medo de mudança, falta de confiança, cônjuge, ou outra coisa — você não sabe ainda. Descubra com perguntas.')">→ Abrir Simulador — técnica dos 5 passos</button></div>
+</div>`
+      },
+      {
+        name:'"A taxa está alta"',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Essa objeção é sobre valor não percebido, não sobre preço</h3>
+  <p>Na maioria dos casos o cliente não sabe o custo real do que tem hoje. Ele não tem o número claro do custo de oportunidade. "Taxa alta" quase sempre significa "não vi valor suficiente ainda".</p>
+  <div class="highlight-box"><strong>Script dos 5 passos aplicado:</strong><br><br><strong>1. Validar:</strong> "Entendo. Taxa é algo importante de entender antes de decidir."<br><br><strong>2. Perguntar:</strong> "Você está comparando com alguma alternativa específica ou é uma sensação geral?"<br><br><strong>3. Aprofundar:</strong> "No que você tem hoje, você sabe exatamente quanto paga em taxas, tarifas e spread do banco?"<br><br><strong>4. Responder:</strong> Calcule o custo de oportunidade. "Você tem R$800k. 1% de diferença = R$8k/ano. Nossa taxa é X. O que você recebe em troca?"<br><br><strong>5. Confirmar:</strong> "Agora que você vê o número assim, a taxa ainda parece alta?"</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo — Dar desconto antes de mostrar valor</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "Taxa está alta."</div>
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Posso ver o que consigo negociar para você..."</div>
+  </div>
+  <p class="antiexample-lesson">Ceder na taxa imediatamente = taxa original era injusta + você não tem autoconfiança no seu serviço. Cliente que ganha desconto fácil vai pedir sempre mais.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule a objeção de taxa usando custo de oportunidade. Não ceda antes de mostrar valor.</div><button class="btn-sim-launch" onclick="launchSimulator('Carla, 38 anos, R$600k em CDB de banco grande. Perguntou sobre a taxa de assessoria e disse que achou alta. Quer comparar com outras opções. Você precisa aplicar os 5 passos — não pode ceder na taxa sem mostrar valor antes.')">→ Abrir Simulador — objeção de taxa</button></div>
+</div>`
+      },
+      {
+        name:'"Já invisto sozinho"',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Essa objeção é um convite — não uma rejeição</h3>
+  <p>Quem investe sozinho geralmente quer ser reconhecido por isso antes de ser convencido do contrário. Atacar essa identidade é o caminho mais rápido para perder a conversa.</p>
+  <div class="highlight-box"><strong>Script dos 5 passos:</strong><br><br><strong>1. Validar:</strong> "Ótimo. Quem gerencia o próprio patrimônio tem mais consciência financeira que a média."<br><br><strong>2. Perguntar:</strong> "Me conta: qual plataforma você usa? Faz rebalanceamento periódico? Tem planejamento de longo prazo?"<br><br><strong>3. Aprofundar:</strong> "E o tempo que você dedica para isso — quanto vale esse tempo? Você consegue acessar fundos exclusivos, debêntures incentivadas, produtos estruturados?"<br><br><strong>4. Responder:</strong> "Não estou aqui para substituir o que você faz. Estou aqui para fazer o que você não consegue fazer sozinho: [2-3 coisas concretas para o perfil dele]."<br><br><strong>5. Confirmar:</strong> "Se eu mostrar concretamente o que você não está conseguindo hoje, vale um diagnóstico de 45 minutos?"</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo — Diminuir o que ele faz</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "Já invisto pelo Nubank. Funciona bem."</div>
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Nubank é bom para iniciantes, mas para um patrimônio como o seu é muito limitado."</div>
+    <div class="dialogue-line client"><span class="who">Cliente:</span> <em>[se fecha]</em> "Obrigado, vou pensar."</div>
+  </div>
+  <p class="antiexample-lesson">Criticar a escolha do cliente é atacar a identidade dele. Ele vai defender o Nubank — não porque é melhor, mas porque você o colocou na defensiva.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule com alguém que investe sozinho. Foco em validar antes de mostrar diferencial.</div><button class="btn-sim-launch" onclick="launchSimulator('Rafael, 32 anos, engenheiro, usa XP direta e acredita que não precisa de assessor. Está orgulhoso de cuidar dos próprios investimentos. Você precisa validar isso antes de mostrar o que ele não consegue fazer sozinho.')">→ Abrir Simulador — investe sozinho</button></div>
+</div>`
+      },
+      {
+        name:'"Recebi proposta do BTG / XP direta"',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Nunca entre em guerra de preço</h3>
+  <p>Atacar o concorrente parece insegurança. Baixar a taxa imediatamente é perder o respeito e o cliente. A estratégia certa é entender o que o cliente realmente busca — e se você ainda está no jogo, por que ele ainda está conversando com você.</p>
+  <div class="highlight-box"><strong>Script dos 5 passos:</strong><br><br><strong>1. Validar:</strong> "O BTG é uma instituição sólida. Faz sentido avaliar opções."<br><br><strong>2. Perguntar:</strong> "A proposta deles é diferente só na taxa ou tem algo diferente no serviço também?"<br><br><strong>3. Aprofundar:</strong> "O que te faz ainda estar conversando comigo em vez de já ter migrado? O que você valoriza no que temos hoje?"<br><br><strong>4. Responder:</strong> Mostre diferencial concreto — relacionamento, conhecimento da sua carteira, histórico. Não genérico.<br><br><strong>5. Confirmar:</strong> "Se o que te mostrei vale mais do que a diferença de taxa, você fica. Se não vale, você vai ao BTG e eu entendo."</div>
+  <div class="highlight-box red"><strong>Nunca faça:</strong> abaixar a taxa imediatamente. Você perde o respeito, o cliente vai ao BTG pedir mais desconto e ou não volta ou volta com taxa menor.</div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule a concorrência sem entrar em guerra de número. Foco em não ceder antes de mostrar diferencial.</div><button class="btn-sim-launch" onclick="launchSimulator('Henrique, médico 45 anos. Tem proposta do BTG com taxa 0,1% menor. Está com você há 8 meses. Quer saber se você vai igualar. Você precisa mostrar valor antes de falar qualquer número.')">→ Abrir Simulador — concorrente BTG</button></div>
+</div>`
+      },
+      {
+        name:'"Não confio em bolsa / mercado"',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Não tente converter — entenda a história</h3>
+  <p>Tentar convencer alguém que não confia em bolsa a investir em bolsa é o caminho mais rápido para perder o cliente. A dor de perda é muito mais forte do que qualquer gráfico histórico.</p>
+  <div class="highlight-box"><strong>Script dos 5 passos:</strong><br><br><strong>1. Validar:</strong> "Faz todo sentido. Renda variável não é para todo mundo em todo momento."<br><br><strong>2. Perguntar:</strong> "Essa desconfiança vem de alguma experiência específica ou é uma sensação geral?"<br><br><strong>3. Aprofundar:</strong> Se houve perda: "O que aconteceu na época? Você estava diversificado? O que teria feito diferente?"<br><br><strong>4. Responder:</strong> Não proponha bolsa. "Não precisa de bolsa para ter patrimônio bem estruturado. Posso montar uma carteira 100% conservadora que ainda é melhor do que você tem hoje."<br><br><strong>5. Confirmar:</strong> "Se deixarmos bolsa de lado e focarmos só em organizar o restante, você toparia um diagnóstico?"</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo — Usar dado para contradizer emoção</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "Não confio em bolsa. Já perdi dinheiro."</div>
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Entendo, mas no longo prazo a bolsa sempre se recupera. O Ibovespa nos últimos 10 anos rendeu X%..."</div>
+  </div>
+  <p class="antiexample-lesson">Dado histórico contradizendo dor pessoal = cliente fecha. A dor de perda é emocionalmente mais forte que qualquer estatística.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule com cliente que perdeu dinheiro em bolsa. Objetivo: ganhar confiança para um diagnóstico sem mencionar renda variável.</div><button class="btn-sim-launch" onclick="launchSimulator('Paulo, 55 anos, perdeu R$80k em ações em 2020. Desconfia de qualquer produto que não seja renda fixa. Quer segurança acima de tudo. Você precisa validar a experiência dele e abrir espaço para um diagnóstico sem falar em bolsa.')">→ Abrir Simulador — desconfiança em bolsa</button></div>
+</div>`
+      },
+      {
+        name:'"Preciso falar com minha esposa / sócio"',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Objeção real — mas com solução estruturada</h3>
+  <p>Ao contrário das outras, essa frequentemente é verdadeira. O erro: aceitar sem explorar e esperar ele lembrar de você. Resultado: nunca mais volta.</p>
+  <div class="highlight-box"><strong>Script dos 5 passos:</strong><br><br><strong>1. Validar:</strong> "Com certeza, decisão de patrimônio é decisão de família."<br><br><strong>2. Perguntar:</strong> "Ela/ele costuma participar das decisões financeiras ou é mais você que cuida disso?"<br><br><strong>3. Aprofundar:</strong> "Tem alguma dúvida específica que você acha que ela/ele vai ter? Posso te ajudar a esclarecer antes."<br><br><strong>4. Responder:</strong> "Que tal a gente marcar 30 minutos com os dois? Ela/ele ouve, tira dúvidas, vocês decidem juntos."<br><br><strong>5. Confirmar:</strong> "Quando seria um bom momento para os dois?"</div>
+  <div class="highlight-box">Se o cliente está entusiasmado mas diz que precisa falar com a esposa, ele já decidiu — só precisa de permissão. Ajude-o a vender a ideia: "O que você acha que seria mais importante explicar para ela?"</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "Preciso falar com minha esposa antes de decidir."</div>
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Claro, sem problema! Me avise quando decidir."</div>
+  </div>
+  <p class="antiexample-lesson">Você transferiu o próximo passo para alguém que nunca ouviu seu nome. Sem próximo passo concreto, a proposta morre na rotina da semana.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule a objeção do cônjuge. Objetivo: sair da reunião com data marcada para os dois.</div><button class="btn-sim-launch" onclick="launchSimulator('João está interessado na proposta mas diz que precisa falar com a esposa antes. Ela é cautelosa com investimentos. Você precisa incluí-la no processo — não contornar a objeção, mas transformá-la em reunião com os dois.')">→ Abrir Simulador — objeção do cônjuge</button></div>
+</div>`
+      },
+      {
+        name:'"Deixa eu pensar / não é o momento"',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>A objeção mais comum — e a mais mal respondida</h3>
+  <p>"Não é o momento" tem 3 origens possíveis: 1) objeção de preço disfarçada, 2) medo de mudança, 3) genuinamente não é o momento. Você só descobre qual é com as perguntas certas.</p>
+  <div class="highlight-box"><strong>Script dos 5 passos:</strong><br><br><strong>1. Validar:</strong> "Entendo. Timing de decisão é importante."<br><br><strong>2. Perguntar:</strong> "O que faria esse ser o momento certo? O que está faltando para você se sentir confortável?"<br><br><strong>3. Aprofundar:</strong> "É mais uma questão de prazo, de ter mais informação, ou tem algo específico que te preocupa?"<br><br><strong>4. Responder:</strong> Específico para o que ele revelou. Se é preço: volte ao valor. Se é medo: diminua o risco percebido (comece pequeno). Se é genuíno: defina data de retorno.<br><br><strong>5. Confirmar:</strong> Sempre saindo com próximo passo e data.</div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule a objeção de timing. Descubra se é preço, medo ou timing real — e responda para a causa certa.</div><button class="btn-sim-launch" onclick="launchSimulator('Mariana, 35 anos, diretora de marketing. Proposta apresentada. Ela diz: não é o momento agora, talvez no próximo trimestre. Você precisa descobrir se é timing real, medo de mudança ou outra objeção disfarçada.')">→ Abrir Simulador — não é o momento</button></div>
+</div>`
+      },
+      {
+        name:'Manual de Objeções XP: as 10 mais comuns',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Repertório completo para qualquer situação</h3>
+  <p>O Manual de Objeções XP catalogou as 10 objeções mais recorrentes com respostas testadas. Abaixo, as que ainda não foram cobertas nos temas anteriores:</p>
+  <div class="beliefs-grid">
+    <div class="belief-card"><div class="belief-wrong">"Já tenho assessor"</div><div class="belief-right">✓ "Ótimo. O que você mais valoriza no trabalho dele? E tem alguma coisa que você gostaria que fosse diferente?" — Abra a lacuna antes de propor qualquer coisa.</div></div>
+    <div class="belief-card"><div class="belief-wrong">"Não tenho dinheiro para investir agora"</div><div class="belief-right">✓ "Entendo. Quando você imagina ter disponibilidade? E como você está pensando em organizar isso quando chegar o momento?" — Qualifique o timing e plante a semente.</div></div>
+    <div class="belief-card"><div class="belief-wrong">"Meu contador / advogado cuida disso"</div><div class="belief-right">✓ "Com certeza, contador e advogado são fundamentais. O que eu faço é diferente — cuido da parte de crescimento e proteção do patrimônio, não da parte fiscal. Os dois se complementam."</div></div>
+    <div class="belief-card"><div class="belief-wrong">"Prefiro deixar em imóveis"</div><div class="belief-right">✓ "Imóvel é um ativo importante. Me conta — qual é o objetivo do imóvel: renda, segurança, herança? Dependendo do objetivo, tem formas de complementar que aumentam o retorno sem vender nada."</div></div>
+    <div class="belief-card"><div class="belief-wrong">"Não entendo de investimentos"</div><div class="belief-right">✓ "Exatamente por isso faz sentido ter um assessor. Você não precisa entender — precisa de alguém em quem confiar para entender por você. Meu trabalho é simplificar, não complicar."</div></div>
+  </div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Teste qualquer objeção em campo livre — descreva o cliente e a objeção que ele vai usar.</div><button class="btn-sim-launch" onclick="launchSimulator('Simule um cliente que vai usar a objeção: já tenho assessor e estou satisfeito. 55 anos, empresário, R$2MM com assessor do Itaú Private há 5 anos. Relacionamento antigo, mas com lacunas não percebidas.')">→ Abrir Simulador — "já tenho assessor"</button></div>
+</div>`
+      }
+    ]
+  },
+  5: {
+    title:'Primeira Reunião (R1)',
+    desc:'Do pré-work ao encerramento — como conduzir a R1 do início ao fim e garantir a R2',
+    subs:[
+      {
+        name:'Pré-work: a reunião começa antes de você chegar',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Quem pesquisa antes controla a conversa</h3>
+  <p>O assessor que entra na R1 sem pré-work entra em desvantagem — faz perguntas genéricas quando poderia fazer perguntas específicas. 5-10 minutos de pesquisa valem a reunião inteira.</p>
+  <div class="routine-grid">
+    <div class="routine-block"><div class="routine-time">O que pesquisar</div><ul><li>LinkedIn: cargo, empresa, tempo no cargo</li><li>Empresa: porte, setor, momento atual</li><li>Quem indicou e por quê</li><li>Histórico no CRM se existir</li></ul></div>
+    <div class="routine-block"><div class="routine-time">O que preparar</div><ul><li>1 hipótese de problema para testar</li><li>3 perguntas de Situação específicas ao perfil</li><li>Objetivo claro da R1</li><li>Próximo passo que você quer propor ao final</li></ul></div>
+  </div>
+  <div class="highlight-box"><strong>Playbook XP:</strong> antes de qualquer reunião de diagnóstico, o assessor deve ter uma hipótese sobre qual é a principal lacuna do cliente. Não para confirmar — para testar. Hipótese bem calibrada gera perguntas melhores.</div>
+</div>
+<div class="lesson-block concept">
+  <div class="lesson-tag">📋 Caso prático — João, empresário</div>
+  <div class="case-profile">
+    <div class="case-info"><span class="case-label">Perfil:</span> 48 anos, sócio de distribuidora (45 funcionários), R$600k em CDB, nunca teve assessor.</div>
+    <div class="case-info"><span class="case-label">Indicação:</span> "Meu sócio disse que você cuida bem dos investimentos dele."</div>
+    <div class="case-info"><span class="case-label">Hipótese:</span> Patrimônio concentrado em RF de banco, lucro da empresa sem planejamento tributário, sem visão do conjunto.</div>
+  </div>
+  <div class="exercise-steps" style="margin-top:14px">
+    <div class="ex-step"><span class="step-num">✓</span>LinkedIn: sócio há 12 anos, empresa em crescimento</div>
+    <div class="ex-step"><span class="step-num">✓</span>Hipótese: provavelmente mistura PJ e PF sem planejamento</div>
+    <div class="ex-step"><span class="step-num">✓</span>Objetivo da R1: mapear o quadro completo e agendar R2 com proposta</div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "João, me conta um pouco sobre você e o que você faz."</div>
+    <div class="dialogue-line client"><span class="who">João:</span> <em>[passa 10 minutos explicando o que está no LinkedIn]</em></div>
+  </div>
+  <p class="antiexample-lesson">Pergunta genérica = tempo perdido + impressão de assessor despreparado. Com 5 min de pesquisa você já sabe o básico e pode ir direto para perguntas de valor.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique com a ferramenta Preparar Reunião</div>
+  <p style="font-size:14px;color:var(--text2)">Use a seção <strong>Preparar Reunião</strong> no menu lateral para gerar as perguntas SPIN certas para qualquer perfil de cliente antes da R1.</p>
+</div>`
+      },
+      {
+        name:'Abertura que gera confiança nos primeiros 5 minutos',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Os primeiros 5 minutos definem o tom de tudo</h3>
+  <div class="sequence-steps">
+    <div class="seq-step"><span class="seq-num">1</span><div><strong>Agradecimento + contexto (30s)</strong><br><span style="color:var(--text2)">"João, obrigado pelo tempo. Fico feliz pela indicação do [nome]. Vou ser direto sobre como funciona essa conversa."</span></div></div>
+    <div class="seq-step"><span class="seq-num">2</span><div><strong>Agenda da reunião (60s)</strong><br><span style="color:var(--text2)">"Separei 45 minutos. Minha ideia é entender sua situação completa — profissional, financeira, objetivos. No final, se fizer sentido, definimos próximo passo. Se não fizer, saímos sem dever nada."</span></div></div>
+    <div class="seq-step"><span class="seq-num">3</span><div><strong>Pergunta de agenda reversa</strong><br><span style="color:var(--text2)">"Antes de começar — tem alguma coisa específica que você gostaria de cobrir hoje?"</span></div></div>
+    <div class="seq-step"><span class="seq-num">4</span><div><strong>Transição para diagnóstico</strong><br><span style="color:var(--text2)">"Perfeito. Me conta então: como está organizada hoje a parte financeira — PF e empresa?"</span></div></div>
+  </div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule a abertura de R1 com João. Foco nos primeiros 5 turnos — abertura, agenda e transição para diagnóstico. Sem produto.</div><button class="btn-sim-launch" onclick="launchSimulator('Início da R1 com João, empresário 48 anos. Ele está curioso mas testando se você é diferente dos outros assessores que já o abordaram. Você precisa criar confiança nos primeiros 5 minutos antes de qualquer diagnóstico.')">→ Abrir Simulador — abertura R1</button></div>
+</div>`
+      },
+      {
+        name:'Diagnóstico patrimonial nas 5 dimensões',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>As 5 dimensões do diagnóstico completo (Playbook XP)</h3>
+  <p>Assessor que só mapeia investimentos faz diagnóstico parcial — e perde para quem faz o diagnóstico completo.</p>
+  <div class="spin-grid">
+    <div class="spin-card s"><div class="spin-letter">F</div><div class="spin-content"><div class="spin-title">Família</div><div class="spin-examples"><div class="spin-ex">"Tem filhos? Cônjuge trabalha?"</div><div class="spin-ex">"Tem dependentes que precisam de proteção?"</div><div class="spin-ex">"Pensou em o que acontece com eles se algo acontecer com você?"</div></div></div></div>
+    <div class="spin-card p"><div class="spin-letter">R</div><div class="spin-content"><div class="spin-title">Renda</div><div class="spin-examples"><div class="spin-ex">"Renda vem de salário, distribuição, aluguéis?"</div><div class="spin-ex">"É estável ou tem variação sazonal?"</div><div class="spin-ex">"Tem previsão de mudança nos próximos anos?"</div></div></div></div>
+    <div class="spin-card i"><div class="spin-letter">P</div><div class="spin-content"><div class="spin-title">Patrimônio</div><div class="spin-examples"><div class="spin-ex">"Onde você tem investimentos hoje?"</div><div class="spin-ex">"Tem imóveis, empresa, participação societária?"</div><div class="spin-ex">"Tem dívidas ou financiamentos em aberto?"</div></div></div></div>
+    <div class="spin-card n"><div class="spin-letter">O</div><div class="spin-content"><div class="spin-title">Objetivos + Riscos</div><div class="spin-examples"><div class="spin-ex">"O que você quer construir nos próximos 10 anos?"</div><div class="spin-ex">"Tem algum objetivo concreto — aposent., imóvel, expansão?"</div><div class="spin-ex">"Você se preocupa com algum risco específico?"</div></div></div></div>
+  </div>
+  <div class="highlight-box"><strong>A 5ª dimensão — Riscos</strong> abre naturalmente a conversa de proteção (seguro de vida, previdência, planejamento sucessório) sem empurrar produto.</div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Conduza o diagnóstico completo nas 5 dimensões com João. Objetivo: ao final, ter mapeado família, renda, patrimônio, objetivos e riscos — sem falar de produto.</div><button class="btn-sim-launch" onclick="launchSimulator('Diagnóstico patrimonial com João, empresário 48 anos. Dois filhos (12 e 9 anos), esposa não trabalha. R$600k em CDB, empresa gerando lucro, imóvel próprio. Nunca teve assessor. Você precisa mapear as 5 dimensões completas.')">→ Abrir Simulador — diagnóstico 5 dimensões</button></div>
+</div>`
+      },
+      {
+        name:'Encerrar a R1 garantindo a R2',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>R1 não fecha produto — fecha a R2</h3>
+  <div class="sequence-steps">
+    <div class="seq-step"><span class="seq-num">1</span><div><strong>Resumo do que você entendeu</strong><br><span style="color:var(--text2)">"João, confirmo o que entendi: R$600k no banco, lucro da empresa sem alocação definida, dois filhos dependentes, quer aposentadoria em 10 anos. É isso?"</span></div></div>
+    <div class="seq-step"><span class="seq-num">2</span><div><strong>Revelação da lacuna (sem proposta)</strong><br><span style="color:var(--text2)">"O que vejo: você tem patrimônio relevante, mas os três pilares — crescimento, proteção e planejamento de saída — nenhum está estruturado. Isso é resolvível."</span></div></div>
+    <div class="seq-step"><span class="seq-num">3</span><div><strong>Proposta de próximo passo</strong><br><span style="color:var(--text2)">"Nos próximos dias monto um diagnóstico completo com proposta estruturada. Marcamos 1h para apresentar. Faz sentido?"</span></div></div>
+    <div class="seq-step"><span class="seq-num">4</span><div><strong>Data antes de sair</strong><br><span style="color:var(--text2)">"Quando você tem disponibilidade essa semana ou na próxima?"</span></div></div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo — Propor produto antes da R2</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "João, que tal já movimentar esse CDB pra cá? Tenho produto com taxa melhor."</div>
+    <div class="dialogue-line client"><span class="who">João:</span> "Vou pensar. Obrigado." <em>[desaparece]</em></div>
+  </div>
+  <p class="antiexample-lesson">Propor produto antes da devolutiva queima o processo. João não viu o diagnóstico completo, não sentiu a lacuna, não entendeu o valor. A proposta sem contexto parece genérica.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule o encerramento da R1: resumir o diagnóstico, revelar a lacuna e fechar a data da R2.</div><button class="btn-sim-launch" onclick="launchSimulator('Final da R1 com João. Diagnóstico completo feito. Agora é hora de encerrar revelando as lacunas e fechando a R2 com data concreta — sem propor produto.')">→ Abrir Simulador — encerramento R1</button></div>
+</div>`
+      }
+    ]
+  },
+  6: {
+    title:'Segunda Reunião (R2)',
+    desc:'Devolutiva, apresentação de proposta conectada ao diagnóstico e fechamento consultivo',
+    subs:[
+      {
+        name:'Estrutura da devolutiva antes de qualquer produto',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>A devolutiva é onde o assessor prova que ouviu</h3>
+  <p>Você apresenta o diagnóstico — não a proposta ainda. Mostra que processou o que o cliente disse, entendeu o conjunto e tem visão clara do que falta. Só depois apresenta solução.</p>
+  <div class="sequence-steps">
+    <div class="seq-step"><span class="seq-num">1</span><div><strong>Contexto — o que você entendeu</strong><br><span style="color:var(--text2)">"Com base no que você me contou, aqui está o panorama: [resumo das 5 dimensões]"</span></div></div>
+    <div class="seq-step"><span class="seq-num">2</span><div><strong>As lacunas identificadas</strong><br><span style="color:var(--text2)">"Identifiquei 3 pontos que precisam de atenção: [lacuna 1], [lacuna 2], [lacuna 3]"</span></div></div>
+    <div class="seq-step"><span class="seq-num">3</span><div><strong>Confirmação antes de proposta</strong><br><span style="color:var(--text2)">"Antes de apresentar o que montei — esse diagnóstico faz sentido? Tem algo que você vê diferente?"</span></div></div>
+    <div class="seq-step"><span class="seq-num">4</span><div><strong>Só então: apresentação da proposta</strong><br><span style="color:var(--text2)">Com o diagnóstico confirmado, cada item da proposta tem contexto.</span></div></div>
+  </div>
+  <div class="highlight-box"><strong>Por que confirmar antes de apresentar?</strong> Se o cliente discorda de parte do diagnóstico e você não sabe disso, vai apresentar solução para problema que ele não reconhece. Confirmar zera esse risco.</div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule a devolutiva completa. Apresente o diagnóstico, revele as lacunas e espere confirmação antes de qualquer proposta.</div><button class="btn-sim-launch" onclick="launchSimulator('Início da R2 com João. Ele veio para ouvir sua análise. Você precisa fazer a devolutiva do diagnóstico nas 5 dimensões antes de qualquer produto. João está um pouco impaciente para ver a proposta — não ceda.')">→ Abrir Simulador — devolutiva R2</button></div>
+</div>`
+      },
+      {
+        name:'Proposta consultiva: cada item conectado ao diagnóstico',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Proposta consultiva vs. catálogo de produtos</h3>
+  <div class="compare-grid">
+    <div class="compare-col bad"><div class="compare-header">❌ Catálogo</div><p style="font-size:13px;color:var(--text2)">"CDB 113% CDI, Fundo Multimercado XP, LCI 96% CDI e PGBL para aposentadoria."</p><p style="font-size:12px;color:var(--neg);margin-top:8px">João: "Por que 30% em multimercado? Esse seguro é necessário?"</p></div>
+    <div class="compare-col good"><div class="compare-header">✓ Consultivo</div><p style="font-size:13px;color:var(--text2)">"Para o lucro da empresa sem eficiência tributária: [solução]. Para proteção da família: [solução + por quê especificamente para você]. Para aposentadoria em 10 anos: [solução + projeção]."</p><p style="font-size:12px;color:var(--pos);margin-top:8px">João: "Agora faz sentido. Como funciona a transferência?"</p></div>
+  </div>
+  <div class="highlight-box"><strong>Estrutura de cada item:</strong> problema identificado → solução proposta → impacto esperado em números → "Faz sentido para você?"</div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Apresente a proposta conectando cada item ao diagnóstico do João. Ele vai questionar o seguro de vida e o multimercado.</div><button class="btn-sim-launch" onclick="launchSimulator('R2 com João. Devolutiva confirmada. Agora ele quer a proposta. Vai questionar o seguro de vida (não entende o porquê) e o multimercado (medo de risco). Conecte cada item ao problema que ele verbalizou.')">→ Abrir Simulador — proposta com objeções</button></div>
+</div>`
+      },
+      {
+        name:'Fechamento na R2 e próximos passos',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Se o diagnóstico foi bem feito, o fechamento é consequência</h3>
+  <div class="technique-cards">
+    <div class="tech-card"><div class="tech-title">Fechamento por resumo</div><p>"João, você identificou 3 problemas. Essa proposta resolve os 3. Quer avançar ou tem alguma dúvida antes de decidir?"</p></div>
+    <div class="tech-card"><div class="tech-title">Quando pede tempo</div><p>"Claro. O que especificamente você quer pensar? Se tiver dúvida técnica, posso esclarecer agora."</p></div>
+    <div class="tech-card"><div class="tech-title">Fechamento parcial</div><p>"Não precisa fechar tudo agora. Tem alguma parte que você já está convicto que faz sentido começar?"</p></div>
+    <div class="tech-card"><div class="tech-title">Custo de não decidir</div><p>"Cada mês que o dinheiro fica sem planejamento tributário representa R$X de diferença acumulada."</p></div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line client"><span class="who">João:</span> "Deixa eu pensar um pouco."</div>
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Claro, João! Qualquer coisa me chama. Fico à disposição."</div>
+  </div>
+  <p class="antiexample-lesson">João vai pensar... e nunca voltar. "Fico à disposição" coloca o próximo passo em cima dele. Saia sempre com data definida.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule o fechamento com João que pede tempo para pensar. Descubra o que está segurando e feche com próximo passo concreto.</div><button class="btn-sim-launch" onclick="launchSimulator('Final da R2 com João. Proposta bem recebida mas ele está hesitante — diz que quer pensar. Você precisa descobrir o que está segurando e sair com uma data concreta ou um fechamento parcial.')">→ Abrir Simulador — fechamento R2</button></div>
+</div>`
+      }
+    ]
+  },
+  7: {
+    title:'Financial Planning Completo',
+    desc:'Seguro de vida, proteção empresarial, consórcio e planejamento sucessório — pelo jeito certo',
+    subs:[
+      {
+        name:'Por que o FP vai além de investimentos',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Assessor que só faz investimentos entrega metade do valor</h3>
+  <p>Financial Planning não é sobre vender mais — é sobre mapear todas as necessidades e conectar as soluções certas. Assessor que faz FP completo tem maior ticket médio, menor churn e clientes que indicam mais.</p>
+  <div class="global-points">
+    <div class="global-point"><strong>O ecossistema XP de especialistas</strong><br>Você não precisa saber tudo. A XP tem especialistas em previdência, seguro, câmbio, tributário e sucessório. Seu papel: diagnosticar e acionar o especialista certo no momento certo.</div>
+    <div class="global-point"><strong>Regime 12-4-2 do FP (Playbook XP)</strong><br>Clientes de FP têm contato mais frequente: 12/ano para standard, 4 reviews para médios, 2 reviews semestrais para top. Mais contato = mais oportunidades de identificar novas necessidades.</div>
+    <div class="global-point"><strong>Quando introduzir cada tema</strong><br>Seguro → quando fala de família e dependentes. Previdência → quando fala de aposentadoria. Sucessório → quando fala de herança ou empresa. Consórcio → quando fala de aquisição sem urgência.</div>
+  </div>
+  <div class="highlight-box"><strong>Regra do FP:</strong> você não "vende" seguro de vida — você "descobre" que o cliente tem dependentes sem proteção e apresenta a solução. A ordem faz toda a diferença.</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo — FP como menu</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "João, além dos investimentos, trabalho com seguro de vida, previdência e consórcio. Tem interesse?"</div>
+    <div class="dialogue-line client"><span class="who">João:</span> "Não, por enquanto estou bem."</div>
+  </div>
+  <p class="antiexample-lesson">Oferecer como menu = ouvir "não". Diagnóstico antes de oferta, sempre.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule um diagnóstico que naturalmente revela necessidade de proteção — sem mencionar seguro até que o cliente verbalize preocupação com dependentes.</div><button class="btn-sim-launch" onclick="launchSimulator('Cliente, 45 anos, autônomo, dois filhos pequenos. Reunião de acompanhamento. Você quer fazer diagnóstico de FP sem empurrar produto — deixe o cliente revelar as lacunas com suas próprias palavras.')">→ Abrir Simulador — diagnóstico FP</button></div>
+</div>`
+      },
+      {
+        name:'Seguro de vida: as perguntas que abrem a conversa',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Seguro de vida não é sobre morte — é sobre o que acontece com quem fica</h3>
+  <div class="highlight-box"><strong>As 3 perguntas que abrem a conversa:</strong><br><br><strong>1.</strong> "Se algo acontecesse com você amanhã, sua família conseguiria manter o padrão de vida por quanto tempo com o que você tem hoje?"<br><br><strong>2.</strong> "Você tem dependentes financeiros — filhos, cônjuge, pais?"<br><br><strong>3.</strong> "O que você gostaria de garantir para eles independente do que aconteça?"</div>
+  <div class="technique-cards">
+    <div class="tech-card"><div class="tech-title">Para quem tem filhos pequenos</div><p>"Seus filhos têm X anos. Até serem independentes são Y anos. O que você quer garantir para eles nesse período?"</p></div>
+    <div class="tech-card"><div class="tech-title">Para empresários</div><p>"Se você saísse da empresa agora, o que aconteceria com os sócios? Tem acordo de compra de cotas em caso de morte?"</p></div>
+    <div class="tech-card"><div class="tech-title">Para quem diz "já tenho"</div><p>"O que você tem hoje cobre quanto de renda mensal por quanto tempo? Quando foi a última revisão da cobertura?"</p></div>
+    <div class="tech-card"><div class="tech-title">Para quem diz "não preciso"</div><p>"Você tem patrimônio suficiente para sua família viver sem sua renda pelos próximos 20 anos sem precisar trabalhar?"</p></div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "João, você tem seguro de vida? É importante e a cobertura é acessível. Posso mandar cotação?"</div>
+    <div class="dialogue-line client"><span class="who">João:</span> "Não, obrigado. Não acredito muito nisso."</div>
+  </div>
+  <p class="antiexample-lesson">Começar pela oferta confirma resistência. João não disse que não precisa de proteção — disse que não quer comprar seguro. São coisas diferentes.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Use as 3 perguntas com João para fazer ele verbalizar a preocupação com a família antes de qualquer oferta.</div><button class="btn-sim-launch" onclick="launchSimulator('João, empresário 48 anos, dois filhos (12 e 9 anos), esposa não trabalha. Nunca pensou em seguro de vida. Use as 3 perguntas de abertura e espere ele verbalizar a preocupação — não mencione seguro nas primeiras 3 mensagens.')">→ Abrir Simulador — seguro de vida</button></div>
+</div>`
+      },
+      {
+        name:'Proteção empresarial e acordo societário',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>A maioria dos sócios não tem acordo de continuidade — e não sabe o risco</h3>
+  <p>Quando um sócio morre sem acordo, a empresa pode ser forçada a vender cotas para herdeiros que não têm interesse no negócio — ou pior, querem liquidar.</p>
+  <div class="rv-concepts">
+    <div class="rv-concept"><div class="rv-title">As perguntas que revelam o problema</div><p>"O que acontece com a empresa se você ou seu sócio falecer amanhã? Os herdeiros viram sócios? Eles têm capital para comprar as cotas?"</p></div>
+    <div class="rv-concept"><div class="rv-title">A solução: Seguro empresarial + Acordo de quotistas</div><p>O seguro cobre a compra das cotas pelos sócios sobreviventes. O acordo define o mecanismo. Juntos garantem continuidade sem liquidação forçada.</p></div>
+    <div class="rv-concept"><div class="rv-title">Quando trazer o especialista XP</div><p>Após o diagnóstico, quando o cliente reconhece o risco: "Isso que você descreveu é exatamente o que um planejamento patrimonial empresarial resolve. Temos especialista disponível — quando você tem 1h?"</p></div>
+  </div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Faça João reconhecer o risco societário sem mencionar "seguro empresarial" nos primeiros turnos.</div><button class="btn-sim-launch" onclick="launchSimulator('João, sócio 50/50 com amigo há 15 anos. Empresa vale ~R$2MM. Nenhum dos dois tem acordo societário. João nunca pensou nesse risco. Faça ele verbalizar o problema — você faz as perguntas certas.')">→ Abrir Simulador — risco societário</button></div>
+</div>`
+      },
+      {
+        name:'Consórcio: quando faz sentido e como apresentar',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Consórcio é compra programada — não investimento, não financiamento</h3>
+  <div class="pgbl-vgbl">
+    <div class="prev-card"><div class="prev-title" style="color:var(--pos)">✓ Faz sentido</div><p>Objetivo de aquisição sem urgência (imóvel, veículo, reforma, expansão). Fluxo de caixa mensal regular. Quer disciplina forçada de poupança.</p></div>
+    <div class="prev-card"><div class="prev-title" style="color:var(--neg)">✗ Não faz sentido</div><p>Precisa do bem agora. Tem dívida cara em aberto. Vai usar como reserva de emergência. Não tem certeza do objetivo.</p></div>
+  </div>
+  <div class="highlight-box"><strong>Como abrir:</strong> "Você tem algum objetivo de aquisição nos próximos 3-5 anos — imóvel, veículo, reforma, expansão? Como está pensando em financiar isso?"</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "João, temos consórcio com taxa zero. Ótima forma de comprar imóvel sem juros."</div>
+    <div class="dialogue-line client"><span class="who">João:</span> "Mas posso ser o último sorteado. Não funciona pra mim."</div>
+  </div>
+  <p class="antiexample-lesson">Começar pelo produto levanta imediatamente a objeção do prazo. Comece pelo objetivo — não pelo produto.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Descubra um objetivo de aquisição que abre naturalmente o tema de consórcio.</div><button class="btn-sim-launch" onclick="launchSimulator('Médica, 38 anos, quer consultório próprio em 3-4 anos, ainda não sabe como financiar. Tem fluxo de caixa saudável, sem urgência. Você quer introduzir consórcio pelo objetivo dela — não pelo produto.')">→ Abrir Simulador — consórcio por objetivo</button></div>
+</div>`
+      },
+      {
+        name:'Planejamento sucessório: a conversa pelo ângulo do legado',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Ninguém quer falar de herança — mas todo mundo deveria</h3>
+  <div class="global-points">
+    <div class="global-point"><strong>O custo de não planejar</strong><br>ITCMD: 4-8% do patrimônio. Custos de cartório e advogado: 2-4% adicionais. Tempo: 2-10 anos de inventário judicial. Total: pode passar de 12% do patrimônio.</div>
+    <div class="global-point"><strong>Ferramentas disponíveis</strong><br>Previdência com beneficiários (fora do inventário). Holding familiar. Seguro de vida para cobrir ITCMD. Doação em vida com usufruto.</div>
+    <div class="global-point"><strong>Abertura pelo legado, não pela morte</strong><br>"João, você mencionou que quer deixar a empresa para os filhos. Como você está pensando em fazer essa transição — do negócio e do patrimônio pessoal?"</div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo — Entrada pelo inventário</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "João, você já pensou em planejamento de inventário? O ITCMD pode pegar 8% do patrimônio caso venha a falecer..."</div>
+    <div class="dialogue-line client"><span class="who">João:</span> "Que papo pesado... vou pensar nisso mais pra frente."</div>
+  </div>
+  <p class="antiexample-lesson">Entrada pela morte e pelo imposto = resistência imediata. Entrada pelo legado e proteção da família tem receptividade completamente diferente.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Abra a conversa de planejamento sucessório com João pelo ângulo do legado e dos filhos — sem mencionar inventário ou impostos nos primeiros turnos.</div><button class="btn-sim-launch" onclick="launchSimulator('João, empresário 48 anos, quer garantir o futuro dos filhos e vender a empresa daqui 10 anos. Nunca pensou em planejamento sucessório. Abra o tema pelo legado e pelos objetivos dele — não pela morte ou pelos impostos.')">→ Abrir Simulador — planejamento sucessório</button></div>
+</div>`
+      }
+    ]
+  },
+  8: {
+    title:'Experiência do Cliente',
+    desc:'Onboarding, comunicação proativa, gestão de crise, fidelização e indicação estruturada',
+    subs:[
+      {
+        name:'Onboarding: os primeiros 90 dias que definem tudo',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Os primeiros 90 dias determinam o cliente para a vida</h3>
+  <p>Onboarding é o período de maior vulnerabilidade — e maior oportunidade. Cliente bem onboardado indica, expande e defende você. Cliente mal onboardado sai nos primeiros 6 meses.</p>
+  <div class="onboarding-steps">
+    <div class="ob-step"><div class="ob-num">Dia 1-7</div><div class="ob-content"><strong>Boas-vindas e expectativas</strong><br>Mensagem personalizada (não template). Explique frequência de contato, o que ele pode esperar, como funciona o relacionamento.</div></div>
+    <div class="ob-step"><div class="ob-num">Semana 2-3</div><div class="ob-content"><strong>Primeira revisão de carteira</strong><br>Mostre que você estudou a situação dele. Apresente a visão do que tem e o que vai mudar.</div></div>
+    <div class="ob-step"><div class="ob-num">Mês 1</div><div class="ob-content"><strong>Primeira reunião de acompanhamento</strong><br>Revise o que foi feito, como a carteira está se comportando. Pergunte como ele está se sentindo.</div></div>
+    <div class="ob-step"><div class="ob-num">Mês 2-3</div><div class="ob-content"><strong>Aprofundamento do diagnóstico</strong><br>Explore objetivos de longo prazo, planejamento familiar, previdência. Vá além dos investimentos.</div></div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <p>Cliente fecha na segunda. Assessor manda mensagem breve na terça. Próximo contato: 3 semanas depois quando o cliente liga perguntando o que acontece com a carteira.</p>
+  <p class="antiexample-lesson">Onboarding sem estrutura é a principal causa de churn nos primeiros 6 meses. O cliente não sai porque o produto é ruim — sai porque não sentiu presença.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">💪 Monte seu protocolo de onboarding</div>
+  <div class="exercise-steps">
+    <div class="ex-step"><span class="step-num">1</span>Escreva a mensagem de boas-vindas ideal: máx 5 linhas, tom pessoal, não corporativo.</div>
+    <div class="ex-step"><span class="step-num">2</span>Defina os 4 pontos de contato dos primeiros 90 dias com conteúdo específico para cada.</div>
+    <div class="ex-step"><span class="step-num">3</span>Identifique um cliente atual que teve onboarding ruim. O que faria diferente?</div>
+  </div>
+</div>`
+      },
+      {
+        name:'Ciclo 8-3-1 e contato proativo na prática',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Frequência de contato por tier — o piso, não o teto</h3>
+  <div class="cycle-grid">
+    <div class="cycle-card"><div class="cycle-tier">Standard</div><div class="cycle-num">8x</div><div class="cycle-desc">por ano — 1 contato a cada 6 semanas. Foco em informação de mercado e revisão de carteira.</div></div>
+    <div class="cycle-card"><div class="cycle-tier">Médio</div><div class="cycle-num">3x</div><div class="cycle-desc">a cada 4 meses. Revisão mais profunda com planejamento de curto prazo.</div></div>
+    <div class="cycle-card highlight-cycle"><div class="cycle-tier">Top</div><div class="cycle-num">1x/mês</div><div class="cycle-desc">Contato mensal. Revisão patrimonial, planejamento tributário, oportunidades exclusivas.</div></div>
+  </div>
+  <div class="highlight-box"><strong>Proativo vs. reativo:</strong> Quando você liga antes do cliente precisar, você é parceiro. Quando liga depois que ele reclama, você é prestador de serviço. A percepção de valor é completamente diferente.</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <p>Assessor só entra em contato quando: o cliente liga, o mercado cai muito, tem produto novo, ou está próximo da renovação.</p>
+  <p class="antiexample-lesson">O cliente reativo é o que está sempre a um passo de sair. Assessor que some entre crises perde para qualquer concorrente que aparecer com atenção.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">💪 Mapeie sua carteira agora</div>
+  <div class="exercise-steps">
+    <div class="ex-step"><span class="step-num">1</span>Classifique seus clientes por tier (top, médio, standard).</div>
+    <div class="ex-step"><span class="step-num">2</span>Para cada um: quando foi o último contato proativo (você iniciou)?</div>
+    <div class="ex-step"><span class="step-num">3</span>Identifique quem está atrasado no ciclo.</div>
+    <div class="ex-step"><span class="step-num">4</span>Agende os próximos 30 dias de contatos proativos agora, com tema definido para cada.</div>
+  </div>
+</div>`
+      },
+      {
+        name:'Gestão de crise: carteira em queda',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Crise é quando o assessor prova seu valor</h3>
+  <p>Qualquer um é bom assessor quando o mercado sobe. O que diferencia é o que você faz quando cai. O cliente não espera que você preveja o futuro — espera que esteja presente e seja honesto.</p>
+  <div class="crisis-steps">
+    <div class="crisis-step"><div class="crisis-icon">📞</div><div><strong>Entre em contato proativamente</strong> — antes do cliente ligar. Já demonstra que você está no controle.</div></div>
+    <div class="crisis-step"><div class="crisis-icon">🎯</div><div><strong>Seja específico</strong> — contexto do mercado, impacto na carteira dele especificamente, o que foi afetado e o que foi protegido.</div></div>
+    <div class="crisis-step"><div class="crisis-icon">🤝</div><div><strong>Assuma responsabilidade onde cabia</strong> — não culpe só o mercado. Se havia algo diferente a fazer, reconheça.</div></div>
+    <div class="crisis-step"><div class="crisis-icon">📋</div><div><strong>Apresente um plano</strong> — o que você vai fazer, horizonte de recuperação esperado, o que o cliente deve ou não fazer agora.</div></div>
+  </div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "Minha carteira caiu 8%. O que está acontecendo?"</div>
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Pois é, o mercado está muito volátil. Essa queda foi generalizada, todos os clientes foram afetados. É melhor esperar passar."</div>
+  </div>
+  <p class="antiexample-lesson">"O mercado é assim" é a resposta que mais irrita cliente em crise. Ele sabe que o mercado caiu. Quer saber o que <em>você</em> está fazendo sobre isso.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule a gestão de crise com um cliente cujo patrimônio caiu. Você precisa ligar antes dele e apresentar plano específico.</div><button class="btn-sim-launch" onclick="launchSimulator('Paulo, 55 anos, carteira caiu 8% na última semana. Ele ainda não ligou. Você vai ligar proativamente. Ele está preocupado e vai questionar se foi erro seu. Você precisa ser específico, honesto e apresentar plano concreto.')">→ Abrir Simulador — gestão de crise</button></div>
+</div>`
+      },
+      {
+        name:'Comunicação de valor: não suma entre as reuniões',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Presença entre reuniões é o que diferencia parceiro de prestador</h3>
+  <p>A maioria dos assessores desaparece entre as reuniões formais. O cliente sente que só existe quando tem produto para vender. Comunicação de valor resolve isso.</p>
+  <div class="technique-cards">
+    <div class="tech-card"><div class="tech-title">Morning call comentado</div><p>Compartilhe o morning call com 2 linhas de contexto: "Essa notícia impacta diretamente o fundo X que você tem. Não precisa fazer nada agora — só queria te deixar informado."</p></div>
+    <div class="tech-card"><div class="tech-title">Gatilho de vida</div><p>Lembrou de aniversário, nascimento de filho, conquista profissional? Entre em contato. Mostra que você conhece o cliente como pessoa — não como conta.</p></div>
+    <div class="tech-card"><div class="tech-title">Insight relevante ao perfil</div><p>"Vi esse artigo sobre planejamento tributário para médicos — lembrei de você pela conversa que tivemos. Pode ser útil."</p></div>
+    <div class="tech-card"><div class="tech-title">Relatório mensal simples</div><p>1 página: como a carteira está, o que mudou, o que você monitorou. Simples e consistente. Cliente que recebe relatório mensalmente raramente sai.</p></div>
+  </div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">💪 Exercício</div>
+  <div class="exercise-steps">
+    <div class="ex-step"><span class="step-num">1</span>Defina 1 forma de comunicação de valor que você vai implementar esta semana.</div>
+    <div class="ex-step"><span class="step-num">2</span>Liste 3 clientes top que merecem comunicação de valor personalizada este mês.</div>
+    <div class="ex-step"><span class="step-num">3</span>Para cada um, escreva a mensagem específica baseada em algo que ele disse na última reunião.</div>
+  </div>
+</div>`
+      },
+      {
+        name:'Pedido de indicação: técnica dos 3 SIM',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Pedido de indicação é técnica — não sorte</h3>
+  <p>A maioria dos assessores não pede indicação. Os que pedem, pedem de forma genérica — e o cliente diz "claro!" sem indicar ninguém. A técnica dos 3 SIM cria comprometimento gradual.</p>
+  <div class="sim-technique">
+    <div class="sim-step"><div class="sim-num">SIM 1</div><div>"Você está satisfeito com a forma como estamos conduzindo seus investimentos?" <em>(se não estiver, resolva isso primeiro)</em></div></div>
+    <div class="sim-step"><div class="sim-num">SIM 2</div><div>"Você acredita que outras pessoas na sua situação poderiam se beneficiar do mesmo tipo de assessoria?" <em>(ele diz que sim logicamente)</em></div></div>
+    <div class="sim-step"><div class="sim-num">SIM 3</div><div>"Existe alguém específico na sua rede — sócio, amigo, familiar — que você acha que eu deveria conhecer?" <em>(agora ele pensa em nomes concretos)</em></div></div>
+  </div>
+  <div class="highlight-box"><strong>Após o 3º SIM:</strong> "Você se importaria de fazer uma introdução rápida pelo WhatsApp? Pode ser simples: 'Oi, quero te apresentar o [nome], assessor do Alto Valor que cuida dos meus investimentos.'"</div>
+</div>
+<div class="lesson-block antiexample">
+  <div class="lesson-tag">🚫 Anti-exemplo — Pedido genérico</div>
+  <div class="dialogue bad-dialogue">
+    <div class="dialogue-line assessor"><span class="who">Assessor:</span> "Btw, se você conhecer alguém que precise de assessoria, pode me indicar?"</div>
+    <div class="dialogue-line client"><span class="who">Cliente:</span> "Claro! Com certeza." <em>[não indica ninguém]</em></div>
+  </div>
+  <p class="antiexample-lesson">"Claro, com certeza" sem comprometimento específico = nenhuma ação. O cliente não pensou em nomes concretos, não assumiu compromisso. Pedido vago gera resposta vaga.</p>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">💪 Execute esta semana</div>
+  <div class="exercise-steps">
+    <div class="ex-step"><span class="step-num">1</span>Selecione 2 clientes satisfeitos com reunião esta semana.</div>
+    <div class="ex-step"><span class="step-num">2</span>Reserve os últimos 5 minutos para os 3 SIM.</div>
+    <div class="ex-step"><span class="step-num">3</span>Se ele der um nome: "Posso te pedir para fazer uma introdução agora pelo WhatsApp?"</div>
+    <div class="ex-step"><span class="step-num">4</span>Faça isso com 2 clientes por semana como rotina fixa.</div>
+  </div>
+</div>`
+      },
+      {
+        name:'Retenção: como agir quando o cliente quer sair',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">📖 Conceito</div>
+  <h3>Cliente que avisa que quer sair ainda está dando chance</h3>
+  <p>Quando o cliente liga para cancelar, ele geralmente já tentou outra alternativa ou está frustrado há semanas sem ter dito nada. A boa notícia: o fato de ele avisar significa que ainda há espaço para reverter.</p>
+  <div class="sequence-steps">
+    <div class="seq-step"><span class="seq-num">1</span><div><strong>Não defenda — pergunte</strong><br><span style="color:var(--text2)">"Obrigado por me avisar. O que gerou essa decisão?" — ouça sem interromper.</span></div></div>
+    <div class="seq-step"><span class="seq-num">2</span><div><strong>Valide a frustração</strong><br><span style="color:var(--text2)">"Entendo. Se eu estivesse na sua posição com essa experiência, pensaria da mesma forma."</span></div></div>
+    <div class="seq-step"><span class="seq-num">3</span><div><strong>Assuma o que cabe a você</strong><br><span style="color:var(--text2)">"Eu poderia ter feito diferente em [ponto específico]. Isso foi falha minha."</span></div></div>
+    <div class="seq-step"><span class="seq-num">4</span><div><strong>Proponha uma conversa, não uma reversão</strong><br><span style="color:var(--text2)">"Não estou pedindo para você ficar. Estou pedindo 30 minutos para ouvir o que falhei e mostrar o que posso fazer diferente. Se ainda quiser sair, eu ajudo com a transferência."</span></div></div>
+  </div>
+  <div class="highlight-box">Assessor que ajuda com a saída caso não reverta — sem guerra, sem chantagem — mantém a porta aberta para o cliente voltar. Muitos voltam.</div>
+</div>
+<div class="lesson-block exercise">
+  <div class="lesson-tag">🎯 Pratique no Simulador</div>
+  <div class="sim-launch"><div class="sim-desc">Simule um cliente que quer cancelar. Você precisa ouvir sem defender e propor uma conversa — não uma reversão forçada.</div><button class="btn-sim-launch" onclick="launchSimulator('Cliente há 2 anos, liga dizendo que quer migrar para o BTG. Está insatisfeito com a comunicação — sente que você some entre as reuniões. Você precisa ouvir sem defender, validar a frustração e propor uma conversa honesta.')">→ Abrir Simulador — retenção de cliente</button></div>
+</div>`
+      }
+    ]
+  },
+  9: {
+    title:'Produtos e Soluções',
+    desc:'Renda fixa, renda variável, previdência, proteção e internacionalização — para quem serve e como explicar',
+    subs:[
+      {
+        name:'Este módulo estará disponível em breve',
+        done:false, links:[],
+        content:`
+<div class="lesson-block concept">
+  <div class="lesson-tag">🔒 Em desenvolvimento</div>
+  <h3>Módulo 9 — Produtos e Soluções</h3>
+  <p>Este módulo está sendo preparado e estará disponível em breve. Conteúdo previsto:</p>
+  <ul class="value-list">
+    <li><span class="vl-icon">📊</span><div><strong>Renda fixa:</strong> CDB, LCI/LCA, Tesouro, debêntures — quando e para quem</div></li>
+    <li><span class="vl-icon">📈</span><div><strong>Renda variável e multimercado:</strong> como explicar risco sem assustar e sem minimizar</div></li>
+    <li><span class="vl-icon">🏦</span><div><strong>Previdência:</strong> PGBL vs VGBL, tributação, argumento de inventário</div></li>
+    <li><span class="vl-icon">🌎</span><div><strong>Internacionalização:</strong> diversificação geográfica como proteção estrutural</div></li>
+    <li><span class="vl-icon">🛡️</span><div><strong>Proteção:</strong> seguro de vida, invalidez, DIT — como dimensionar cobertura</div></li>
+  </ul>
+</div>`
+      }
+    ]
+  }
+};
+
+// ═══════ AUTH SYSTEM ═══════
+const USERS_KEY = 'av_users_v1';
+
+function getUsers() {
+  try { return JSON.parse(localStorage.getItem(USERS_KEY)) || getDefaultUsers(); }
+  catch { return getDefaultUsers(); }
+}
+function getDefaultUsers() {
+  return [
+    { login:'gabrielbonine', pass:'altovalor', name:'Gabriel Bonine', role:'Administrador', emoji:'👑', isLeader:true, isAdmin:true }
+  ];
+}
+function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+// Init users if not set
+if (!localStorage.getItem(USERS_KEY)) saveUsers(getDefaultUsers());
+
+function doLogin() {
+  const loginVal = document.getElementById('login-user').value.trim().toLowerCase();
+  const passVal  = document.getElementById('login-pass').value;
+  const errEl    = document.getElementById('login-error');
+  errEl.style.display = 'none';
+
+  const users = getUsers();
+  const user  = users.find(u => u.login.toLowerCase() === loginVal && u.pass === passVal);
+
+  if (!user) { errEl.style.display = 'block'; return; }
+
+  state.user = user;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  document.getElementById('api-config-widget').style.display = 'flex';
+  document.getElementById('sidebar-name').textContent = user.name;
+  document.getElementById('sidebar-role').textContent = user.role;
+  document.getElementById('sidebar-avatar').textContent = user.emoji || '👤';
+  const h = new Date().getHours();
+  const g = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+  document.getElementById('painel-greeting').textContent = `${g}, ${user.name.split(' ')[0]} 👋`;
+  if (user.isLeader) {
+    document.getElementById('leader-section').style.display = 'block';
+    document.getElementById('leader-btn').style.display = 'flex';
+    navigate('lider', document.getElementById('leader-btn'));
+  }
+  if (user.isAdmin) {
+    document.getElementById('leader-section').style.display = 'block';
+    document.getElementById('admin-btn').style.display = 'flex';
+  }
+}
+
+// ═══════ ADMIN MODAL ═══════
+function openAdminModal() {
+  renderUserList();
+  document.getElementById('admin-modal').classList.add('open');
+}
+function closeAdminModal() {
+  document.getElementById('admin-modal').classList.remove('open');
+  document.getElementById('admin-error').style.display = 'none';
+  ['new-login','new-pass','new-name','new-role'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('new-is-admin').checked = false;
+}
+function renderUserList() {
+  const users = getUsers();
+  const el = document.getElementById('admin-user-list');
+  el.innerHTML = users.map((u,i) => `
+    <div class="user-row">
+      <div style="font-size:22px">${u.emoji||'👤'}</div>
+      <div class="user-row-info">
+        <div class="user-row-login">${u.login}</div>
+        <div class="user-row-role">${u.name} · ${u.role}</div>
+      </div>
+      ${u.isAdmin ? '<span class="user-row-badge admin">Admin</span>' : '<span class="user-row-badge">Usuário</span>'}
+      ${u.login === state.user.login ? '<span style="font-size:12px;color:var(--text3)">(você)</span>' :
+        `<button class="btn-delete" onclick="deleteUser(${i})">Excluir</button>`}
+    </div>
+  `).join('');
+}
+function deleteUser(idx) {
+  const users = getUsers();
+  if (!confirm(`Excluir usuário "${users[idx].login}"?`)) return;
+  users.splice(idx, 1);
+  saveUsers(users);
+  renderUserList();
+}
+function addUser() {
+  const login = document.getElementById('new-login').value.trim().toLowerCase();
+  const pass  = document.getElementById('new-pass').value.trim();
+  const name  = document.getElementById('new-name').value.trim();
+  const role  = document.getElementById('new-role').value.trim() || 'Assessor';
+  const isAdmin = document.getElementById('new-is-admin').checked;
+  const errEl = document.getElementById('admin-error');
+
+  if (!login || !pass || !name) {
+    errEl.textContent = 'Preencha login, senha e nome.';
+    errEl.style.display = 'block'; return;
+  }
+  const users = getUsers();
+  if (users.find(u => u.login.toLowerCase() === login)) {
+    errEl.textContent = 'Esse login já existe.';
+    errEl.style.display = 'block'; return;
+  }
+  users.push({ login, pass, name, role, emoji: isAdmin ? '👑' : '👤', isLeader: isAdmin, isAdmin });
+  saveUsers(users);
+  errEl.style.display = 'none';
+  ['new-login','new-pass','new-name','new-role'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('new-is-admin').checked = false;
+  renderUserList();
+  showToast(`Usuário "${login}" criado com sucesso ✓`);
+}
+
+// ═══════ NAVEGAÇÃO ═══════
+function navigate(page, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (page !== 'trilha') {
+    document.getElementById('module-detail').classList.remove('active');
+    document.getElementById('trilha-main').style.display = 'block';
+  }
+}
+
+// ═══════ API ═══════
+function toggleApiPanel() { document.getElementById('api-panel').classList.toggle('show'); }
+function saveApiKey() {
+  state.apiKey = document.getElementById('api-key-input').value.trim();
+  document.getElementById('api-panel').classList.remove('show');
+  showToast('Chave salva! IA ativada ✓');
+}
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:70px;right:20px;background:#0d1a27;border:1px solid rgba(0,153,116,.4);color:#009974;padding:12px 18px;border-radius:10px;font-size:13px;z-index:300';
+  t.textContent = msg; document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+async function callClaude(messages, system) {
+  if (!state.apiKey) return 'Configure sua chave da API clicando no botão ⚙ no canto inferior direito.';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'x-api-key':state.apiKey, 'anthropic-version':'2023-06-01' },
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, system, messages })
+    });
+    const data = await res.json();
+    if (data.error) return `Erro: ${data.error.message}`;
+    return data.content?.[0]?.text || 'Sem resposta.';
+  } catch(e) { return 'Erro ao conectar com a API. Verifique sua chave.'; }
+}
+function addTyping(id) {
+  const d = document.createElement('div');
+  d.className = 'msg ai'; d.id = 'typing-' + id;
+  d.innerHTML = '<div class="msg-label">Alto Valor IA</div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+  const c = document.getElementById(id); c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function removeTyping(id) { const e = document.getElementById('typing-' + id); if(e) e.remove(); }
+function addMsg(id, role, text) {
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  d.innerHTML = `<div class="msg-label">${role==='user'?'Você':'Alto Valor IA'}</div><div class="msg-bubble">${text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</div>`;
+  const c = document.getElementById(id); c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+
+// ═══════ TUTOR ═══════
+function sendSuggestion(t) { document.getElementById('tutor-input').value = t; sendTutor(); }
+async function sendTutor() {
+  const inp = document.getElementById('tutor-input');
+  const text = inp.value.trim(); if (!text) return;
+  inp.value = '';
+  addMsg('tutor-messages','user',text);
+  state.tutorMessages.push({role:'user',content:text});
+  document.getElementById('tutor-send').disabled = true;
+  addTyping('tutor-messages');
+  const reply = await callClaude(state.tutorMessages, SYSTEM_TUTOR);
+  removeTyping('tutor-messages');
+  addMsg('tutor-messages','ai',reply);
+  state.tutorMessages.push({role:'assistant',content:reply});
+  document.getElementById('tutor-send').disabled = false;
+}
+
+// ═══════ SIMULADOR ═══════
+let selectedClientKey = null;
+function selectClient(el, key) {
+  document.querySelectorAll('.client-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('custom-box').classList.remove('selected-custom');
+  if (key === 'custom') {
+    document.getElementById('custom-box').classList.add('selected-custom');
+  } else {
+    if(el) el.classList.add('selected');
+  }
+  selectedClientKey = key;
+}
+function startSimulation() {
+  if (!selectedClientKey) { showToast('Selecione um perfil de cliente'); return; }
+  let clientSystem, clientIcon, clientName, clientSub;
+  if (selectedClientKey === 'custom') {
+    const desc = document.getElementById('custom-client-desc').value.trim();
+    if (!desc) { showToast('Descreva o cliente personalizado'); return; }
+    clientIcon = '✏️'; clientName = 'Cliente personalizado'; clientSub = desc.substring(0,80) + '...';
+    clientSystem = `Você é um cliente de assessoria de investimentos com o seguinte perfil: ${desc}\n\nAja exatamente como esse cliente. Reaja de forma realista às abordagens do assessor. Se ele for consultivo e ouvir primeiro, abra gradualmente. Se ele apresentar produto antes de entender sua situação, resista. Em português. Não quebre o personagem.`;
+  } else {
+    const c = CLIENTS[selectedClientKey];
+    clientIcon = c.icon; clientName = c.name; clientSub = c.sub; clientSystem = c.system;
+  }
+  state.currentSim = { key: selectedClientKey, system: clientSystem };
+  state.simMessages = [];
+  document.getElementById('sim-select').style.display = 'none';
+  document.getElementById('sim-active').classList.add('on');
+  document.getElementById('sim-icon').textContent = clientIcon;
+  document.getElementById('sim-name').textContent = clientName;
+  document.getElementById('sim-sub').textContent = clientSub;
+  document.getElementById('sim-messages').innerHTML = '';
+  document.getElementById('sim-feedback').classList.remove('show');
+  const opening = getOpeningLine(selectedClientKey, clientSystem);
+  addMsg('sim-messages','ai',opening);
+  state.simMessages.push({role:'assistant',content:opening});
+}
+function getOpeningLine(key, customSystem) {
+  const lines = {
+    conservador:'Olá. Você me ligou dizendo que poderia melhorar meus investimentos. Tenho 10 minutos. O que você tem a dizer?',
+    taxa:'Preciso entender essa cobrança de R$1.200 que apareceu na minha fatura. O que é isso?',
+    concorrente:'Olha, recebi uma proposta do BTG com taxa menor que a sua. Me convença a ficar.',
+    sozinho:'Oi! Vi sua mensagem. Mas sinceramente, por que eu pagaria alguém para fazer o que já faço sozinho pelo app?',
+    queda:'Quero explicações. Minha carteira caiu 8% e ninguém me avisou. O que está acontecendo?',
+    frio:'Oi, você me mandou mensagem ontem. Pode falar, mas sou um pouco desconfiada dessas abordagens.',
+    custom:'Olá. Vi que você entrou em contato. Do que se trata?'
+  };
+  return lines[key] || 'Olá. O que você tem para me apresentar?';
+}
+async function sendSim() {
+  const inp = document.getElementById('sim-input');
+  const text = inp.value.trim(); if (!text) return;
+  inp.value = '';
+  addMsg('sim-messages','user',text);
+  state.simMessages.push({role:'user',content:text});
+  document.getElementById('sim-send').disabled = true;
+  addTyping('sim-messages');
+  const reply = await callClaude(state.simMessages, state.currentSim.system);
+  removeTyping('sim-messages');
+  addMsg('sim-messages','ai',reply);
+  state.simMessages.push({role:'assistant',content:reply});
+  document.getElementById('sim-send').disabled = false;
+}
+async function endSimulation() {
+  if (state.simMessages.length < 2) { showToast('Converse um pouco antes de encerrar'); return; }
+  document.getElementById('sim-send').disabled = true;
+  const fb = document.getElementById('sim-feedback');
+  fb.classList.add('show');
+  document.getElementById('feedback-scores').innerHTML = '<div class="loader"><span></span><span></span><span></span></div> Analisando conversa...';
+  document.getElementById('feedback-text').innerHTML = '';
+  const conversa = state.simMessages.map(m => `${m.role==='user'?'ASSESSOR':'CLIENTE'}: ${m.content}`).join('\n\n');
+  const prompt = `Analise essa simulação de atendimento comercial de assessor de investimentos.
+
+CONVERSA:
+${conversa}
+
+Responda SOMENTE em JSON válido, sem texto antes ou depois:
+{
+  "diagnostico": <0-100>,
+  "objecoes": <0-100>,
+  "empatia": <0-100>,
+  "conducao": <0-100>,
+  "encerramento": <0-100>,
+  "pontos_positivos": ["<ponto>","<ponto>"],
+  "pontos_melhora": ["<ponto com sugestão prática>","<ponto com sugestão prática>"],
+  "recomendacao": "<recomendação específica e acionável para o assessor>"
+}
+
+Critérios:
+- diagnostico: usou SPIN? Perguntou antes de apresentar solução? Mapeou situação-problema-implicação?
+- objecoes: validou, perguntou, aprofundou, respondeu, confirmou? Chegou na objeção real?
+- empatia: criou rapport? Demonstrou escuta real? Adaptou ao perfil do cliente?
+- conducao: teve objetivo claro? Avançou a conversa? Manteve controle sem ser agressivo?
+- encerramento: definiu próximo passo concreto com data? Ou ficou em aberto?`;
+  const result = await callClaude([{role:'user',content:prompt}], 'Você é um coach de vendas especialista em assessoria de investimentos. Avalie com rigor. Responda SOMENTE JSON válido.');
+  try {
+    const clean = result.replace(/```json|```/g,'').trim();
+    const data = JSON.parse(clean);
+    // Atualiza scores acumulados
+    state.scores.diagnostico.push(data.diagnostico);
+    state.scores.objecoes.push(data.objecoes);
+    state.scores.empatia.push(data.empatia);
+    state.scores.conducao.push(data.conducao);
+    state.scores.encerramento.push(data.encerramento);
+    state.simCount++;
+    updatePainel(data);
+    const scoreItems = [
+      {label:'Diagnóstico',val:data.diagnostico},
+      {label:'Objeções',val:data.objecoes},
+      {label:'Empatia',val:data.empatia},
+      {label:'Condução',val:data.conducao},
+      {label:'Encerramento',val:data.encerramento}
+    ];
+    document.getElementById('feedback-scores').innerHTML = scoreItems.map(s => {
+      const cls = s.val>=70?'score-high':s.val>=50?'score-mid':'score-low';
+      return `<div class="feedback-score-item"><div class="feedback-score-val ${cls}">${s.val}</div><div class="feedback-score-label">${s.label}</div></div>`;
+    }).join('');
+    document.getElementById('feedback-text').innerHTML = `
+      <div style="margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--pos);margin-bottom:8px">✓ Pontos positivos</div>
+      ${(data.pontos_positivos||[]).map(p=>`<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);color:var(--text2)">• ${p}</div>`).join('')}</div>
+      <div style="margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--neg);margin-bottom:8px">↗ A melhorar</div>
+      ${(data.pontos_melhora||[]).map(p=>`<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);color:var(--text2)">• ${p}</div>`).join('')}</div>
+      <div class="ia-rec"><div class="ia-rec-label">💡 Recomendação</div>${data.recomendacao}</div>`;
+  } catch(e) {
+    document.getElementById('feedback-scores').innerHTML = '';
+    document.getElementById('feedback-text').innerHTML = `<div style="font-size:14px;line-height:1.7">${result}</div>`;
+  }
+  document.getElementById('sim-send').disabled = false;
+  fb.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function resetSim() {
+  document.getElementById('sim-select').style.display = 'block';
+  document.getElementById('sim-active').classList.remove('on');
+  document.querySelectorAll('.client-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('custom-box').classList.remove('selected-custom');
+  selectedClientKey = null;
+}
+
+// ═══════ ATUALIZA PAINEL COM SCORES REAIS ═══════
+function avg(arr) { return arr.length ? Math.round(arr.reduce((a,b)=>a+b,0)/arr.length) : null; }
+function scoreColor(v) { return v>=70?'var(--pos)':v>=50?'var(--green)':'var(--neg)'; }
+function updatePainel(lastFb) {
+  const s = state.scores;
+  const avgs = { diagnostico:avg(s.diagnostico), objecoes:avg(s.objecoes), empatia:avg(s.empatia), conducao:avg(s.conducao), encerramento:avg(s.encerramento) };
+  const vals = Object.values(avgs).filter(v=>v!==null);
+  const scoreGeral = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
+  // Score geral
+  const pScore = document.getElementById('p-score');
+  if (scoreGeral !== null) {
+    pScore.textContent = scoreGeral;
+    pScore.style.color = scoreColor(scoreGeral);
+    document.getElementById('p-score-sub').textContent = `${state.simCount} simulação${state.simCount>1?'s':''} realizadas`;
+  }
+  // Contador
+  document.getElementById('p-sims').textContent = state.simCount;
+  document.getElementById('p-sims-sub').textContent = 'nesta sessão';
+  // Última simulação
+  const lastAvg = Math.round((lastFb.diagnostico+lastFb.objecoes+lastFb.empatia+lastFb.conducao+lastFb.encerramento)/5);
+  document.getElementById('p-last-sim').textContent = lastAvg;
+  document.getElementById('p-last-sim').style.color = scoreColor(lastAvg);
+  document.getElementById('p-last-sub').textContent = 'score mais recente';
+  // Barras de competências
+  document.getElementById('comp-empty').style.display = 'none';
+  document.getElementById('comp-bars').style.display = 'block';
+  const comps = [
+    {key:'diag',val:avgs.diagnostico},{key:'obj',val:avgs.objecoes},{key:'emp',val:avgs.empatia},
+    {key:'cond',val:avgs.conducao},{key:'enc',val:avgs.encerramento}
+  ];
+  comps.forEach(c => {
+    if (c.val!==null) {
+      document.getElementById('c-'+c.key).textContent = c.val;
+      document.getElementById('c-'+c.key).style.color = scoreColor(c.val);
+      document.getElementById('cb-'+c.key).style.width = c.val + '%';
+      const barColor = c.val>=70?'linear-gradient(90deg,var(--pos),#86efac)':c.val>=50?'linear-gradient(90deg,var(--green),var(--green2))':'linear-gradient(90deg,var(--neg),#fb923c)';
+      document.getElementById('cb-'+c.key).style.background = barColor;
+    }
+  });
+  // Recomendação
+  const lacunaKey = Object.entries(avgs).sort((a,b)=>a[1]-b[1])[0];
+  const nomes = {diagnostico:'diagnóstico patrimonial',objecoes:'tratamento de objeções',empatia:'empatia e rapport',conducao:'condução comercial',encerramento:'encerramento com próximo passo'};
+  document.getElementById('painel-rec').innerHTML = `Baseado nas suas <strong>${state.simCount} simulação${state.simCount>1?'s':''}</strong>, sua principal lacuna está em <strong>${nomes[lacunaKey[0]]}</strong> (média: ${lacunaKey[1]}). ${lastFb.recomendacao}`;
+}
+
+// ═══════ TRILHA ═══════
+let currentModuleId = null;
+function openModule(id) {
+  const mod = MODULE_CONTENT[id];
+  if (!mod || id === 9) return; // mod 9 locked
+  currentModuleId = id;
+  document.getElementById('trilha-main').style.display = 'none';
+  document.getElementById('module-detail').classList.add('active');
+  document.getElementById('module-title').textContent = mod.title;
+  document.getElementById('module-desc').textContent = mod.desc;
+  const subList = document.getElementById('sub-module-list');
+  subList.innerHTML = mod.subs.map((s,i) => `
+    <div class="sub-module-item ${s.done?'done':''}" id="sub-${id}-${i}" onclick="openSubContent(${id},${i})">
+      <div class="sub-check ${s.done?'done':''}">${s.done?'✓':''}</div>
+      <div class="sub-module-name">${s.name}</div>
+    </div>`).join('');
+  document.getElementById('module-content-area').innerHTML = '';
+  document.getElementById('module-chat').innerHTML = '';
+  state.moduleChat = [];
+  const intro = `Estou aqui para te ajudar no módulo <strong>${mod.title}</strong>. Clique em qualquer tema acima para ver o conteúdo, ou pergunte diretamente aqui embaixo.`;
+  addMsg('module-chat','ai',intro);
+}
+function openSubContent(modId, subIdx) {
+  const mod = MODULE_CONTENT[modId];
+  const sub = mod.subs[subIdx];
+  document.querySelectorAll('.sub-module-item').forEach(e => e.classList.remove('active-sub'));
+  document.getElementById(`sub-${modId}-${subIdx}`).classList.add('active-sub');
+  const area = document.getElementById('module-content-area');
+  if (sub.content) {
+    const btn = document.createElement('button');
+    btn.className = 'btn-outline';
+    btn.textContent = '💬 Praticar esse tema com o tutor →';
+    btn.onclick = () => practiceSubModule(sub.name);
+    area.innerHTML = `<div class="module-content-box">${sub.content}</div>`;
+    area.querySelector('.module-content-box').appendChild(document.createElement('div')).outerHTML;
+    const divider = document.createElement('div');
+    divider.style.cssText = 'margin-top:20px;padding-top:16px;border-top:1px solid var(--border)';
+    divider.appendChild(btn);
+    area.querySelector('.module-content-box').appendChild(divider);
+  } else {
+    area.innerHTML = `<div class="module-content-box" style="color:var(--text3);font-style:italic">Conteúdo em desenvolvimento. Use o tutor abaixo para aprender sobre "${sub.name}".</div>`;
+    practiceSubModule(sub.name);
+  }
+}
+function practiceSubModule(name) {
+  document.getElementById('module-input').value = `Me explique "${name}" com exemplos práticos para assessor de investimentos`;
+  sendModuleChat();
+}
+function closeModule() {
+  document.getElementById('module-detail').classList.remove('active');
+  document.getElementById('trilha-main').style.display = 'block';
+  currentModuleId = null;
+}
+async function sendModuleChat() {
+  const inp = document.getElementById('module-input');
+  const text = inp.value.trim(); if (!text) return;
+  inp.value = '';
+  addMsg('module-chat','user',text);
+  state.moduleChat.push({role:'user',content:text});
+  document.getElementById('module-send').disabled = true;
+  addTyping('module-chat');
+  const mod = MODULE_CONTENT[currentModuleId] || {};
+  const sys = `${SYSTEM_TUTOR}\n\nVocê está no módulo "${mod.title}". Seja didático, use exemplos práticos de assessoria de investimentos, e quando cabível, sugira um exercício ou simulação para o assessor praticar.`;
+  const reply = await callClaude(state.moduleChat, sys);
+  removeTyping('module-chat');
+  addMsg('module-chat','ai',reply);
+  state.moduleChat.push({role:'assistant',content:reply});
+  document.getElementById('module-send').disabled = false;
+}
+
+// ═══════ PREPARAR REUNIÃO ═══════
+async function gerarPreparacao() {
+  const perfil = document.getElementById('r-perfil').value;
+  const idade = document.getElementById('r-idade').value;
+  const patrimonio = document.getElementById('r-patrimonio').value;
+  const contexto = document.getElementById('r-contexto').value;
+  const info = document.getElementById('r-info').value;
+  const result = document.getElementById('r-result');
+  result.innerHTML = '<div style="padding:20px;display:flex;align-items:center;gap:10px;color:var(--text2)"><div class="loader"><span></span><span></span><span></span></div> Montando preparação...</div>';
+  result.classList.add('show');
+  const prompt = `Monte uma preparação completa para reunião com este cliente no método Alto Valor:
+
+Perfil: ${perfil||'Não informado'}
+Idade: ${idade||'Não informada'}
+Patrimônio estimado: ${patrimonio||'Não informado'}
+Tipo de reunião: ${contexto}
+O que já sei: ${info||'Nenhuma informação adicional'}
+
+Estruture em:
+**1. Objetivo da reunião**
+(resultado concreto esperado ao final)
+
+**2. Perguntas SPIN**
+Situação (3 perguntas):
+Problema (3 perguntas):
+Implicação (2 perguntas):
+Necessidade (2 perguntas):
+
+**3. Objeções prováveis**
+(2-3 objeções mais prováveis para esse perfil + como contornar cada uma usando os 5 passos)
+
+**4. Próximo passo**
+(como fechar a reunião com avanço concreto e data)
+
+**5. Tom recomendado**
+(como se posicionar com esse perfil específico)`;
+  const reply = await callClaude([{role:'user',content:prompt}], SYSTEM_TUTOR);
+  result.innerHTML = reply.replace(/\*\*(.*?)\*\*/g,'<h3>$1</h3>').replace(/\n/g,'<br>');
+}
+
+// ═══════ PÓS-CALL ═══════
+async function analisarCall() {
+  const resumo = document.getElementById('pc-resumo').value.trim();
+  if (!resumo) return;
+  const result = document.getElementById('pc-result');
+  result.innerHTML = '<div style="padding:20px;display:flex;align-items:center;gap:10px;color:var(--text2)"><div class="loader"><span></span><span></span><span></span></div> Analisando...</div>';
+  result.classList.add('show');
+  const prompt = `Analise esta reunião e dê feedback estruturado para o assessor no método Alto Valor:
+
+RESUMO: ${resumo}
+
+**O que foi bem**
+(2-3 pontos positivos concretos)
+
+**O que poderia ter sido melhor**
+(2-3 pontos com sugestão prática de como fazer diferente na próxima)
+
+**Avaliação do SPIN**
+(o assessor usou diagnóstico antes de proposta? Em qual etapa saiu do trilho?)
+
+**Próxima reunião**
+(sugestão específica de próximo passo e como abordar esse cliente)
+
+**Nota geral: X/10**
+(com justificativa em 1 linha)`;
+  const reply = await callClaude([{role:'user',content:prompt}], SYSTEM_TUTOR);
+  result.innerHTML = reply.replace(/\*\*(.*?)\*\*/g,'<h3>$1</h3>').replace(/\n/g,'<br>');
+}
+
+function launchSimulator(profileDesc) {
+  // Store the custom profile and navigate to simulator
+  window._pendingSimProfile = profileDesc;
+  navigate('simulador', document.querySelector('.nav-item[onclick*="simulador"]'));
+  // After navigation, trigger the custom field
+  setTimeout(() => {
+    const customBtn = document.getElementById('custom-sim-btn');
+    if (customBtn) {
+      const customInput = document.getElementById('custom-client-desc');
+      if (customInput) {
+        customInput.value = profileDesc;
+        customBtn.click();
+      }
+    }
+  }, 300);
+}
+
+</script>
+</body>
+</html>
