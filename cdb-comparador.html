@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDB Comparador — Alto Valor</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #04090f;
+    --surface: #080f19;
+    --card: #0c1624;
+    --border: #1a2d45;
+    --accent: #00e5a0;
+    --accent2: #0084ff;
+    --danger: #ff4d6d;
+    --text: #e8f0ff;
+    --muted: #556a88;
+    --label: #8ba5c8;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,160,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,160,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 40px 24px 100px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-tag { font-size: 10px; letter-spacing: 4px; color: var(--accent); text-transform: uppercase; margin-bottom: 4px; }
+  h1 { font-family: 'Syne', sans-serif; font-size: clamp(22px, 4vw, 34px); font-weight: 800; letter-spacing: -1px; line-height: 1; }
+  h1 span { color: var(--accent); }
+  .header-badge {
+    background: rgba(0,229,160,0.08);
+    border: 1px solid rgba(0,229,160,0.2);
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── FORM ── */
+  .form-section { margin-bottom: 32px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+  .grid-1 { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
+  .cdb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  @media (max-width: 600px) {
+    .grid-3, .cdb-grid { grid-template-columns: 1fr; }
+  }
+
+  .cdb-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cdb-card.a { border-top: 2px solid var(--accent); }
+  .cdb-card.b { border-top: 2px solid var(--accent2); }
+  .cdb-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 60px;
+    background: linear-gradient(180deg, rgba(0,229,160,0.04), transparent); pointer-events: none;
+  }
+  .cdb-card.b::before { background: linear-gradient(180deg, rgba(0,132,255,0.04), transparent); }
+
+  .cdb-label {
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cdb-card.a .cdb-label { color: var(--accent); }
+  .cdb-card.b .cdb-label { color: var(--accent2); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .cdb-card.a .dot { background: var(--accent); }
+  .cdb-card.b .dot { background: var(--accent2); }
+
+  .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .field:last-child { margin-bottom: 0; }
+  label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--label); }
+  input[type="text"], input[type="number"], input[type="date"] {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    padding: 10px 12px;
+    width: 100%;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  input:focus { outline: none; border-color: var(--accent); }
+  input[type="date"] { color-scheme: dark; }
+
+  /* ── TOGGLE BUTTON (líquido) ── */
+  .toggle-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .toggle-btn:hover { border-color: var(--label); color: var(--label); }
+  .toggle-btn.active {
+    background: rgba(0,229,160,0.08);
+    border-color: rgba(0,229,160,0.4);
+    color: var(--accent);
+  }
+  .toggle-btn .pill {
+    width: 28px; height: 16px;
+    background: var(--border);
+    border-radius: 99px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-btn.active .pill { background: var(--accent); }
+  .toggle-btn .pill::after {
+    content: '';
+    position: absolute;
+    width: 10px; height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    top: 3px; left: 3px;
+    transition: transform 0.2s;
+  }
+  .toggle-btn.active .pill::after { transform: translateX(12px); }
+
+  .toggle-btn.cdi-btn.active {
+    background: rgba(136,135,128,0.12);
+    border-color: rgba(136,135,128,0.4);
+    color: #b4b2a9;
+  }
+  .toggle-btn.cdi-btn.active .pill { background: #888780; }
+
+  /* ── BUTTON ── */
+  .btn-calc {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: #04090f;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-calc:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,229,160,0.2); }
+  .btn-calc:active { transform: translateY(0); }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 40px 0; }
+
+  /* ── CHART AREA ── */
+  .chart-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-size: 11px;
+    color: var(--label);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 22px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+  .legend-swatch.dashed {
+    background: repeating-linear-gradient(90deg, currentColor 0, currentColor 4px, transparent 4px, transparent 8px);
+  }
+
+  .chart-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .chart-inner { position: relative; width: 100%; height: 320px; }
+
+  /* ── KPI ROW ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 600px) { .kpi-row { grid-template-columns: 1fr 1fr; } }
+
+  .kpi {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 16px;
+  }
+  .kpi-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--label); margin-bottom: 6px; }
+  .kpi-val { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; line-height: 1; }
+  .kpi-val.green { color: var(--accent); }
+  .kpi-val.blue { color: var(--accent2); }
+  .kpi-val.pos { color: var(--accent); }
+  .kpi-val.neg { color: var(--danger); }
+
+  /* ── TABLE ── */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px; }
+  .comp-table thead tr { border-bottom: 1px solid var(--border); }
+  .comp-table th {
+    padding: 10px 14px; text-align: left;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); font-weight: 400;
+  }
+  .comp-table td { padding: 12px 14px; border-bottom: 1px solid rgba(26,45,69,0.5); color: var(--label); }
+  .comp-table td:first-child { color: var(--text); }
+  .comp-table td.a-val { color: var(--accent); font-variant-numeric: tabular-nums; }
+  .comp-table td.b-val { color: var(--accent2); font-variant-numeric: tabular-nums; }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table tr:hover { background: rgba(255,255,255,0.02); }
+
+  /* ── VERDICT ── */
+  .verdict {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    display: flex; gap: 14px; align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .verdict-icon { font-size: 26px; flex-shrink: 0; }
+  .verdict-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .verdict-text { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; line-height: 1.5; color: var(--text); }
+  .verdict-text strong { color: var(--accent); }
+
+  /* ── IR NOTE ── */
+  .ir-note {
+    display: inline-block;
+    background: rgba(255,77,109,0.1);
+    border: 1px solid rgba(255,77,109,0.2);
+    border-radius: 4px;
+    padding: 2px 8px; font-size: 10px; color: #ff8099;
+    letter-spacing: 1px; text-transform: uppercase; margin-right: 6px;
+  }
+  .footnote { font-size: 11px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
+
+  /* ── FOOTER ── */
+  .result-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+    padding-top: 16px; border-top: 1px solid var(--border);
+  }
+  .disclaimer { font-size: 10px; color: var(--muted); letter-spacing: 0.5px; }
+  .btn-export {
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 8px; color: var(--label);
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    padding: 10px 20px; cursor: pointer;
+    display: flex; align-items: center; gap: 8px; transition: all 0.2s;
+  }
+  .btn-export:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── RESULT PANEL ── */
+  #result { display: none; animation: slideUp 0.5s ease forwards; }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+  .result-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+  .result-date { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div>
+      <div class="brand-tag">Alto Valor — Ferramentas</div>
+      <h1>CDB <span>Comparador</span></h1>
+    </div>
+    <div class="header-badge">v1.1 · 2026</div>
+  </header>
+
+  <!-- FORM: BASE -->
+  <div class="form-section">
+    <div class="section-title">Parâmetros Base</div>
+    <div class="grid-3">
+      <div class="field"><label>Data de Hoje</label><input type="date" id="dataHoje"></div>
+      <div class="field"><label>Data de Vencimento</label><input type="date" id="dataVenc"></div>
+      <div class="field"><label>Volume Aplicado (R$)</label><input type="number" id="volume" placeholder="100000" min="0"></div>
+    </div>
+    <div class="grid-1">
+      <div class="field"><label>CDI Projetado (% a.a.)</label><input type="number" id="cdi" placeholder="13.75" step="0.01" min="0"></div>
+    </div>
+  </div>
+
+  <!-- FORM: CDBs -->
+  <div class="form-section">
+    <div class="section-title">Comparativo de CDBs</div>
+    <div class="cdb-grid">
+      <div class="cdb-card a">
+        <div class="cdb-label"><span class="dot"></span>CDB A — Concorrência</div>
+        <div class="field"><label>Emissor</label><input type="text" id="nomeA" placeholder="Ex: Banco XYZ"></div>
+        <div class="field"><label>% do CDI</label><input type="number" id="taxaA" placeholder="102.00" step="0.01" min="0"></div>
+      </div>
+      <div class="cdb-card b">
+        <div class="cdb-label"><span class="dot"></span>CDB B — XP Investimentos</div>
+        <div class="field"><label>Emissor</label><input type="text" id="nomeB" placeholder="Ex: Banco ABC via XP"></div>
+        <div class="field"><label>% do CDI</label><input type="number" id="taxaB" placeholder="105.00" step="0.01" min="0"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOGGLES -->
+  <div class="toggle-row">
+    <button class="toggle-btn" id="btnLiq" onclick="toggleLiq()">
+      <span class="pill"></span>
+      Exibir valor líquido (após IR)
+    </button>
+    <button class="toggle-btn cdi-btn" id="btnCDI" onclick="toggleCDI()">
+      <span class="pill"></span>
+      Exibir CDI 100% como referência
+    </button>
+  </div>
+
+  <div style="margin-bottom: 32px;">
+    <button class="btn-calc" onclick="calcular()">▶ Calcular Comparativo</button>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result">
+    <div class="divider"></div>
+
+    <!-- RELATÓRIO: HEADER -->
+    <div class="result-header">
+      <div class="result-title">📊 Relatório de Comparativo</div>
+      <div class="result-date" id="resultDate"></div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-label">Dias Úteis</div><div class="kpi-val" id="kpiDias">—</div></div>
+      <div class="kpi"><div class="kpi-label">CDI Efetivo (período)</div><div class="kpi-val" id="kpiCdiEf">—</div></div>
+      <div class="kpi"><div class="kpi-label">Diferença Bruta (R$)</div><div class="kpi-val" id="kpiDelta">—</div></div>
+      <div class="kpi"><div class="kpi-label">Valor Bruto — CDB A</div><div class="kpi-val green" id="kpiGrossA">—</div></div>
+      <div class="kpi"><div class="kpi-label">Valor Bruto — CDB B</div><div class="kpi-val blue" id="kpiGrossB">—</div></div>
+      <div class="kpi"><div class="kpi-label">Diferença Líquida (R$)</div><div class="kpi-val" id="kpiDeltaLiq">—</div></div>
+    </div>
+
+    <!-- GRÁFICO -->
+    <div class="section-title">Evolução do Capital no Tempo</div>
+
+    <div class="chart-controls">
+      <div class="chart-legend" id="chartLegend"></div>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-inner"><canvas id="lineChart"></canvas></div>
+    </div>
+
+    <!-- TABELA -->
+    <div class="section-title">Detalhamento</div>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Métrica</th>
+          <th id="thA">CDB A</th>
+          <th id="thB">CDB B</th>
+          <th>Δ B − A</th>
+        </tr>
+      </thead>
+      <tbody id="compBody"></tbody>
+    </table>
+
+    <!-- VERDICT -->
+    <div class="verdict">
+      <div class="verdict-icon" id="verdictIcon">🏆</div>
+      <div>
+        <div class="verdict-label">Veredicto</div>
+        <div class="verdict-text" id="verdictText">—</div>
+      </div>
+    </div>
+
+    <!-- IR NOTE -->
+    <p class="footnote">
+      <span class="ir-note">IR</span>
+      Alíquotas regressivas: até 180 dias → 22,5% · 181–360 dias → 20% · 361–720 dias → 17,5% · acima de 720 dias → 15%.
+      Dias úteis calculados com base em 252/365.
+    </p>
+
+    <!-- FOOTER -->
+    <div class="result-footer">
+      <div class="disclaimer">Simulação com CDI projetado. Valores aproximados. Não constitui oferta de investimento.</div>
+      <button class="btn-export" onclick="exportar()">⬇ Exportar CSV</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── ESTADO ──
+let showLiq = false;
+let showCDI = false;
+let chartInst = null;
+let lastData = null;
+
+// Preenche data de hoje
+const hoje = new Date();
+const pad = n => String(n).padStart(2,'0');
+document.getElementById('dataHoje').value =
+  `${hoje.getFullYear()}-${pad(hoje.getMonth()+1)}-${pad(hoje.getDate())}`;
+
+// ── TOGGLES ──
+function toggleLiq() {
+  showLiq = !showLiq;
+  document.getElementById('btnLiq').classList.toggle('active', showLiq);
+  if (lastData) renderGrafico(lastData);
+}
+function toggleCDI() {
+  showCDI = !showCDI;
+  document.getElementById('btnCDI').classList.toggle('active', showCDI);
+  if (lastData) renderGrafico(lastData);
+}
+
+// ── HELPERS ──
+function diasUteis(d1, d2) {
+  let count = 0, cur = new Date(d1);
+  while (cur < d2) {
+    const dow = cur.getDay();
+    if (dow !== 0 && dow !== 6) count++;
+    cur.setDate(cur.getDate() + 1);
+  }
+  return count;
+}
+function aliqIR(dc) {
+  if (dc <= 180) return 0.225;
+  if (dc <= 360) return 0.20;
+  if (dc <= 720) return 0.175;
+  return 0.15;
+}
+function fatorPeriodo(cdiAA, du) {
+  return Math.pow(Math.pow(1 + cdiAA / 100, 1 / 252), du);
+}
+function fmt(v, d=2) { return v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+function fmtR(v) { return 'R$ ' + fmt(v); }
+function fmtPct(v) { return fmt(v, 4) + '%'; }
+
+function calcSeries(vol, cdiAA, pctCDI, totalDias) {
+  const step = Math.max(1, Math.round(totalDias / 80));
+  const labels = [], bruto = [], liq = [];
+  const pts = [];
+  for (let d = 0; d <= totalDias; d += step) pts.push(d);
+  if (pts[pts.length-1] !== totalDias) pts.push(totalDias);
+  for (const d of pts) {
+    const du = Math.round(d * 252 / 365);
+    const fator = fatorPeriodo(cdiAA * pctCDI / 100, du);
+    const vB = vol * fator;
+    const rend = vB - vol;
+    labels.push(d + 'd');
+    bruto.push(+vB.toFixed(2));
+    liq.push(+(vol + rend * (1 - aliqIR(d))).toFixed(2));
+  }
+  return { labels, bruto, liq };
+}
+
+// ── RENDER GRÁFICO ──
+function renderGrafico(d) {
+  const { vol, cdiAA, txA, txB, nomeA, nomeB, diasCorridos } = d;
+  const sA   = calcSeries(vol, cdiAA, txA, diasCorridos);
+  const sB   = calcSeries(vol, cdiAA, txB, diasCorridos);
+  const sCDI = calcSeries(vol, cdiAA, 100, diasCorridos);
+
+  const CA = '#00e5a0', CB = '#0084ff', CCDI = '#666f7e';
+
+  const datasets = [
+    {
+      label: `${nomeA} — Bruto`,
+      data: sA.bruto, borderColor: CA,
+      borderWidth: 2, pointRadius: 0, pointHoverRadius: 5, tension: 0.4, fill: false
+    },
+    {
+      label: `${nomeB} — Bruto`,
+      data: sB.bruto, borderColor: CB,
+      borderWidth: 2, pointRadius: 0, pointHoverRadius: 5, tension: 0.4, fill: false
+    },
+  ];
+
+  if (showLiq) {
+    datasets.push({
+      label: `${nomeA} — Líquido`,
+      data: sA.liq, borderColor: CA,
+      borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: false
+    });
+    datasets.push({
+      label: `${nomeB} — Líquido`,
+      data: sB.liq, borderColor: CB,
+      borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: false
+    });
+  }
+
+  if (showCDI) {
+    datasets.push({
+      label: 'CDI 100%',
+      data: sCDI.bruto, borderColor: CCDI,
+      borderWidth: 1.5, borderDash: [3,3], pointRadius: 0, pointHoverRadius: 3, tension: 0.4, fill: false
+    });
+  }
+
+  // Legend
+  const legendEl = document.getElementById('chartLegend');
+  legendEl.innerHTML = datasets.map(ds => {
+    const isDash = !!ds.borderDash;
+    const sw = isDash
+      ? `<span style="display:inline-block;width:22px;height:0;border-top:2px dashed ${ds.borderColor};vertical-align:middle;"></span>`
+      : `<span style="display:inline-block;width:22px;height:3px;background:${ds.borderColor};border-radius:2px;vertical-align:middle;"></span>`;
+    return `<span class="legend-item">${sw} ${ds.label}</span>`;
+  }).join('');
+
+  if (chartInst) chartInst.destroy();
+
+  chartInst = new Chart(document.getElementById('lineChart'), {
+    type: 'line',
+    data: { labels: sA.labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0c1624',
+          borderColor: '#1a2d45',
+          borderWidth: 1,
+          titleColor: '#8ba5c8',
+          bodyColor: '#e8f0ff',
+          padding: 12,
+          callbacks: {
+            label: ctx => `  ${ctx.dataset.label}: ${fmtR(ctx.parsed.y)}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#556a88', font: { size: 11, family: 'DM Mono' }, maxTicksLimit: 10, autoSkip: true },
+          grid: { color: 'rgba(26,45,69,0.7)' },
+          title: { display: true, text: 'Dias corridos', color: '#556a88', font: { size: 11 } }
+        },
+        y: {
+          ticks: {
+            color: '#556a88', font: { size: 11, family: 'DM Mono' },
+            callback: v => 'R$ ' + (v >= 1000000 ? (v/1000000).toFixed(1)+'M' : (v/1000).toFixed(0)+'k')
+          },
+          grid: { color: 'rgba(26,45,69,0.7)' },
+          title: { display: true, text: 'Valor (R$)', color: '#556a88', font: { size: 11 } }
+        }
+      }
+    }
+  });
+}
+
+// ── CALCULAR ──
+function calcular() {
+  const dataHoje = document.getElementById('dataHoje').value;
+  const dataVenc = document.getElementById('dataVenc').value;
+  const volume   = parseFloat(document.getElementById('volume').value);
+  const cdi      = parseFloat(document.getElementById('cdi').value);
+  const txA      = parseFloat(document.getElementById('taxaA').value);
+  const txB      = parseFloat(document.getElementById('taxaB').value);
+  const nomeA    = document.getElementById('nomeA').value || 'CDB A';
+  const nomeB    = document.getElementById('nomeB').value || 'CDB B';
+
+  if (!dataHoje || !dataVenc || isNaN(volume) || isNaN(cdi) || isNaN(txA) || isNaN(txB)) {
+    alert('Preencha todos os campos obrigatórios.');
+    return;
+  }
+
+  const d1 = new Date(dataHoje + 'T00:00:00');
+  const d2 = new Date(dataVenc + 'T00:00:00');
+  if (d2 <= d1) { alert('A data de vencimento deve ser posterior à data de hoje.'); return; }
+
+  const du = diasUteis(d1, d2);
+  const diasCorridos = Math.round((d2 - d1) / 86400000);
+  const ir = aliqIR(diasCorridos);
+  const irPct = (ir * 100).toFixed(1);
+
+  const fatorA = fatorPeriodo(cdi * txA / 100, du);
+  const fatorB = fatorPeriodo(cdi * txB / 100, du);
+  const fatorCDI = fatorPeriodo(cdi, du);
+
+  const grossA = volume * fatorA,      grossB = volume * fatorB;
+  const rendBA = grossA - volume,      rendBB = grossB - volume;
+  const liqA   = volume + rendBA*(1-ir), liqB = volume + rendBB*(1-ir);
+  const rendLA = liqA - volume,        rendLB = liqB - volume;
+  const txEfA  = (fatorA - 1)*100,    txEfB  = (fatorB - 1)*100;
+  const cdiPer = (fatorCDI - 1)*100;
+  const deltaG = grossB - grossA,     deltaL = liqB - liqA;
+
+  lastData = { vol: volume, cdiAA: cdi, txA, txB, nomeA, nomeB, diasCorridos, du };
+
+  // Datas
+  document.getElementById('resultDate').textContent =
+    `Gerado em ${d1.toLocaleDateString('pt-BR')} · Venc. ${d2.toLocaleDateString('pt-BR')}`;
+
+  // KPIs
+  document.getElementById('kpiDias').textContent = du + ' d.u.';
+  document.getElementById('kpiCdiEf').textContent = fmtPct(cdiPer);
+  const kd = document.getElementById('kpiDelta');
+  kd.textContent = (deltaG >= 0 ? '+' : '') + fmtR(deltaG);
+  kd.className = 'kpi-val ' + (deltaG >= 0 ? 'pos' : 'neg');
+  document.getElementById('kpiGrossA').textContent = fmtR(grossA);
+  document.getElementById('kpiGrossB').textContent = fmtR(grossB);
+  const kdl = document.getElementById('kpiDeltaLiq');
+  kdl.textContent = (deltaL >= 0 ? '+' : '') + fmtR(deltaL);
+  kdl.className = 'kpi-val ' + (deltaL >= 0 ? 'pos' : 'neg');
+
+  // Table headers
+  document.getElementById('thA').textContent = nomeA;
+  document.getElementById('thB').textContent = nomeB;
+
+  // Table body
+  const rows = [
+    ['% do CDI', fmtPct(txA), fmtPct(txB), (txB-txA>=0?'+':'') + fmt(txB-txA,2)+'%'],
+    ['Taxa ef. no período', fmtPct(txEfA), fmtPct(txEfB), (txEfB-txEfA>=0?'+':'') + fmtPct(txEfB-txEfA)],
+    ['Rendimento Bruto', fmtR(rendBA), fmtR(rendBB), (deltaG>=0?'+':'') + fmtR(deltaG)],
+    ['Alíquota IR', irPct+'%', irPct+'%', '—'],
+    ['IR a Recolher', fmtR(rendBA*ir), fmtR(rendBB*ir), fmtR((rendBB-rendBA)*ir)],
+    ['Rendimento Líquido', fmtR(rendLA), fmtR(rendLB), (deltaL>=0?'+':'') + fmtR(deltaL)],
+    ['Valor Final Bruto', fmtR(grossA), fmtR(grossB), (deltaG>=0?'+':'') + fmtR(deltaG)],
+    ['Valor Final Líquido', fmtR(liqA), fmtR(liqB), (deltaL>=0?'+':'') + fmtR(deltaL)],
+  ];
+  document.getElementById('compBody').innerHTML = rows.map(([l,a,b,d]) => {
+    const dc = d === '—' ? 'var(--muted)' : (d.startsWith('+') ? 'var(--accent)' : 'var(--danger)');
+    return `<tr><td>${l}</td><td class="a-val">${a}</td><td class="b-val">${b}</td><td style="color:${dc}">${d}</td></tr>`;
+  }).join('');
+
+  // Verdict
+  const better = txB > txA ? nomeB : nomeA;
+  const gainL = Math.abs(deltaL);
+  const gainP = (gainL / volume * 100);
+  document.getElementById('verdictIcon').textContent = txB > txA ? '🏆' : '🥇';
+  document.getElementById('verdictText').innerHTML =
+    `<strong>${better}</strong> é mais rentável neste prazo. Vantagem líquida de <strong>${fmtR(gainL)}</strong>
+    (${fmt(gainP,4)}% sobre o capital) após ${diasCorridos} dias corridos / ${du} dias úteis, com IR de ${irPct}%.`;
+
+  // Mostrar painel
+  const el = document.getElementById('result');
+  el.style.display = 'block';
+
+  // Gráfico
+  renderGrafico(lastData);
+
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── EXPORTAR CSV ──
+function exportar() {
+  if (!lastData) return;
+  const { vol, cdiAA: cdi, txA, txB, nomeA, nomeB, diasCorridos, du } = lastData;
+  const ir = aliqIR(diasCorridos); const irPct = (ir*100).toFixed(1);
+  const fA = fatorPeriodo(cdi*txA/100, du), fB = fatorPeriodo(cdi*txB/100, du);
+  const gA = vol*fA, gB = vol*fB, rA = gA-vol, rB = gB-vol;
+  const lA = vol+rA*(1-ir), lB = vol+rB*(1-ir);
+  const txEfA = (fA-1)*100, txEfB = (fB-1)*100;
+
+  const lines = [
+    ['Parâmetro','CDB A','CDB B','Delta'],
+    ['Emissor', nomeA, nomeB, ''],
+    ['% CDI', txA, txB, txB-txA],
+    ['Dias Corridos', diasCorridos, diasCorridos, ''],
+    ['Dias Úteis', du, du, ''],
+    ['CDI a.a.(%)', cdi, cdi, ''],
+    ['Taxa ef. período(%)', txEfA.toFixed(4), txEfB.toFixed(4), (txEfB-txEfA).toFixed(4)],
+    ['Valor Inicial', vol, vol, ''],
+    ['Rend. Bruto', rA.toFixed(2), rB.toFixed(2), (rB-rA).toFixed(2)],
+    ['IR (%)', irPct, irPct, ''],
+    ['Rend. Líquido', (lA-vol).toFixed(2), (lB-vol).toFixed(2), (lB-lA).toFixed(2)],
+    ['Valor Final Bruto', gA.toFixed(2), gB.toFixed(2), (gB-gA).toFixed(2)],
+    ['Valor Final Líquido', lA.toFixed(2), lB.toFixed(2), (lB-lA).toFixed(2)],
+  ];
+  const csv = lines.map(r => r.join(';')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url;
+  a.download = `comparativo_${nomeA.replace(/\s/g,'_')}_vs_${nomeB.replace(/\s/g,'_')}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
