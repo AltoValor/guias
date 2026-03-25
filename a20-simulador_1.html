@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador A20 — Alto Valor</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08111c;
+    --surface: #0d1c2b;
+    --surface2: #112030;
+    --surface3: #162840;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --green: #009974;
+    --green-dim: rgba(0,153,116,0.15);
+    --green-glow: rgba(0,153,116,0.3);
+    --amber: #f0a500;
+    --amber-dim: rgba(240,165,0,0.12);
+    --red: #e05050;
+    --red-dim: rgba(224,80,80,0.12);
+    --blue: #3a8ef0;
+    --blue-dim: rgba(58,142,240,0.12);
+    --text: #e8edf2;
+    --text2: #7a9ab5;
+    --text3: #4a6a85;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 80% 0%, rgba(0,153,116,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 0% 100%, rgba(58,142,240,0.04) 0%, transparent 70%);
+  }
+
+  .page { max-width: 760px; margin: 0 auto; }
+
+  /* HEADER */
+  .header { margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; }
+  .header-left {}
+  .eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; color: var(--green); text-transform: uppercase; margin-bottom: 6px; }
+  h1 { font-size: 28px; font-weight: 600; line-height: 1.15; color: var(--text); }
+  h1 span { color: var(--green); }
+  .header-meta { font-size: 12px; color: var(--text3); margin-top: 6px; font-family: var(--mono); }
+  .logo-badge {
+    background: var(--surface);
+    border: 0.5px solid var(--border2);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+    letter-spacing: 0.05em;
+  }
+  .logo-badge strong { color: var(--green); }
+
+  /* STATUS BAR — Alto Valor atual */
+  .status-bar {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0,1fr));
+    gap: 1rem;
+  }
+  .status-item {}
+  .status-lbl { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+  .status-val { font-size: 22px; font-weight: 600; color: var(--text); font-family: var(--mono); }
+  .status-val.current { color: var(--amber); }
+  .status-val.goal { color: var(--green); }
+  .status-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* META TARGET */
+  .target-section { margin-bottom: 1.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
+  .target-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tbtn {
+    padding: 7px 18px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--text2);
+    border: 0.5px solid var(--border2);
+    font-family: var(--sans);
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .tbtn:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
+  .tbtn.active { background: var(--green-dim); color: var(--green); border-color: var(--green); }
+
+  /* SLIDERS CARD */
+  .card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card-title { font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 1.25rem; letter-spacing: 0.03em; }
+
+  .slider-block { margin-bottom: 1.25rem; }
+  .slider-block:last-child { margin-bottom: 0; }
+  .slider-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .slider-name { font-size: 13px; color: var(--text); font-weight: 500; }
+  .slider-weight { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+  .slider-value-row { display: flex; align-items: center; gap: 10px; }
+  .slider-pos {
+    font-size: 20px;
+    font-weight: 600;
+    font-family: var(--mono);
+    color: var(--text);
+    min-width: 48px;
+    text-align: right;
+  }
+  .slider-contrib {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+    min-width: 60px;
+    text-align: right;
+  }
+
+  input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--surface3);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--green);
+    cursor: pointer;
+    box-shadow: 0 0 8px var(--green-glow);
+    transition: transform 0.1s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  input[type=range].slider-cdi::-webkit-slider-thumb { background: var(--amber); box-shadow: 0 0 8px rgba(240,165,0,0.3); }
+  .track-bg { position: relative; }
+
+  /* EQUAÇÃO */
+  .eq-block {
+    background: var(--surface2);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-top: 1.25rem;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+    line-height: 2;
+  }
+  .eq-block .eq-highlight { color: var(--text); }
+  .eq-block .eq-green { color: var(--green); font-weight: 500; }
+  .eq-block .eq-amber { color: var(--amber); }
+  .eq-block .eq-red { color: var(--red); }
+
+  /* RESULTADO */
+  .result-card {
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border: 0.5px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    transition: background 0.3s;
+  }
+  .result-card.state-ok { background: rgba(0,153,116,0.07); border-color: rgba(0,153,116,0.25); }
+  .result-card.state-ok::before { background: var(--green); }
+  .result-card.state-warn { background: rgba(240,165,0,0.07); border-color: rgba(240,165,0,0.25); }
+  .result-card.state-warn::before { background: var(--amber); }
+  .result-card.state-fail { background: rgba(224,80,80,0.07); border-color: rgba(224,80,80,0.25); }
+  .result-card.state-fail::before { background: var(--red); }
+
+  .result-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+  .result-main {}
+  .result-number { font-size: 64px; font-weight: 600; font-family: var(--mono); line-height: 1; transition: color 0.3s; }
+  .result-number.ok { color: var(--green); }
+  .result-number.warn { color: var(--amber); }
+  .result-number.fail { color: var(--red); }
+  .result-desc { font-size: 13px; color: var(--text2); margin-top: 6px; max-width: 300px; line-height: 1.5; }
+  .result-badge {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .badge-ok { background: var(--green-dim); color: var(--green); }
+  .badge-warn { background: var(--amber-dim); color: var(--amber); }
+  .badge-fail { background: var(--red-dim); color: var(--red); }
+
+  .result-scores { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .score-line { text-align: right; }
+  .score-label { font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text3); }
+  .score-val { font-size: 18px; font-weight: 600; font-family: var(--mono); color: var(--text); }
+
+  /* MINI GRID */
+  .mini-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-top: 1.25rem; }
+  .mini {
+    background: rgba(255,255,255,0.03);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .mini-lbl { font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+  .mini-val { font-size: 15px; font-weight: 600; font-family: var(--mono); color: var(--text); }
+
+  /* BARRA DE CONTRIBUIÇÃO */
+  .contrib-section { margin-top: 1.25rem; }
+  .contrib-row { margin-bottom: 10px; }
+  .contrib-header { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); margin-bottom: 4px; font-family: var(--mono); }
+  .contrib-bar-bg { background: var(--surface3); border-radius: 2px; height: 4px; overflow: hidden; }
+  .contrib-bar { height: 100%; border-radius: 2px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+
+  /* TABELA REF */
+  .ref-table { margin-top: 0; }
+  .ref-row {
+    display: grid;
+    grid-template-columns: 32px 1fr 80px 80px 80px 70px;
+    gap: 6px;
+    padding: 7px 0;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 12px;
+    align-items: center;
+    transition: background 0.1s;
+  }
+  .ref-row:hover { background: var(--surface2); border-radius: 6px; padding-left: 6px; padding-right: 6px; }
+  .ref-row:last-child { border-bottom: none; }
+  .ref-row.header-row { font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text3); padding-bottom: 8px; }
+  .ref-row.header-row:hover { background: none; }
+  .ref-pos { font-family: var(--mono); color: var(--text3); font-size: 11px; }
+  .ref-nome { color: var(--text); font-weight: 500; }
+  .ref-num { font-family: var(--mono); color: var(--text2); text-align: right; }
+  .ref-score { font-family: var(--mono); color: var(--green); font-weight: 500; text-align: right; }
+  .ref-row.highlighted .ref-nome { color: var(--green); }
+  .ref-row.highlighted .ref-pos { color: var(--green); }
+
+  /* FOOTER */
+  .footnote {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 11px;
+    color: var(--text3);
+    line-height: 1.8;
+    font-family: var(--mono);
+  }
+  .footnote strong { color: var(--text2); }
+
+  @media (max-width: 540px) {
+    h1 { font-size: 22px; }
+    .status-bar { grid-template-columns: repeat(2, 1fr); }
+    .result-number { font-size: 48px; }
+    .mini-grid { grid-template-columns: repeat(2, 1fr); }
+    .ref-row { grid-template-columns: 28px 1fr 60px 60px 60px 60px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="eyebrow">Ranking Parcial A20</div>
+      <h1>Simulador de<br><span>Posição</span> Estratégica</h1>
+      <div class="header-meta">Janeiro 2026 · Alto Valor Investimentos</div>
+    </div>
+    <div class="logo-badge"><strong>ALTO VALOR</strong><br>Gestão de Patrimônio</div>
+  </div>
+
+  <!-- STATUS ATUAL -->
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="status-lbl">Posição atual</div>
+      <div class="status-val current">77º</div>
+      <div class="status-sub">Ranking Geral</div>
+    </div>
+    <div class="status-item">
+      <div class="status-lbl">Aderência</div>
+      <div class="status-val current">48º</div>
+      <div class="status-sub">peso 65%</div>
+    </div>
+    <div class="status-item">
+      <div class="status-lbl">CDI 12m</div>
+      <div class="status-val current">145º</div>
+      <div class="status-sub">peso 25%</div>
+    </div>
+    <div class="status-item">
+      <div class="status-lbl">Internacional</div>
+      <div class="status-val current">168º</div>
+      <div class="status-sub">peso 10%</div>
+    </div>
+  </div>
+
+  <!-- META -->
+  <div class="target-section">
+    <div class="section-label">Meta do ranking geral</div>
+    <div class="target-row">
+      <button class="tbtn" onclick="setTarget(10,this)">Top 10</button>
+      <button class="tbtn active" onclick="setTarget(20,this)">Top 20</button>
+      <button class="tbtn" onclick="setTarget(30,this)">Top 30</button>
+      <button class="tbtn" onclick="setTarget(50,this)">Top 50</button>
+    </div>
+  </div>
+
+  <!-- SLIDERS -->
+  <div class="card">
+    <div class="card-title">Ajuste as posições projetadas</div>
+
+    <div class="slider-block">
+      <div class="slider-header">
+        <span class="slider-name">Aderência de Carteiras</span>
+        <span class="slider-weight">peso 65%</span>
+      </div>
+      <div class="slider-value-row">
+        <input type="range" id="sl-a" min="1" max="172" value="10" step="1">
+        <span class="slider-pos" id="o-a">10º</span>
+        <span class="slider-contrib" id="c-a">= 6,5</span>
+      </div>
+    </div>
+
+    <div class="slider-block">
+      <div class="slider-header">
+        <span class="slider-name">% Contas acima do CDI (12m)</span>
+        <span class="slider-weight">peso 25%</span>
+      </div>
+      <div class="slider-value-row">
+        <input type="range" id="sl-c" min="1" max="172" value="160" step="1" class="slider-cdi">
+        <span class="slider-pos" id="o-c">160º</span>
+        <span class="slider-contrib" id="c-c">= 40,0</span>
+      </div>
+    </div>
+
+    <div class="eq-block" id="eq-block">
+      <span class="eq-highlight">Score fixo</span> = <span id="eq-a" class="eq-green">10 × 0,65 = 6,5</span> + <span id="eq-c" class="eq-amber">160 × 0,25 = 40,0</span> = <span id="eq-fixed" class="eq-highlight">46,5 pts</span><br>
+      Limite do <span id="eq-target" class="eq-highlight">top 20</span>: <span id="eq-max" class="eq-highlight">—</span><br>
+      Internacional necessário: <span id="eq-formula" class="eq-highlight">—</span>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div class="result-card state-ok" id="res-card">
+    <div class="result-top">
+      <div class="result-main">
+        <div class="result-number ok" id="res-number">—</div>
+        <div class="result-desc" id="res-desc">Posição máxima necessária em Internacional / PWM</div>
+        <div id="res-badge"></div>
+      </div>
+      <div class="result-scores">
+        <div class="score-line">
+          <div class="score-label">Score fixo</div>
+          <div class="score-val" id="sc-fixed">—</div>
+        </div>
+        <div class="score-line">
+          <div class="score-label">Limite da meta</div>
+          <div class="score-val" id="sc-max">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mini-grid">
+      <div class="mini">
+        <div class="mini-lbl">Aderência contribui</div>
+        <div class="mini-val" id="m-a">—</div>
+      </div>
+      <div class="mini">
+        <div class="mini-lbl">CDI contribui</div>
+        <div class="mini-val" id="m-c">—</div>
+      </div>
+      <div class="mini">
+        <div class="mini-lbl">Margem p/ intl</div>
+        <div class="mini-val" id="m-margin">—</div>
+      </div>
+    </div>
+
+    <div class="contrib-section">
+      <div class="contrib-row">
+        <div class="contrib-header">
+          <span>Aderência (65%)</span>
+          <span id="bar-a-pct">—</span>
+        </div>
+        <div class="contrib-bar-bg">
+          <div class="contrib-bar" id="bar-a" style="background: var(--green); width: 0%;"></div>
+        </div>
+      </div>
+      <div class="contrib-row">
+        <div class="contrib-header">
+          <span>CDI (25%)</span>
+          <span id="bar-c-pct">—</span>
+        </div>
+        <div class="contrib-bar-bg">
+          <div class="contrib-bar" id="bar-c" style="background: var(--amber); width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABELA REF -->
+  <div class="card">
+    <div class="card-title">Referência — Top 20 do ranking geral (jan/2026)</div>
+    <div class="ref-table">
+      <div class="ref-row header-row">
+        <span>Pos.</span>
+        <span>Escritório</span>
+        <span style="text-align:right">Ader.</span>
+        <span style="text-align:right">CDI</span>
+        <span style="text-align:right">Intl.</span>
+        <span style="text-align:right">Score</span>
+      </div>
+      <div id="ref-body"></div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <strong>Equação:</strong> posição_intl ≤ (score_meta − aderência×0,65 − CDI×0,25) ÷ 0,10<br>
+    <strong>Metodologia:</strong> Score = média ponderada das posições em cada critério. Dados extraídos do Ranking Parcial A20 · Janeiro 2026.<br>
+    <strong>Interpretação:</strong> Menor score = melhor posição geral. O internacional (peso 10%) é a variável de controle desta simulação.
+  </div>
+
+</div>
+
+<script>
+const REF = [
+  { pos:1,  nome:"Costa Azul",           a:1,  c:1,  i:4   },
+  { pos:2,  nome:"W4 Capital",            a:5,  c:2,  i:1   },
+  { pos:3,  nome:"Guelt Investimentos",   a:10, c:3,  i:50  },
+  { pos:4,  nome:"Valore Elbrus",         a:4,  c:4,  i:79  },
+  { pos:5,  nome:"Mzr Investimentos",     a:21, c:5,  i:5   },
+  { pos:6,  nome:"Ebano Investimentos",   a:7,  c:7,  i:8   },
+  { pos:7,  nome:"Versate Capital",       a:14, c:6,  i:6   },
+  { pos:8,  nome:"Alcance Investimentos", a:19, c:1,  i:140 },
+  { pos:9,  nome:"Knox Capital",          a:38, c:6,  i:51  },
+  { pos:10, nome:"Shp Investimentos",     a:13, c:13, i:44  },
+  { pos:11, nome:"Auroque Investimentos", a:27, c:11, i:9   },
+  { pos:12, nome:"Tauari Investimentos",  a:28, c:12, i:15  },
+  { pos:13, nome:"Fmb Investimentos",     a:23, c:16, i:163 },
+  { pos:14, nome:"Stellar Capital",       a:26, c:20, i:138 },
+  { pos:15, nome:"Triuno Investimentos",  a:6,  c:15, i:143 },
+  { pos:16, nome:"Zenit Invest",          a:42, c:36, i:26  },
+  { pos:17, nome:"Casa do Investidor",    a:29, c:17, i:17  },
+  { pos:18, nome:"Inove Investimentos",   a:35, c:18, i:58  },
+  { pos:19, nome:"Império Investimentos", a:22, c:19, i:24  },
+  { pos:20, nome:"S6 Investimentos",      a:44, c:44, i:150 },
+];
+
+REF.forEach(e => { e.score = +(e.a*0.65 + e.c*0.25 + e.i*0.10).toFixed(1); });
+
+const SCORES = { 10: REF[9].score, 20: REF[19].score, 30: REF[19].score * 1.18, 50: REF[19].score * 1.45 };
+
+let targetPos = 20;
+
+function setTarget(pos, btn) {
+  targetPos = pos;
+  document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  update();
+}
+
+function update() {
+  const a = parseInt(document.getElementById('sl-a').value);
+  const c = parseInt(document.getElementById('sl-c').value);
+
+  document.getElementById('o-a').textContent = a + 'º';
+  document.getElementById('o-c').textContent = c + 'º';
+  document.getElementById('c-a').textContent = '= ' + (a*0.65).toFixed(1);
+  document.getElementById('c-c').textContent = '= ' + (c*0.25).toFixed(1);
+
+  const fixed = a*0.65 + c*0.25;
+  const maxScore = SCORES[targetPos];
+  const margin = maxScore - fixed;
+  const intlNeeded = margin / 0.10;
+
+  // equação
+  document.getElementById('eq-a').textContent = `${a} × 0,65 = ${(a*0.65).toFixed(1)}`;
+  document.getElementById('eq-c').textContent = `${c} × 0,25 = ${(c*0.25).toFixed(1)}`;
+  document.getElementById('eq-fixed').textContent = fixed.toFixed(1) + ' pts';
+  document.getElementById('eq-target').textContent = 'top ' + targetPos;
+  document.getElementById('eq-max').textContent = maxScore.toFixed(1) + ' pts';
+
+  document.getElementById('sc-fixed').textContent = fixed.toFixed(1);
+  document.getElementById('sc-max').textContent = maxScore.toFixed(1);
+  document.getElementById('m-a').textContent = (a*0.65).toFixed(1) + ' pts';
+  document.getElementById('m-c').textContent = (c*0.25).toFixed(1) + ' pts';
+  document.getElementById('m-margin').textContent = margin > 0 ? margin.toFixed(1) + ' pts' : '—';
+
+  // barras
+  const total = maxScore * 1.2;
+  const pA = Math.min(100, (a*0.65/total)*100).toFixed(0);
+  const pC = Math.min(100, (c*0.25/total)*100).toFixed(0);
+  document.getElementById('bar-a').style.width = pA + '%';
+  document.getElementById('bar-c').style.width = pC + '%';
+  document.getElementById('bar-a-pct').textContent = (a*0.65).toFixed(1) + ' pts (' + pA + '% do limite)';
+  document.getElementById('bar-c-pct').textContent = (c*0.25).toFixed(1) + ' pts (' + pC + '% do limite)';
+
+  const card = document.getElementById('res-card');
+  const num  = document.getElementById('res-number');
+  const desc = document.getElementById('res-desc');
+  const badge= document.getElementById('res-badge');
+  const eqF  = document.getElementById('eq-formula');
+
+  card.className = 'result-card';
+  num.className  = 'result-number';
+
+  // score mínimo possível = com internacional em 1º
+  const bestPossible = fixed + 1 * 0.10;
+
+  if (bestPossible > maxScore) {
+    // mesmo com 1º no internacional, não bate a meta
+    card.classList.add('state-fail');
+    num.classList.add('fail');
+    num.textContent = '✕';
+    desc.textContent = 'Impossível — mesmo 1º no Internacional não atinge o top ' + targetPos;
+    badge.innerHTML = '<span class="result-badge badge-fail">Score fixo (' + fixed.toFixed(1) + ') já ultrapassa o limite (' + maxScore.toFixed(1) + ')</span>';
+    eqF.className = 'eq-red';
+    eqF.textContent = `Score mínimo possível = ${bestPossible.toFixed(1)} > limite ${maxScore.toFixed(1)} — impossível`;
+  } else if (intlNeeded > 172) {
+    // margem tão grande que qualquer posição serve
+    card.classList.add('state-ok');
+    num.classList.add('ok');
+    num.textContent = 'Livre';
+    desc.textContent = 'Qualquer posição em Internacional garante o top ' + targetPos + ' com essas posições de aderência e CDI';
+    badge.innerHTML = '<span class="result-badge badge-ok">Aderência + CDI já garantem o top ' + targetPos + '</span>';
+    eqF.className = 'eq-green';
+    eqF.textContent = `Margem de ${margin.toFixed(1)} pts — Internacional pode ficar em qualquer posição`;
+  } else if (intlNeeded > 100) {
+    card.classList.add('state-warn');
+    num.classList.add('warn');
+    num.textContent = Math.ceil(intlNeeded) + 'º';
+    desc.textContent = 'Posição máxima necessária em Internacional / PWM para o top ' + targetPos;
+    badge.innerHTML = '<span class="result-badge badge-warn">Viável — fique em ' + Math.ceil(intlNeeded) + 'º ou melhor</span>';
+    eqF.className = 'eq-highlight';
+    eqF.textContent = `(${maxScore.toFixed(1)} − ${fixed.toFixed(1)}) ÷ 0,10 = ${Math.ceil(intlNeeded)}º ou melhor`;
+  } else {
+    card.classList.add('state-ok');
+    num.classList.add('ok');
+    num.textContent = Math.ceil(intlNeeded) + 'º';
+    desc.textContent = 'Posição máxima necessária em Internacional / PWM para o top ' + targetPos;
+    badge.innerHTML = '<span class="result-badge badge-ok">Viável — fique em ' + Math.ceil(intlNeeded) + 'º ou melhor</span>';
+    eqF.className = 'eq-green';
+    eqF.textContent = `(${maxScore.toFixed(1)} − ${fixed.toFixed(1)}) ÷ 0,10 = ${Math.ceil(intlNeeded)}º ou melhor`;
+  }
+
+  // tabela
+  const refBody = document.getElementById('ref-body');
+  const targetScore = fixed + Math.max(1, intlNeeded <= 172 ? intlNeeded : 172) * 0.10;
+  refBody.innerHTML = REF.map(e => {
+    const hl = e.pos === targetPos ? ' highlighted' : '';
+    return `<div class="ref-row${hl}">
+      <span class="ref-pos">${e.pos}º</span>
+      <span class="ref-nome">${e.nome}</span>
+      <span class="ref-num">${e.a}º</span>
+      <span class="ref-num">${e.c}º</span>
+      <span class="ref-num">${e.i}º</span>
+      <span class="ref-score">${e.score.toFixed(1)}</span>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('sl-a').addEventListener('input', update);
+document.getElementById('sl-c').addEventListener('input', update);
+update();
+</script>
+</body>
+</html>
