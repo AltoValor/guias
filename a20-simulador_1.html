@@ -296,7 +296,7 @@
     <div class="header-left">
       <div class="eyebrow">Ranking Parcial A20</div>
       <h1>Simulador de<br><span>Posição</span> Estratégica</h1>
-      <div class="header-meta">Janeiro 2026 · Alto Valor Investimentos</div>
+      <div class="header-meta">Março 2026 · Alto Valor Investimentos · 192 escritórios</div>
     </div>
     <div class="logo-badge"><strong>ALTO VALOR</strong><br>Gestão de Patrimônio</div>
   </div>
@@ -305,22 +305,22 @@
   <div class="status-bar">
     <div class="status-item">
       <div class="status-lbl">Posição atual</div>
-      <div class="status-val current">77º</div>
+      <div class="status-val current">76º</div>
       <div class="status-sub">Ranking Geral</div>
     </div>
     <div class="status-item">
       <div class="status-lbl">Aderência</div>
-      <div class="status-val current">48º</div>
+      <div class="status-val current">43º</div>
       <div class="status-sub">peso 65%</div>
     </div>
     <div class="status-item">
-      <div class="status-lbl">CDI 12m</div>
-      <div class="status-val current">145º</div>
+      <div class="status-lbl">Rentabilidade</div>
+      <div class="status-val current">159º</div>
       <div class="status-sub">peso 25%</div>
     </div>
     <div class="status-item">
       <div class="status-lbl">Internacional</div>
-      <div class="status-val current">168º</div>
+      <div class="status-val current">166º</div>
       <div class="status-sub">peso 10%</div>
     </div>
   </div>
@@ -346,26 +346,26 @@
         <span class="slider-weight">peso 65%</span>
       </div>
       <div class="slider-value-row">
-        <input type="range" id="sl-a" min="1" max="172" value="10" step="1">
-        <span class="slider-pos" id="o-a">10º</span>
+        <input type="range" id="sl-a" min="1" max="192" value="43" step="1">
+        <span class="slider-pos" id="o-a">43º</span>
         <span class="slider-contrib" id="c-a">= 6,5</span>
       </div>
     </div>
 
     <div class="slider-block">
       <div class="slider-header">
-        <span class="slider-name">% Contas acima do CDI (12m)</span>
+        <span class="slider-name">Rentabilidade (% Contas acima CDI)</span>
         <span class="slider-weight">peso 25%</span>
       </div>
       <div class="slider-value-row">
-        <input type="range" id="sl-c" min="1" max="172" value="160" step="1" class="slider-cdi">
-        <span class="slider-pos" id="o-c">160º</span>
+        <input type="range" id="sl-c" min="1" max="192" value="159" step="1" class="slider-cdi">
+        <span class="slider-pos" id="o-c">159º</span>
         <span class="slider-contrib" id="c-c">= 40,0</span>
       </div>
     </div>
 
     <div class="eq-block" id="eq-block">
-      <span class="eq-highlight">Score fixo</span> = <span id="eq-a" class="eq-green">10 × 0,65 = 6,5</span> + <span id="eq-c" class="eq-amber">160 × 0,25 = 40,0</span> = <span id="eq-fixed" class="eq-highlight">46,5 pts</span><br>
+      <span class="eq-highlight">Score fixo</span> = <span id="eq-a" class="eq-green">43 × 0,65 = 27,9</span> + <span id="eq-c" class="eq-amber">159 × 0,25 = 39,8</span> = <span id="eq-fixed" class="eq-highlight">67,7 pts</span><br>
       Limite do <span id="eq-target" class="eq-highlight">top 20</span>: <span id="eq-max" class="eq-highlight">—</span><br>
       Internacional necessário: <span id="eq-formula" class="eq-highlight">—</span>
     </div>
@@ -430,7 +430,7 @@
 
   <!-- TABELA REF -->
   <div class="card">
-    <div class="card-title">Referência — Top 20 do ranking geral (jan/2026)</div>
+    <div class="card-title">Referência — Top 20 do ranking geral (mar/2026)</div>
     <div class="ref-table">
       <div class="ref-row header-row">
         <span>Pos.</span>
@@ -444,41 +444,42 @@
     </div>
   </div>
 
-  <div class="footnote">
-    <strong>Equação:</strong> posição_intl ≤ (score_meta − aderência×0,65 − CDI×0,25) ÷ 0,10<br>
-    <strong>Metodologia:</strong> Score = média ponderada das posições em cada critério. Dados extraídos do Ranking Parcial A20 · Janeiro 2026.<br>
-    <strong>Interpretação:</strong> Menor score = melhor posição geral. O internacional (peso 10%) é a variável de controle desta simulação.
-  </div>
+  <p class="footnote">
+    <strong>Equação:</strong> posição_intl ≤ (score_meta − aderência×0,65 − rentabilidade×0,25) ÷ 0,10<br>
+    <strong>Metodologia:</strong> Score = média ponderada das posições em cada critério. Dados extraídos do Ranking A20 · Março 2026 (192 escritórios).<br>
+    <strong>Referência:</strong> Score do 10º colocado (Ebano): 30,2 pts · Score do 20º colocado (Casa do Investidor): 43,6 pts · Alto Valor atual: 84,3 pts.
+  </p>
 
 </div>
 
 <script>
 const REF = [
-  { pos:1,  nome:"Costa Azul",           a:1,  c:1,  i:4   },
-  { pos:2,  nome:"W4 Capital",            a:5,  c:2,  i:1   },
-  { pos:3,  nome:"Guelt Investimentos",   a:10, c:3,  i:50  },
-  { pos:4,  nome:"Valore Elbrus",         a:4,  c:4,  i:79  },
-  { pos:5,  nome:"Mzr Investimentos",     a:21, c:5,  i:5   },
-  { pos:6,  nome:"Ebano Investimentos",   a:7,  c:7,  i:8   },
-  { pos:7,  nome:"Versate Capital",       a:14, c:6,  i:6   },
-  { pos:8,  nome:"Alcance Investimentos", a:19, c:1,  i:140 },
-  { pos:9,  nome:"Knox Capital",          a:38, c:6,  i:51  },
-  { pos:10, nome:"Shp Investimentos",     a:13, c:13, i:44  },
-  { pos:11, nome:"Auroque Investimentos", a:27, c:11, i:9   },
-  { pos:12, nome:"Tauari Investimentos",  a:28, c:12, i:15  },
-  { pos:13, nome:"Fmb Investimentos",     a:23, c:16, i:163 },
-  { pos:14, nome:"Stellar Capital",       a:26, c:20, i:138 },
-  { pos:15, nome:"Triuno Investimentos",  a:6,  c:15, i:143 },
-  { pos:16, nome:"Zenit Invest",          a:42, c:36, i:26  },
-  { pos:17, nome:"Casa do Investidor",    a:29, c:17, i:17  },
-  { pos:18, nome:"Inove Investimentos",   a:35, c:18, i:58  },
-  { pos:19, nome:"Império Investimentos", a:22, c:19, i:24  },
-  { pos:20, nome:"S6 Investimentos",      a:44, c:44, i:150 },
+  { pos:1,  nome:"W4 Capital",                      a:5,  c:10,  i:1   },
+  { pos:2,  nome:"Costa Azul Investimentos",         a:3,  c:42,  i:4   },
+  { pos:3,  nome:"Versate Capital",                  a:12, c:23,  i:6   },
+  { pos:4,  nome:"Guelt Investimentos",              a:10, c:26,  i:53  },
+  { pos:5,  nome:"Valore Elbrus Investimentos",      a:2,  c:40,  i:77  },
+  { pos:6,  nome:"Mzr Investimentos",               a:19, c:30,  i:47  },
+  { pos:7,  nome:"Alcance Investimentos",            a:20, c:2,   i:144 },
+  { pos:8,  nome:"Auroque Investimentos",            a:26, c:45,  i:10  },
+  { pos:9,  nome:"Tauari Investimentos",             a:28, c:38,  i:16  },
+  { pos:10, nome:"Ebano Investimentos",              a:8,  c:97,  i:8   },
+  { pos:11, nome:"Stellar Capital",                  a:27, c:7,   i:142 },
+  { pos:12, nome:"Knox Capital Investimentos",       a:40, c:13,  i:52  },
+  { pos:13, nome:"Shp Investimentos",               a:14, c:87,  i:41  },
+  { pos:14, nome:"Triuno Investimentos",             a:6,  c:69,  i:151 },
+  { pos:15, nome:"Verso Investimentos",              a:25, c:76,  i:59  },
+  { pos:16, nome:"Fmb Investimentos",               a:23, c:44,  i:154 },
+  { pos:17, nome:"Zenit Invest",                     a:41, c:52,  i:23  },
+  { pos:18, nome:"Requin Capital",                   a:16, c:122, i:11  },
+  { pos:19, nome:"Interlaken Investimentos",         a:50, c:12,  i:72  },
+  { pos:20, nome:"Casa do Investidor Investimentos", a:29, c:29,  i:175 },
 ];
 
 REF.forEach(e => { e.score = +(e.a*0.65 + e.c*0.25 + e.i*0.10).toFixed(1); });
 
-const SCORES = { 10: REF[9].score, 20: REF[19].score, 30: REF[19].score * 1.18, 50: REF[19].score * 1.45 };
+// Real scores from xlsx data — 10th = 30.2, 20th = 43.6
+const SCORES = { 10: 30.2, 20: 43.6, 30: 43.6 * 1.15, 50: 43.6 * 1.40 };
 
 let targetPos = 20;
 
