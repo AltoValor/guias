@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabelas RCI — Diagnósticos e Reflexão Clínica</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --border: #DDD9D0;
+    --border-light: #ECEAE4;
+    --text-primary: #1A1814;
+    --text-secondary: #6B6760;
+    --text-muted: #9A9792;
+    --accent: #2A4F6E;
+    --accent-light: #EBF2F8;
+    --alta-bg: #FDF0ED;
+    --alta-text: #8B3A25;
+    --alta-dot: #D05A3A;
+    --mod-bg: #FDF7EC;
+    --mod-text: #7A5010;
+    --mod-dot: #C98B20;
+    --baixa-mod-bg: #F0F7EC;
+    --baixa-mod-text: #3A6020;
+    --baixa-mod-dot: #5C9A35;
+    --baixa-bg: #EBF2F8;
+    --baixa-text: #1A4A6E;
+    --baixa-dot: #3580B0;
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    padding: 48px 32px;
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 52px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+  }
+
+  header .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  header h1 {
+    font-family: var(--font-display);
+    font-size: 34px;
+    font-weight: 400;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+
+  .table-block {
+    margin-bottom: 56px;
+  }
+
+  .table-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .table-number {
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .table-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .table-wrapper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 800px;
+  }
+
+  thead th {
+    background: var(--accent);
+    color: #D6E6F2;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 13px 16px;
+    text-align: left;
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+
+  thead th:last-child { border-right: none; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border-light);
+    transition: background 0.15s ease;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #FAFAF8; }
+
+  tbody td {
+    padding: 14px 16px;
+    vertical-align: top;
+    line-height: 1.55;
+    border-right: 1px solid var(--border-light);
+    color: var(--text-primary);
+  }
+
+  tbody td:last-child { border-right: none; }
+
+  .dx-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    margin-top: 8px;
+  }
+
+  .label:first-child { margin-top: 0; }
+
+  .item-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .item-list li {
+    padding-left: 14px;
+    position: relative;
+    margin-bottom: 3px;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
+  .item-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  .item-list.pro li::before { background: #5B9A3A; }
+  .item-list.con li::before { background: #C04A4A; }
+  .item-list.absent li::before { background: var(--text-muted); }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .badge.alta { background: var(--alta-bg); color: var(--alta-text); }
+  .badge.alta::before { background: var(--alta-dot); }
+
+  .badge.moderada { background: var(--mod-bg); color: var(--mod-text); }
+  .badge.moderada::before { background: var(--mod-dot); }
+
+  .badge.baixa-mod { background: var(--baixa-mod-bg); color: var(--baixa-mod-text); }
+  .badge.baixa-mod::before { background: var(--baixa-mod-dot); }
+
+  .badge.baixa { background: var(--baixa-bg); color: var(--baixa-text); }
+  .badge.baixa::before { background: var(--baixa-dot); }
+
+  .col-dx   { width: 11%; }
+  .col-crit { width: 22%; }
+  .col-comp { width: 30%; }
+  .col-trat { width: 37%; }
+
+  .col-hd     { width: 10%; }
+  .col-favor  { width: 20%; }
+  .col-contra { width: 18%; }
+  .col-aus    { width: 20%; }
+  .col-just   { width: 20%; }
+  .col-prob   { width: 12%; }
+
+  footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="eyebrow">Raciocínio Clínico Integrado</div>
+    <h1>Diagnósticos, complicações<br>e reflexão clínica</h1>
+    <p>Síntese estruturada dos diagnósticos estabelecidos, suas complicações e bases terapêuticas, além da análise diferencial da fadiga crônica como sintoma guia.</p>
+  </header>
+
+  <!-- Tabela 1 -->
+  <div class="table-block">
+    <div class="table-header">
+      <span class="table-number">Tabela 1</span>
+      <span class="table-title">Organização dos diagnósticos, critérios, complicações e tratamento</span>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <colgroup>
+          <col class="col-dx">
+          <col class="col-crit">
+          <col class="col-comp">
+          <col class="col-trat">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Diagnóstico</th>
+            <th>Critérios diagnósticos</th>
+            <th>Complicações</th>
+            <th>Bases do tratamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="dx-name">HAS</span></td>
+            <td>
+              <ul class="item-list">
+                <li>PA 158/96 mmHg</li>
+                <li>HAS há ~10 anos</li>
+                <li>Hipertrofia ventricular esquerda no ECG e ecocardiograma</li>
+                <li>Albuminúria</li>
+                <li>Obesidade, DM2, dislipidemia associados</li>
+              </ul>
+            </td>
+            <td>
+              <span class="label">Instaladas</span>
+              <ul class="item-list">
+                <li>Hipertrofia ventricular esquerda</li>
+                <li>Disfunção diastólica grau I</li>
+                <li>Nefropatia com albuminúria</li>
+              </ul>
+              <span class="label">Potenciais</span>
+              <ul class="item-list">
+                <li>Insuficiência cardíaca, doença coronariana, AVC</li>
+                <li>Progressão da doença renal crônica, doença arterial periférica</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list">
+                <li>MEV intensiva: perda de peso, dieta DASH, atividade física, cessação tabágica</li>
+                <li>IECA ou bloqueador de receptor de angiotensina ± tiazídico ± bloqueador de canal de cálcio</li>
+                <li>Meta PA &lt;130/80 mmHg</li>
+                <li>Monitorização periódica de função renal, eletrólitos e lesão de órgão-alvo</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="dx-name">Dislipidemia</span></td>
+            <td>
+              <ul class="item-list">
+                <li>Colesterol total 256, LDL 142, HDL 32, triglicerídeos 298 mg/dL</li>
+                <li>Perfil aterogênico</li>
+                <li>Contexto de resistência insulínica</li>
+              </ul>
+            </td>
+            <td>
+              <span class="label">Instaladas</span>
+              <ul class="item-list">
+                <li>Aterosclerose subclínica provável (pulsos periféricos diminuídos)</li>
+              </ul>
+              <span class="label">Potenciais</span>
+              <ul class="item-list">
+                <li>Doença arterial coronariana, AVC, doença arterial periférica sintomática</li>
+                <li>Pancreatite (se triglicerídeos muito elevados)</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list">
+                <li>MEV: dieta hipolipídica, exercício, perda de peso</li>
+                <li>Estatina de alta intensidade ± ezetimiba</li>
+                <li>Fibrato/ômega-3 para triglicerídeos elevados</li>
+                <li>Monitorização lipídica e hepática</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="dx-name">Obesidade</span></td>
+            <td>
+              <ul class="item-list">
+                <li>IMC 33,8 kg/m² (grau I)</li>
+                <li>Circunferência abdominal 112 cm</li>
+                <li>+9 kg no último ano</li>
+              </ul>
+            </td>
+            <td>
+              <span class="label">Instaladas</span>
+              <ul class="item-list">
+                <li>Resistência à insulina, DM2, HAS, dislipidemia</li>
+                <li>Esteatose hepática, provável apneia obstrutiva do sono</li>
+              </ul>
+              <span class="label">Potenciais</span>
+              <ul class="item-list">
+                <li>Doença cardiovascular aterosclerótica, piora de insuficiência cardíaca</li>
+                <li>Síndrome de hipoventilação, osteoartrose, neoplasias</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list">
+                <li>Déficit calórico, reeducação alimentar, atividade física</li>
+                <li>Abordagem multidisciplinar</li>
+                <li>Agonistas de GLP-1 conforme indicação</li>
+                <li>Avaliação bariátrica em casos selecionados</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="dx-name">Síndrome Metabólica</span></td>
+            <td>
+              <ul class="item-list">
+                <li>Circunferência abdominal 112 cm; triglicerídeos 298 mg/dL; HDL 32 mg/dL</li>
+                <li>PA 158/96 mmHg; glicemia 132 mg/dL</li>
+                <li>Acantose nigricans; índice HOMA-IR elevado</li>
+              </ul>
+            </td>
+            <td>
+              <span class="label">Instaladas</span>
+              <ul class="item-list">
+                <li>DM2, HAS com lesão de órgão-alvo</li>
+                <li>Dislipidemia aterogênica, esteatose hepática</li>
+              </ul>
+              <span class="label">Potenciais</span>
+              <ul class="item-list">
+                <li>Doença cardiovascular aterosclerótica, acidente vascular cerebral isquêmico</li>
+                <li>Esteato-hepatite/cirrose, agravamento da resistência insulínica</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list">
+                <li>MEV intensiva: perda de peso e atividade física</li>
+                <li>Abordagem integrada: PA, glicemia, lipídios</li>
+                <li>Farmacoterapia por fator de risco</li>
+                <li>Monitorização contínua do risco cardiovascular global</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="dx-name">Risco CV</span></td>
+            <td>
+              <ul class="item-list">
+                <li>DM2 + HAS + dislipidemia + obesidade + tabagismo</li>
+                <li>História familiar precoce de doença cardiovascular</li>
+                <li>Lesão de órgão-alvo: hipertrofia ventricular esquerda, albuminúria, retinopatia</li>
+                <li>Proteína C-reativa elevada</li>
+              </ul>
+            </td>
+            <td>
+              <span class="label">Instaladas</span>
+              <ul class="item-list">
+                <li>Hipertrofia ventricular esquerda, disfunção diastólica, nefropatia</li>
+              </ul>
+              <span class="label">Potenciais</span>
+              <ul class="item-list">
+                <li>Infarto agudo do miocárdio, AVC, insuficiência cardíaca manifesta, morte súbita</li>
+                <li>Progressão da aterosclerose sistêmica</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list">
+                <li>Cessação tabágica prioritária</li>
+                <li>Controle rigoroso de PA (&lt;130/80), glicemia e LDL</li>
+                <li>Estatina de alta intensidade; possível antiagregante plaquetário</li>
+                <li>Metas estritas; seguimento regular e contínuo</li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tabela 2 -->
+  <div class="table-block">
+    <div class="table-header">
+      <span class="table-number">Tabela 2</span>
+      <span class="table-title">Reflexão deliberada sobre o sintoma de fadiga crônica</span>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <colgroup>
+          <col class="col-hd">
+          <col class="col-favor">
+          <col class="col-contra">
+          <col class="col-aus">
+          <col class="col-just">
+          <col class="col-prob">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Hipótese diagnóstica</th>
+            <th>Achados que corroboram</th>
+            <th>Achados que falam contra</th>
+            <th>Achados ausentes esperados</th>
+            <th>Justificativa</th>
+            <th>Probabilidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="dx-name">DPOC</span></td>
+            <td>
+              <ul class="item-list pro">
+                <li>Tabagismo ~20 maços/ano</li>
+                <li>Dispneia aos médios esforços</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list con">
+                <li>Sem tosse crônica ou expectoração</li>
+                <li>Exame pulmonar normal</li>
+                <li>SpO₂ 97% em ar ambiente</li>
+                <li>Quadro clínico favorece causa metabólica/cardiovascular</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list absent">
+                <li>Tosse produtiva crônica</li>
+                <li>Sibilância, roncos, expiração prolongada ou murmúrio vesicular reduzido</li>
+                <li>Espirometria com obstrução persistente</li>
+              </ul>
+            </td>
+            <td style="font-size:12.5px; line-height:1.5; color:var(--text-secondary);">Antecedente tabágico é fator de risco, mas faltam os elementos clínicos essenciais de DPOC. A dispneia se explica melhor por descondicionamento e perfil cardiometabólico.</td>
+            <td><span class="badge baixa">Baixa</span></td>
+          </tr>
+          <tr>
+            <td><span class="dx-name">ICC</span></td>
+            <td>
+              <ul class="item-list pro">
+                <li>Dispneia a esforços</li>
+                <li>HAS há 10 anos com baixa adesão</li>
+                <li>Hipertrofia ventricular esquerda no ECG e ecocardiograma</li>
+                <li>Disfunção diastólica grau I, fração de ejeção preservada</li>
+                <li>Edema maleolar bilateral discreto</li>
+                <li>Múltiplos fatores de insuficiência cardíaca com fração de ejeção preservada (obesidade, DM2, síndrome metabólica, apneia do sono)</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list con">
+                <li>Sem congestão sistêmica ou pulmonar relevante</li>
+                <li>Ausculta sem estertores; SpO₂ normal</li>
+                <li>Sem ortopneia ou dispneia paroxística noturna</li>
+                <li>Disfunção diastólica apenas grau I</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list absent">
+                <li>Crepitações bibasais</li>
+                <li>Ingurgitamento jugular ou hepatomegalia congestiva</li>
+                <li>Edema periférico mais expressivo</li>
+                <li>Limitação funcional grave</li>
+                <li>Biomarcadores elevados (BNP)</li>
+              </ul>
+            </td>
+            <td style="font-size:12.5px; line-height:1.5; color:var(--text-secondary);">Substrato estrutural presente (hipertrofia ventricular esquerda, disfunção diastólica). Provavelmente contribui para fadiga e dispneia, mas sem congestão clínica. Compatível com insuficiência cardíaca com fração de ejeção preservada em fase pré-clínica.</td>
+            <td><span class="badge moderada">Moderada</span></td>
+          </tr>
+          <tr>
+            <td><span class="dx-name">DRC</span></td>
+            <td>
+              <ul class="item-list pro">
+                <li>Creatinina 1,3 mg/dL; taxa de filtração glomerular estimada 64 mL/min/1,73m²</li>
+                <li>Albuminúria: relação albumina/creatinina urinária 85 mg/g</li>
+                <li>HAS de longa data + DM2 como etiologias</li>
+                <li>Lesão de órgão-alvo renal já instalada</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list con">
+                <li>Doença renal crônica inicial, sem insuficiência avançada</li>
+                <li>Sem manifestações urêmicas</li>
+                <li>Sem anemia, acidose ou distúrbios hidroeletrolíticos documentados</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list absent">
+                <li>Anemia da doença renal crônica</li>
+                <li>Náuseas, gosto metálico, prurido</li>
+                <li>Alterações mais significativas da filtração glomerular</li>
+                <li>Edema ou retenção hidrossalina</li>
+              </ul>
+            </td>
+            <td style="font-size:12.5px; line-height:1.5; color:var(--text-secondary);">Doença renal crônica presente como lesão de órgão-alvo, mas em fase inicial sem repercussão funcional suficiente para explicar a fadiga de forma isolada. Papel de comorbidade e marcador de gravidade.</td>
+            <td><span class="badge baixa-mod">Baixa a moderada</span></td>
+          </tr>
+          <tr>
+            <td><span class="dx-name">DM2</span></td>
+            <td>
+              <ul class="item-list pro">
+                <li>Glicemia de jejum 132 mg/dL; HbA1c 6,7%</li>
+                <li>Teste oral de tolerância à glicose 198 mg/dL às 2 horas</li>
+                <li>Resistência à insulina: obesidade central, acantose nigricans, índice HOMA-IR elevado, peptídeo C normal-alto</li>
+                <li>Complicações: noctúria, turvação visual, neuropatia, retinopatia e nefropatia incipientes</li>
+                <li>Tremores com melhora pós-alimentação (hipoglicemia relativa)</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list con">
+                <li>Sem hiperglicemia extrema ou quadro catabólico</li>
+                <li>Sem poliúria exuberante ou polidipsia intensa</li>
+              </ul>
+            </td>
+            <td>
+              <ul class="item-list absent">
+                <li>Polidipsia marcada</li>
+                <li>Perda ponderal involuntária</li>
+                <li>Glicemias muito elevadas</li>
+                <li>Infecções de repetição</li>
+                <li><em>Ausência desses elementos confirma doença metabólica crônica complicada, não descompensação aguda</em></li>
+              </ul>
+            </td>
+            <td style="font-size:12.5px; line-height:1.5; color:var(--text-secondary);">Diagnóstico firmado com múltiplas complicações já instaladas. A fadiga reflete desregulação metabólica crônica (glicotoxicidade, resistência insulínica, síndrome metabólica). É a hipótese que melhor integra o conjunto do caso.</td>
+            <td><span class="badge alta">Alta</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <div class="legend-item"><div class="legend-dot" style="background:#D05A3A;"></div>Alta probabilidade</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#C98B20;"></div>Probabilidade moderada</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#5C9A35;"></div>Baixa a moderada</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3580B0;"></div>Baixa probabilidade</div>
+    <div class="legend-item" style="margin-left: auto; color: var(--text-muted);">MEV = Mudança do Estilo de Vida &nbsp;·&nbsp; HAS = Hipertensão Arterial Sistêmica &nbsp;·&nbsp; DM2 = Diabetes Mellitus tipo 2</div>
+  </footer>
+
+</div>
+</body>
+</html>
