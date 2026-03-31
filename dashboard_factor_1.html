@@ -33,7 +33,6 @@ body::before {
 }
 .wrap { position:relative; z-index:1; max-width:1340px; margin:0 auto; }
 
-/* HEADER */
 .header {
   display:flex; align-items:flex-end; justify-content:space-between;
   padding-bottom:22px; margin-bottom:28px; border-bottom:1px solid var(--b2);
@@ -54,7 +53,6 @@ h1 em { font-style:italic; color:var(--gl); }
 .h-vol-lbl { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); }
 .h-vol { font-family:'Playfair Display',serif; font-size:30px; font-weight:700; color:var(--white); }
 
-/* KPI STRIP */
 .kpi-strip {
   display:grid; grid-template-columns:repeat(3,1fr);
   gap:12px; margin-bottom:28px; opacity:0; animation:up .5s .12s ease forwards;
@@ -70,22 +68,19 @@ h1 em { font-style:italic; color:var(--gl); }
 .kpi-val.g { color:var(--gl); }
 .kpi-hint { font-size:11px; color:var(--muted); margin-top:3px; font-weight:300; }
 
-/* GRID */
 .main-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
 .full { grid-column:1/-1; }
 
-/* CARD */
 .card {
   background:var(--surface); border:1px solid var(--border); border-radius:10px;
   overflow:hidden; opacity:0; animation:up .5s ease forwards; transition:border-color .2s;
 }
 .card:hover { border-color:var(--b2); }
-.card-head { display:flex; justify-content:space-between; align-items:center; padding:16px 22px 14px; border-bottom:1px solid var(--border); }
-.card-ttl { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:8px; }
+.card-head { display:flex; justify-content:space-between; align-items:center; padding:16px 22px 14px; border-bottom:1px solid var(--border); gap:12px; }
+.card-ttl { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:8px; white-space:nowrap; }
 .card-ttl::before { content:''; width:4px; height:4px; border-radius:50%; background:var(--green); flex-shrink:0; }
-.card-hint { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--gl); }
+.card-hint { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--gl); white-space:nowrap; }
 
-/* PIE */
 .pie-wrap { padding:22px; display:flex; align-items:center; gap:24px; }
 .pie-legend { display:flex; flex-direction:column; gap:10px; flex:1; }
 .pie-leg-item {
@@ -100,35 +95,27 @@ h1 em { font-style:italic; color:var(--gl); }
 .pie-leg-val { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text); display:block; text-align:right; }
 .pie-leg-pct { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); display:block; text-align:right; }
 
-/* FILTER TABS */
-.filter-bar {
-  display:flex; align-items:center; gap:6px;
-  padding:0 22px 0 0; flex-wrap:wrap;
-}
+.filter-bar { display:flex; align-items:center; gap:6px; flex-wrap:wrap; flex:1; justify-content:flex-end; }
 .f-tab {
   font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.12em;
   text-transform:uppercase; padding:5px 12px; border-radius:4px; cursor:pointer;
-  border:1px solid var(--border); color:var(--muted); background:transparent;
-  transition:all .15s;
+  border:1px solid var(--border); color:var(--muted); background:transparent; transition:all .15s;
 }
 .f-tab:hover { border-color:var(--gl); color:var(--gl); }
 .f-tab.active { border-color:var(--green); color:var(--white); background:rgba(0,153,116,.12); }
 .f-dot { width:6px; height:6px; border-radius:50%; display:inline-block; margin-right:5px; vertical-align:middle; }
 
-/* ASSESSOR ROWS */
 .a-grid { padding:6px 0; display:grid; grid-template-columns:1fr 1fr; }
-.a-grid.single { grid-template-columns:1fr; }
 .a-col { border-right:1px solid var(--border); }
 .a-col:last-child { border-right:none; }
 .a-row {
   display:grid; grid-template-columns:30px 1fr 96px;
   align-items:center; gap:10px; padding:7px 20px;
-  border-bottom:1px solid var(--border); transition:background .12s, opacity .2s;
+  border-bottom:1px solid var(--border); transition:background .12s;
 }
 .a-row:last-child { border-bottom:none; }
 .a-row:hover { background:var(--s2); }
 .a-row.others { opacity:.5; }
-.a-row.hidden { display:none; }
 .a-rank { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); text-align:right; }
 .a-center { min-width:0; }
 .a-name { font-size:12.5px; font-weight:500; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -137,14 +124,8 @@ h1 em { font-style:italic; color:var(--gl); }
 .a-bar { height:100%; background:var(--green); border-radius:2px; transition:width 1.1s cubic-bezier(.4,0,.2,1); }
 .a-bar.dim { background:var(--b2); }
 .a-val { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text); text-align:right; }
+.a-empty { display:none; padding:32px; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); }
 
-/* EMPTY STATE */
-.a-empty {
-  display:none; padding:32px; text-align:center;
-  font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);
-}
-
-/* FOOTER */
 footer {
   margin-top:28px; padding-top:14px; border-top:1px solid var(--border);
   display:flex; justify-content:space-between;
@@ -164,7 +145,7 @@ footer {
     <h1>Carteira<br><em>Factor</em></h1>
   </div>
   <div class="h-right">
-    <div class="h-date">Referência: 20 / 03 / 2026<br>Excluídos: Reenquadramento · Ordens Canceladas</div>
+    <div class="h-date">Referência: 31 / 03 / 2026<br>Excluídos: Reenquadramento · Ordens Canceladas</div>
     <div class="h-vol-lbl">Volume Solicitado</div>
     <div class="h-vol" id="kpi-total">—</div>
   </div>
@@ -221,57 +202,58 @@ footer {
 
 <footer>
   <span>Factor Ações · Dashboard de Alocação</span>
-  <span>20 · 03 · 2026 — Gerado automaticamente</span>
+  <span>31 · 03 · 2026 — Gerado automaticamente</span>
 </footer>
 
 </div>
 <script>
 const D = {
-  total: 7963998.47,
+  total: 9024091.04,
   assessores: [
-    {n:"André Azenha",       f:"André Eduardo Rodrigues Azenha",       v:2799036.50, time:"Campinas - Matriz"},
-    {n:"Caio Batista",       f:"Caio Henrique Lima Batista",            v: 715328.29, time:"B2C"},
-    {n:"Bruno Santos",       f:"Bruno Vaz Dos Santos",                  v: 702228.42, time:"Americana"},
-    {n:"Ronaldo Santos",     f:"Ronaldo Barbosa Dos Santos",            v: 422279.72, time:"Campinas - Matriz"},
-    {n:"Rosania Silva",      f:"Rosania Flor e Silva",                  v: 389141.18, time:"B2C"},
-    {n:"Ivan Voigt",         f:"Ivan Voigt",                            v: 331120.43, time:"B2C"},
-    {n:"Reinaldo Ferreira",  f:"Reinaldo Mathias Ferreira",             v: 295621.21, time:"B2C"},
-    {n:"Luis Delfini",       f:"Luis Henrique Gomes Delfini",           v: 241921.59, time:"B2C"},
-    {n:"Eliel Junior",       f:"Eliel Pinto de Siqueira Junior",        v: 238819.68, time:"Americana"},
-    {n:"Samuel Menuzzo",     f:"Samuel Henrique Menuzzo",               v: 236026.68, time:"B2C"},
-    {n:"Marcelo Santana",    f:"Marcelo de Santana",                    v: 193228.29, time:"Americana"},
-    {n:"Cassiano Flumignan", f:"Cassiano Pacheco Flumignan",            v: 153224.27, time:"Campinas - Matriz"},
-    {n:"Diego Konishi",      f:"Diego Massal Konishi",                  v: 106866.59, time:"Campinas - Matriz"},
-    {n:"Raquel Aqualo",      f:"Raquel Vieira Aqualo",                  v: 103842.09, time:"Campinas - Matriz"},
-    {n:"Eduardo Barbosa",    f:"Eduardo Barbosa",                       v: 100000.00, time:"B2C"},
-    {n:"Luis H. Silva",      f:"Luis Henrique Oliveira Silva",          v:  90000.00, time:"Campinas - Matriz"},
-    {n:"Maíra Micheti",      f:"Maíra Pantaroto Micheti",               v:  87067.02, time:"Campinas - Matriz"},
-    {n:"Magno Silva",        f:"Magno Alencar da Silva",                v:  82582.19, time:"On Demand"},
-    {n:"Henrique Almeida",   f:"Henrique Pessôa de Almeida",           v:  81956.11, time:"B2C"},
-    {n:"Alex Frias",         f:"Alex de Farias Frias",                  v:  79057.04, time:"Americana"},
-    {n:"Vinícius Ruas",      f:"Vinícius Ruas",                         v:  68795.79, time:"On Demand"},
-    {n:"Lucas Gaspar",       f:"Lucas Gaspar",                          v:  62761.82, time:"Americana"},
-    {n:"Guilherme Silva",    f:"Guilherme Augusto Ferreira da Silva",   v:  50100.45, time:"Americana"},
-    {n:"Cátia Cezar",        f:"Cátia Michele Cezar",                   v:  36468.06, time:"Campinas - Matriz"},
-    {n:"Marcelo Toledo",     f:"Marcelo Pereira de Toledo",             v:  35000.00, time:"B2C"},
-    {n:"Paulo Manfio",       f:"Paulo José Teixeira Camarotto Manfio",  v:  15000.00, time:"On Demand"},
+    {n:"André Azenha",       f:"André Eduardo Rodrigues Azenha",      v:2843990.75, time:"Campinas - Matriz"},
+    {n:"Caio Batista",       f:"Caio Henrique Lima Batista",           v: 763683.00, time:"B2C"},
+    {n:"Bruno Santos",       f:"Bruno Vaz Dos Santos",                 v: 702228.42, time:"Americana"},
+    {n:"Diego Konishi",      f:"Diego Massal Konishi",                 v: 575742.15, time:"Campinas - Matriz"},
+    {n:"Ronaldo Santos",     f:"Ronaldo Barbosa Dos Santos",           v: 422279.72, time:"Campinas - Matriz"},
+    {n:"Samuel Menuzzo",     f:"Samuel Henrique Menuzzo",              v: 420987.78, time:"B2C"},
+    {n:"Rosania Silva",      f:"Rosania Flor e Silva",                 v: 404141.18, time:"B2C"},
+    {n:"Ivan Voigt",         f:"Ivan Voigt",                           v: 373520.37, time:"B2C"},
+    {n:"Reinaldo Ferreira",  f:"Reinaldo Mathias Ferreira",            v: 295621.21, time:"B2C"},
+    {n:"Luis Delfini",       f:"Luis Henrique Gomes Delfini",          v: 295485.91, time:"B2C"},
+    {n:"Eliel Junior",       f:"Eliel Pinto de Siqueira Junior",       v: 238819.68, time:"Americana"},
+    {n:"Victor Marques",     f:"Victor Hugo Marques",                  v: 195132.13, time:"Americana"},
+    {n:"Marcelo Santana",    f:"Marcelo de Santana",                   v: 193228.29, time:"Americana"},
+    {n:"Cassiano Flumignan", f:"Cassiano Pacheco Flumignan",           v: 153224.27, time:"Campinas - Matriz"},
+    {n:"Raquel Aqualo",      f:"Raquel Vieira Aqualo",                 v: 105692.65, time:"Campinas - Matriz"},
+    {n:"Eduardo Barbosa",    f:"Eduardo Barbosa",                      v: 105000.00, time:"B2C"},
+    {n:"Luis H. Silva",      f:"Luis Henrique Oliveira Silva",         v:  90000.00, time:"Campinas - Matriz"},
+    {n:"Maíra Micheti",      f:"Maíra Pantaroto Micheti",              v:  87067.02, time:"Campinas - Matriz"},
+    {n:"Magno Silva",        f:"Magno Alencar da Silva",               v:  82582.19, time:"On Demand"},
+    {n:"Henrique Almeida",   f:"Henrique Pessôa de Almeida",          v:  81956.11, time:"B2C"},
+    {n:"Alex Frias",         f:"Alex de Farias Frias",                 v:  79057.04, time:"Americana"},
+    {n:"Vinícius Ruas",      f:"Vinícius Ruas",                        v:  68795.79, time:"On Demand"},
+    {n:"Lucas Gaspar",       f:"Lucas Gaspar",                         v:  62761.82, time:"Americana"},
+    {n:"Guilherme Silva",    f:"Guilherme Augusto Ferreira da Silva",  v:  50100.45, time:"Americana"},
+    {n:"Cátia Cezar",        f:"Cátia Michele Cezar",                  v:  36468.06, time:"Campinas - Matriz"},
+    {n:"Marcelo Toledo",     f:"Marcelo Pereira de Toledo",            v:  35000.00, time:"B2C"},
+    {n:"Paulo Manfio",       f:"Paulo José Teixeira Camarotto Manfio", v:  15000.00, time:"On Demand"},
     {n:"Outros",             f:"Não identificados: A68043 · A66914 · A31682 · A20146", v:246525.05, time:null}
   ],
   times: [
-    {n:"Campinas - Matriz", v:3798784.25, c:'#009974'},
-    {n:"B2C",               v:2426115.49, c:'#00b884'},
-    {n:"Americana",         v:1326195.70, c:'#4fd4a8'},
+    {n:"Campinas - Matriz", v:4314464.62, c:'#009974'},
+    {n:"B2C",               v:2775395.56, c:'#00b884'},
+    {n:"Americana",         v:1521327.83, c:'#4fd4a8'},
     {n:"On Demand",         v: 166377.98, c:'#2a7a5c'},
     {n:"Não identificado",  v: 246525.05, c:'#3a5068'}
   ],
   b2c: [
-    {f:"Caio Henrique Lima Batista",  v: 715328.29},
-    {f:"Rosania Flor e Silva",         v: 389141.18},
-    {f:"Ivan Voigt",                  v: 331120.43},
+    {f:"Caio Henrique Lima Batista",  v: 763683.00},
+    {f:"Samuel Henrique Menuzzo",     v: 420987.78},
+    {f:"Rosania Flor e Silva",         v: 404141.18},
+    {f:"Ivan Voigt",                  v: 373520.37},
     {f:"Reinaldo Mathias Ferreira",   v: 295621.21},
-    {f:"Luis Henrique Gomes Delfini", v: 241921.59},
-    {f:"Samuel Henrique Menuzzo",     v: 236026.68},
-    {f:"Eduardo Barbosa",             v: 100000.00},
+    {f:"Luis Henrique Gomes Delfini", v: 295485.91},
+    {f:"Eduardo Barbosa",             v: 105000.00},
     {f:"Henrique Pessôa de Almeida",  v:  81956.11},
     {f:"Marcelo Pereira de Toledo",   v:  35000.00}
   ]
@@ -280,7 +262,6 @@ const D = {
 const R  = v => 'R$\u00a0' + v.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0});
 const RF = v => 'R$\u00a0' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-// KPIs
 document.getElementById('kpi-total').textContent = RF(D.total);
 document.getElementById('k-count').textContent   = D.assessores.filter(x => x.n !== 'Outros').length;
 document.getElementById('k-top-a').textContent   = D.assessores[0].n;
@@ -291,70 +272,66 @@ const b2cTotal = D.b2c.reduce((s,x) => s+x.v, 0);
 document.getElementById('b2c-total').textContent = RF(b2cTotal);
 document.getElementById('a-total').textContent   = RF(D.total);
 
-// ── PIE CHART ──────────────────────────────────────────────
+// ── PIE ────────────────────────────────────────────────────
 const tTotal = D.times.reduce((s,x) => s+x.v, 0);
 const svgPie = document.getElementById('pie-svg');
-const W=340, H=320, cx=155, cy=152, outerR=100, innerR=52, gapDeg=1.5;
-svgPie.setAttribute('width', W); svgPie.setAttribute('height', H);
+const W=340,H=320,cx=155,cy=152,outerR=100,innerR=52,gapDeg=1.5;
+svgPie.setAttribute('width',W); svgPie.setAttribute('height',H);
 svgPie.setAttribute('viewBox','0 0 '+W+' '+H);
-svgPie.style.flexShrink = '0';
+svgPie.style.flexShrink='0';
 
 function toRad(d){ return d*Math.PI/180; }
-function polar(r,a){ var rad=toRad(a-90); return [cx+r*Math.cos(rad), cy+r*Math.sin(rad)]; }
+function polar(r,a){ var rad=toRad(a-90); return [cx+r*Math.cos(rad),cy+r*Math.sin(rad)]; }
 function slicePath(s,e,oR,iR){
   var large=(e-s)>180?1:0;
   var p1=polar(oR,s),p2=polar(oR,e),p3=polar(iR,e),p4=polar(iR,s);
   return 'M'+p1+' A'+oR+' '+oR+' 0 '+large+' 1 '+p2+' L'+p3+' A'+iR+' '+iR+' 0 '+large+' 0 '+p4+' Z';
 }
 
-var html='', cumDeg=0, slices=[];
-D.times.forEach(function(d,i){
+var html='',cumDeg=0,slices=[];
+D.times.forEach(function(d){
   var deg=d.v/tTotal*360;
-  var startD=cumDeg+gapDeg/2, endD=cumDeg+deg-gapDeg/2, midD=cumDeg+deg/2;
-  slices.push({d:d, i:i, startD:startD, endD:endD, midD:midD, pct:(d.v/tTotal*100).toFixed(1)});
+  var startD=cumDeg+gapDeg/2,endD=cumDeg+deg-gapDeg/2,midD=cumDeg+deg/2;
+  slices.push({d:d,startD:startD,endD:endD,midD:midD,pct:(d.v/tTotal*100).toFixed(1)});
   cumDeg+=deg;
 });
-
 slices.forEach(function(s){
   html+='<path d="'+slicePath(s.startD,s.endD,outerR,innerR)+'"'
       +' fill="'+s.d.c+'" opacity="0.92"'
       +' style="cursor:pointer;transition:filter .15s"'
-      +' data-time="'+s.d.n+'"'
       +' onmouseover="this.style.filter=\'brightness(1.25)\'"'
       +' onmouseout="this.style.filter=\'none\'"'
       +' onclick="setFilter(\''+s.d.n+'\')"'
       +'/>';
 });
 slices.forEach(function(s){
-  var pInner=polar(outerR+4,s.midD), pOuter=polar(outerR+22,s.midD);
+  var pInner=polar(outerR+4,s.midD),pOuter=polar(outerR+22,s.midD);
   var isRight=(s.midD%360)<180;
   var pEnd=[pOuter[0]+(isRight?18:-18),pOuter[1]];
-  var tx=pEnd[0]+(isRight?5:-5), anchor=isRight?'start':'end';
+  var tx=pEnd[0]+(isRight?5:-5),anchor=isRight?'start':'end';
   html+='<line x1="'+pInner[0]+'" y1="'+pInner[1]+'" x2="'+pOuter[0]+'" y2="'+pOuter[1]+'" stroke="'+s.d.c+'" stroke-width="1.2" opacity="0.7"/>';
   html+='<line x1="'+pOuter[0]+'" y1="'+pOuter[1]+'" x2="'+pEnd[0]+'" y2="'+pEnd[1]+'" stroke="'+s.d.c+'" stroke-width="1.2" opacity="0.7"/>';
   html+='<text x="'+tx+'" y="'+(pEnd[1]+1)+'" text-anchor="'+anchor+'" fill="#ffffff" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="500">'+s.pct+'%</text>';
 });
 html+='<text x="'+cx+'" y="'+(cy-8)+'" text-anchor="middle" fill="#5a6a7e" font-family="IBM Plex Mono,monospace" font-size="9" letter-spacing="2">TOTAL</text>';
-html+='<text x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle" fill="#f5f3ee" font-family="Playfair Display,serif" font-size="16" font-weight="700">R$ 8,0M</text>';
-svgPie.innerHTML = html;
+html+='<text x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle" fill="#f5f3ee" font-family="Playfair Display,serif" font-size="16" font-weight="700">R$ 9,0M</text>';
+svgPie.innerHTML=html;
 
-// Legenda clicável
-const legEl = document.getElementById('pie-legend');
-D.times.forEach(function(d,i){
+const legEl=document.getElementById('pie-legend');
+D.times.forEach(function(d){
   var pct=(d.v/tTotal*100).toFixed(1);
   var item=document.createElement('div');
-  item.className='pie-leg-item';
-  item.dataset.time=d.n;
+  item.className='pie-leg-item'; item.dataset.time=d.n;
   item.innerHTML=
     '<div class="pie-leg-dot" style="background:'+d.c+'"></div>'+
     '<span class="pie-leg-name">'+d.n+'</span>'+
     '<div><span class="pie-leg-val">'+R(d.v)+'</span><span class="pie-leg-pct">'+pct+'%</span></div>';
-  item.addEventListener('click', function(){ setFilter(d.n); });
+  item.addEventListener('click',function(){ setFilter(d.n); });
   legEl.appendChild(item);
 });
 
-// ── B2C RANKING ────────────────────────────────────────────
-const bEl=document.getElementById('chart-b2c'), bMax=D.b2c[0].v;
+// ── B2C ────────────────────────────────────────────────────
+const bEl=document.getElementById('chart-b2c'),bMax=D.b2c[0].v;
 D.b2c.forEach((d,i)=>{
   const row=document.createElement('div');
   row.className='a-row';
@@ -366,92 +343,72 @@ D.b2c.forEach((d,i)=>{
   bEl.appendChild(row);
 });
 
-// ── RANKING GERAL COM FILTRO ───────────────────────────────
-const main   = D.assessores.filter(x => x.n !== 'Outros');
-const outros = D.assessores.find(x => x.n === 'Outros');
-const aEl    = document.getElementById('chart-a');
-const titleEl= document.getElementById('ranking-title');
-const totalEl= document.getElementById('a-total');
-const emptyEl= document.getElementById('a-empty');
+// ── RANKING GERAL ──────────────────────────────────────────
+const main    = D.assessores.filter(x => x.n !== 'Outros');
+const outros  = D.assessores.find(x => x.n === 'Outros');
+const aEl     = document.getElementById('chart-a');
+const titleEl = document.getElementById('ranking-title');
+const totalEl = document.getElementById('a-total');
+const emptyEl = document.getElementById('a-empty');
 
-// Montar filtro tabs
-const filterBar = document.getElementById('filter-bar');
 const allTimes  = ['Todos','Campinas - Matriz','B2C','Americana','On Demand'];
 const timeColor = {'Campinas - Matriz':'#009974','B2C':'#00b884','Americana':'#4fd4a8','On Demand':'#2a7a5c'};
-let   activeFilter = 'Todos';
+let activeFilter = 'Todos';
 
+const filterBar=document.getElementById('filter-bar');
 allTimes.forEach(function(t){
-  const btn = document.createElement('button');
-  btn.className = 'f-tab' + (t==='Todos'?' active':'');
-  btn.dataset.time = t;
-  if(t !== 'Todos'){
-    btn.innerHTML = '<span class="f-dot" style="background:'+timeColor[t]+'"></span>'+t;
-  } else {
-    btn.textContent = 'Todos';
-  }
-  btn.addEventListener('click', function(){ setFilter(t); });
+  const btn=document.createElement('button');
+  btn.className='f-tab'+(t==='Todos'?' active':'');
+  btn.dataset.time=t;
+  btn.innerHTML = t!=='Todos'
+    ? '<span class="f-dot" style="background:'+timeColor[t]+'"></span>'+t
+    : 'Todos';
+  btn.addEventListener('click',function(){ setFilter(t); });
   filterBar.appendChild(btn);
 });
 
 function buildRanking(filter){
-  aEl.innerHTML = '';
-  emptyEl.style.display = 'none';
+  aEl.innerHTML=''; emptyEl.style.display='none';
+  const filtered = filter==='Todos' ? main : main.filter(x=>x.time===filter);
+  if(filtered.length===0){ emptyEl.style.display='block'; return; }
 
-  const filtered = filter === 'Todos'
-    ? main
-    : main.filter(x => x.time === filter);
-
-  if(filtered.length === 0){
-    emptyEl.style.display = 'block';
-    return;
-  }
-
-  const showOutros = filter === 'Todos';
-  const all = showOutros ? filtered.concat([outros]) : filtered;
+  const showOutros = filter==='Todos';
+  const all  = showOutros ? filtered.concat([outros]) : filtered;
   const aMax = filtered[0].v;
-  const half = Math.ceil(all.length / 2);
+  const half = Math.ceil(all.length/2);
 
-  // 1 coluna se poucos assessores, 2 colunas se muitos
-  if(filtered.length <= 6){
-    aEl.classList.add('single');
-    aEl.classList.remove('a-grid');
-    aEl.style.gridTemplateColumns = '1fr';
-    const col = document.createElement('div');
-    col.className = 'a-col';
-    col.style.borderRight = 'none';
-    all.forEach((d,idx) => buildRow(col, d, filtered, aMax, idx));
+  aEl.style.gridTemplateColumns = filtered.length<=6 ? '1fr' : '';
+
+  if(filtered.length<=6){
+    const col=document.createElement('div');
+    col.className='a-col'; col.style.borderRight='none';
+    all.forEach(d=>buildRow(col,d,filtered,aMax));
     aEl.appendChild(col);
   } else {
-    aEl.classList.remove('single');
-    aEl.style.gridTemplateColumns = '';
-    [all.slice(0, half), all.slice(half)].forEach(colData => {
-      const colDiv = document.createElement('div');
-      colDiv.className = 'a-col';
-      colData.forEach((d,idx) => buildRow(colDiv, d, filtered, aMax, idx));
+    [all.slice(0,half),all.slice(half)].forEach(colData=>{
+      const colDiv=document.createElement('div');
+      colDiv.className='a-col';
+      colData.forEach(d=>buildRow(colDiv,d,filtered,aMax));
       aEl.appendChild(colDiv);
     });
   }
 
-  // Atualizar total visível
-  const visTotal = filtered.reduce((s,x)=>s+x.v, 0) + (showOutros ? outros.v : 0);
-  totalEl.textContent = RF(visTotal);
+  const visTotal = filtered.reduce((s,x)=>s+x.v,0)+(showOutros?outros.v:0);
+  totalEl.textContent=RF(visTotal);
 
-  // Animar barras
   requestAnimationFrame(function(){
     setTimeout(function(){
-      aEl.querySelectorAll('[data-w]').forEach(function(el){
-        el.style.width = el.dataset.w + '%';
-      });
-    }, 80);
+      aEl.querySelectorAll('[data-w]').forEach(function(el){ el.style.width=el.dataset.w+'%'; });
+    },80);
   });
 }
 
-function buildRow(col, d, filtered, aMax, idx){
-  const isO  = d.n === 'Outros';
-  const rank = isO ? null : filtered.indexOf(d) + 1;
+function buildRow(col,d,filtered,aMax){
+  const isO  = d.n==='Outros';
+  const rank = isO ? null : filtered.indexOf(d)+1;
   const row  = document.createElement('div');
-  row.className = 'a-row' + (isO ? ' others' : '');
-  row.innerHTML =
+  row.className='a-row'+(isO?' others':'');
+  row.innerHTML=
     '<div class="a-rank">'+(isO?'—':'#'+rank)+'</div>'+
     '<div class="a-center"><div class="a-name '+(isO?'oth':'')+'" title="'+d.f+'">'+d.f+'</div>'+
     '<div class="a-bar-wrap"><div class="a-bar '+(isO?'dim':'')+'" style="width:0" data-w="'+(d.v/aMax*100).toFixed(1)+'"></div></div></div>'+
@@ -460,40 +417,22 @@ function buildRow(col, d, filtered, aMax, idx){
 }
 
 function setFilter(time){
-  // Se clicar no mesmo filtro ativo, volta para Todos
-  if(activeFilter === time && time !== 'Todos'){
-    time = 'Todos';
-  }
-  activeFilter = time;
-
-  // Atualizar tabs
-  document.querySelectorAll('.f-tab').forEach(b => {
-    b.classList.toggle('active', b.dataset.time === time);
-  });
-
-  // Atualizar legenda do pie
-  document.querySelectorAll('.pie-leg-item').forEach(item => {
-    item.classList.toggle('active', item.dataset.time === time);
-  });
-
-  // Atualizar título
-  titleEl.textContent = time === 'Todos'
+  if(activeFilter===time && time!=='Todos') time='Todos';
+  activeFilter=time;
+  document.querySelectorAll('.f-tab').forEach(b=>b.classList.toggle('active',b.dataset.time===time));
+  document.querySelectorAll('.pie-leg-item').forEach(item=>item.classList.toggle('active',item.dataset.time===time));
+  titleEl.textContent = time==='Todos'
     ? 'Ranking Geral de Assessores — Valor Solicitado'
-    : 'Ranking · ' + time + ' — Valor Solicitado';
-
+    : 'Ranking · '+time+' — Valor Solicitado';
   buildRanking(time);
 }
 
-// Build inicial
 buildRanking('Todos');
 
-// Animar barras B2C
 requestAnimationFrame(function(){
   setTimeout(function(){
-    document.querySelectorAll('#chart-b2c [data-w]').forEach(function(el){
-      el.style.width = el.dataset.w + '%';
-    });
-  }, 150);
+    document.querySelectorAll('#chart-b2c [data-w]').forEach(function(el){ el.style.width=el.dataset.w+'%'; });
+  },150);
 });
 </script>
 </body>
