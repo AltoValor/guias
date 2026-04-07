@@ -148,12 +148,8 @@
   .badge-cd        { background: rgba(244,244,244,0.06); color: rgba(244,244,244,0.45); border: 1px solid rgba(244,244,244,0.08); }
 
   /* Highlighted row */
-  tr.highlight td {
-    background: rgba(0,153,116,0.07);
-  }
-  tr.highlight .td-ativo {
-    color: var(--green-light);
-  }
+  .highlight-text { color: var(--green-light) !important; }
+  tr:has(.highlight-text) td { background: rgba(0,153,116,0.07); }
 
   /* Notes section */
   .notes {
@@ -237,7 +233,7 @@
     <tbody>
       <tr>
         <td class="td-produto"><span class="badge badge-treasury">Treasury</span></td>
-        <td class="td-ativo">Treasury — até 2029</td>
+        <td class="td-ativo highlight-text">Treasury — até 2029</td>
         <td class="td-comentario">Tesouro do Governo Norte Americano</td>
       </tr>
       <tr>
@@ -245,12 +241,12 @@
         <td class="td-ativo">Bonds — até 2031</td>
         <td class="td-comentario">Crédito Privado — evitar empresas brasileiras</td>
       </tr>
-      <tr class="highlight">
+      <tr>
         <td class="td-produto"><span class="badge badge-etf">ETF</span></td>
         <td class="td-ativo">BIL</td>
         <td class="td-comentario">Treasury de curtíssimo prazo ("pós-fixado") — com dividendos</td>
       </tr>
-      <tr class="highlight">
+      <tr>
         <td class="td-produto"><span class="badge badge-etf">ETF</span></td>
         <td class="td-ativo">SHV</td>
         <td class="td-comentario">Treasury 0–12 meses — com dividendos</td>
@@ -260,20 +256,25 @@
         <td class="td-ativo">SHY</td>
         <td class="td-comentario">Treasury 1–3 anos — com dividendos</td>
       </tr>
-      <tr class="highlight">
+      <tr>
         <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
-        <td class="td-ativo">BlackRock US Dollar Reserve (A2)</td>
+        <td class="td-ativo highlight-text">BlackRock US Dollar Reserve (A2)</td>
         <td class="td-comentario">Fundo Money Market ("Fundo DI")</td>
       </tr>
       <tr>
         <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
-        <td class="td-ativo">JP Morgan Global High Yield Bond (A)</td>
+        <td class="td-ativo highlight-text">JP Morgan Global High Yield Bond (A)</td>
         <td class="td-comentario">Crédito Privado — Duration 2,5</td>
       </tr>
       <tr>
         <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
-        <td class="td-ativo">MS INVF Global Asset Backed Securities (A)</td>
+        <td class="td-ativo highlight-text">MS INVF Global Asset Backed Securities (A)</td>
         <td class="td-comentario">Mortgage Securities — Duration 4,5</td>
+      </tr>
+      <tr>
+        <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
+        <td class="td-ativo highlight-text">Oaktree Global Credit Fund</td>
+        <td class="td-comentario">Crédito Global — Duration 2,0</td>
       </tr>
       <tr>
         <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
@@ -301,29 +302,29 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="highlight">
+      <tr>
         <td class="td-produto"><span class="badge badge-etf">ETF</span></td>
         <td class="td-ativo">QQQ</td>
         <td class="td-comentario">Nasdaq — com dividendos</td>
       </tr>
-      <tr class="highlight">
+      <tr>
         <td class="td-produto"><span class="badge badge-etf">ETF</span></td>
         <td class="td-ativo">IVV / SPY</td>
         <td class="td-comentario">S&P 500 — com dividendos</td>
       </tr>
       <tr>
         <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
-        <td class="td-ativo">JP Morgan US Technology (A)</td>
+        <td class="td-ativo highlight-text">JP Morgan US Technology (A)</td>
         <td class="td-comentario">Nasdaq — acumulação</td>
       </tr>
       <tr>
         <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
-        <td class="td-ativo">JP Morgan US Select Equities (A)</td>
+        <td class="td-ativo highlight-text">JP Morgan US Select Equities (A)</td>
         <td class="td-comentario">S&P 500 — acumulação</td>
       </tr>
       <tr>
         <td class="td-produto"><span class="badge badge-mutual">Mutual Fund</span></td>
-        <td class="td-ativo">Morgan Stanley Global Opportunity (A)</td>
+        <td class="td-ativo highlight-text">Morgan Stanley Global Opportunity (A)</td>
         <td class="td-comentario">Ações Globais</td>
       </tr>
     </tbody>
