@@ -11,10 +11,9 @@
     --white: #f4f4f4;
     --green: #009974;
     --border: rgba(244,244,244,0.07);
+    --green-dim: rgba(0,153,116,0.08);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     background: var(--black);
     color: var(--white);
@@ -22,390 +21,246 @@
     font-weight: 300;
     min-height: 100vh;
     padding: 48px 32px 80px;
-    max-width: 1000px;
+    max-width: 1060px;
     margin: 0 auto;
   }
-
   header {
-    margin-bottom: 48px;
+    margin-bottom: 56px;
     padding-bottom: 32px;
     border-bottom: 1px solid var(--border);
   }
-
-  .logo-area svg {
-    width: 180px;
-    height: auto;
-    display: block;
-    margin-bottom: 40px;
-  }
-
+  .logo-area svg { width: 180px; height: auto; display: block; margin-bottom: 40px; }
   .header-title { text-align: center; }
   .header-title h2 {
     font-family: 'Playfair Display', serif;
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    color: var(--white);
+    font-size: 30px; font-weight: 600; color: var(--white);
   }
-
-  /* Tabs */
   .tabs {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 40px;
+    display: flex; gap: 4px; margin-bottom: 36px;
     border-bottom: 1px solid var(--border);
   }
-
   .tab-btn {
-    background: none;
-    border: none;
-    color: rgba(244,244,244,0.35);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 12px 20px;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
+    background: none; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(244,244,244,0.3); padding: 10px 20px;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
     transition: color 0.2s, border-color 0.2s;
   }
-  .tab-btn:hover { color: rgba(244,244,244,0.7); }
+  .tab-btn:hover { color: rgba(244,244,244,0.6); }
   .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
-
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
-
-  /* Section label */
   .section-label {
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--green);
-    margin-bottom: 16px;
-    margin-top: 44px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--green); margin-bottom: 16px; margin-top: 40px;
+    display: flex; align-items: center; gap: 12px;
   }
-  .section-label:first-child { margin-top: 0; }
   .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-  /* Table */
-  .table-wrap { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .table-wrap { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 8px; }
   table { width: 100%; border-collapse: collapse; }
   thead tr { background: rgba(244,244,244,0.04); }
   thead th {
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(244,244,244,0.4);
-    font-weight: 500;
-    padding: 12px 18px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(244,244,244,0.35); font-weight: 500;
+    padding: 13px 20px; text-align: left; border-bottom: 1px solid var(--border);
   }
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
   tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: rgba(0,153,116,0.05); }
-  td { padding: 13px 18px; font-size: 13px; vertical-align: middle; line-height: 1.5; }
-
-  .td-fundo { color: var(--white); }
-  .td-prazo { white-space: nowrap; font-weight: 500; color: rgba(244,244,244,0.6); font-size: 12.5px; }
-  .td-obs { font-size: 12px; color: rgba(244,244,244,0.45); }
-  .td-link a {
-    color: var(--green);
-    font-size: 11.5px;
-    text-decoration: none;
-    opacity: 0.8;
-    transition: opacity 0.15s;
-  }
+  tbody tr:hover { background: rgba(0,153,116,0.04); }
+  td { padding: 12px 20px; font-size: 13px; vertical-align: middle; line-height: 1.45; }
+  .td-fundo { color: var(--white); font-weight: 400; }
+  .td-prazo { color: rgba(244,244,244,0.5); font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .td-roa { color: rgba(244,244,244,0.5); font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .td-obs { color: rgba(244,244,244,0.4); font-size: 12px; }
+  .td-link a { color: var(--green); font-size: 11.5px; text-decoration: none; opacity: 0.8; transition: opacity 0.15s; }
   .td-link a:hover { opacity: 1; text-decoration: underline; }
-
-  .badge-iq {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 10.5px;
-    font-weight: 500;
-    background: rgba(244,244,244,0.06);
-    color: rgba(244,244,244,0.45);
-    border: 1px solid rgba(244,244,244,0.08);
-    white-space: nowrap;
+  .td-meta { color: rgba(244,244,244,0.45); font-size: 12px; }
+  .badge-qi {
+    display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.06em;
+    background: rgba(244,244,244,0.06); color: rgba(244,244,244,0.4);
+    border: 1px solid rgba(244,244,244,0.08); white-space: nowrap;
   }
-
   footer {
-    margin-top: 64px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    font-size: 11px;
-    color: rgba(244,244,244,0.2);
-    letter-spacing: 0.1em;
-    text-align: center;
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border);
+    font-size: 11px; color: rgba(244,244,244,0.2); letter-spacing: 0.1em; text-align: center;
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo-area">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1835 295.6"><defs><style>.st0{fill:#fff}</style></defs><g><g><path class="st0" d="M174.9,248.6c-20.4-40.4-27.6-85.1-39.9-128.1-8.6-30.1-7.5-30.2-38.5-30.2-7.7,0-11.5,2.4-14.5,9.7C55,165.2,32.9,232.3,0,295.6h65.6c15.3-57.1,40.6-108.9,61.3-162.6,1.4,0,1.5,0,2.8,0,1,2,2.4,3.9,3,6.1,4.9,18,9.8,36,14.4,54,6.3,24.1,14.6,47.3,26.5,68.9.4-.2.9-.5,1.3-.7,2.8-1.4,3.9-5,2.4-7.8s-1.7-3.2-2.5-4.9Z"/><path class="st0" d="M240.6,14.8c-15.2,57-40.7,109.2-61.5,163.2q-1.7,0-3.3,0c-1.3-3.9-2.8-7.8-4-11.8-9.3-31.3-16.7-63.4-28.3-93.9-11.5-30.2-28-55.6-52.2-72.3-.4,1.1-.9,2.1-1.4,3.1-1.5,2.9-.6,6.4,1.9,8.5.9.7,1.8,1.5,2.7,2.2,27.3,23.1,42.3,53.9,52.2,87.3,10.8,36.4,20.3,73.1,30,109.8,2,7.4,5.3,10.5,14.3,9,5.3-.9,10.8-1.2,16.1-.2,8.3,1.5,11.5-.7,14.1-7,27.6-65.9,49.7-134.2,83.2-197.9h-63.8Z"/></g><g><g><path class="st0" d="M345.5,206.7h2.8v26.2h-2.8v-26.2Z"/><path class="st0" d="M388.1,206.7v26.2h-2.3l-16.9-21.3v21.3h-2.8v-26.2h2.3l16.9,21.3v-21.3h2.7Z"/><path class="st0" d="M427.5,206.7l-11.6,26.2h-2.7l-11.6-26.2h3l10,22.8,10.1-22.8h2.8Z"/><path class="st0" d="M459.3,230.5v2.4h-18.6v-26.2h18v2.4h-15.2v9.3h13.6v2.4h-13.6v9.7h15.8Z"/><path class="st0" d="M472.6,229.7l1.1-2.1c1.9,1.8,5.2,3.2,8.7,3.2,4.9,0,7-2.1,7-4.6,0-7.2-16.2-2.8-16.2-12.5s3-7.2,9.7-7.2,6,.9,8.1,2.3l-.9,2.2c-2.2-1.5-4.9-2.2-7.2-2.2-4.8,0-6.9,2.1-6.9,4.8,0,7.2,16.2,2.8,16.2,12.4s-3.1,7.2-9.8,7.2-7.8-1.4-9.7-3.4Z"/><path class="st0" d="M512.3,209.1h-9.2v-2.4h21.2v2.4h-9.2v23.8h-2.8v-23.8Z"/><path class="st0" d="M538.1,206.7h2.8v26.2h-2.8v-26.2Z"/><path class="st0" d="M586.1,206.7v26.2h-2.7v-21l-10.3,17.7h-1.3l-10.3-17.5v20.9h-2.7v-26.2h2.3l11.4,19.5,11.3-19.5h2.3Z"/><path class="st0" d="M622.6,230.5v2.4h-18.6v-26.2h18v2.4h-15.2v9.3h13.6v2.4h-13.6v9.7h15.8Z"/><path class="st0" d="M660.4,206.7v26.2h-2.3l-16.9-21.3v21.3h-2.8v-26.2h2.3l16.9,21.3v-21.3h2.7Z"/><path class="st0" d="M683.4,209.1h-9.2v-2.4h21.2v2.4h-9.2v23.8h-2.8v-23.8Z"/><path class="st0" d="M706.5,219.8c0-7.6,5.8-13.3,13.8-13.3s13.8,5.7,13.8,13.3-5.9,13.3-13.8,13.3-13.8-5.7-13.8-13.3ZM731.3,219.8c0-6.3-4.7-10.9-11-10.9s-11.1,4.6-11.1,10.9,4.7,10.9,11.1,10.9,11-4.6,11-10.9Z"/><path class="st0" d="M747.2,229.7l1.1-2.1c1.9,1.8,5.2,3.2,8.7,3.2,4.9,0,7-2.1,7-4.6,0-7.2-16.2-2.8-16.2-12.5s3-7.2,9.7-7.2,6,.9,8.1,2.3l-.9,2.2c-2.2-1.5-4.9-2.2-7.2-2.2-4.8,0-6.9,2.1-6.9,4.8,0,7.2,16.2,2.8,16.2,12.4s-3.1,7.2-9.8,7.2-7.8-1.4-9.7-3.4Z"/></g><g><path class="st0" d="M399.2,162.4v-3.7c9.1-1.1,10.3-2.4,8.3-7.4-1.8-5.2-4.6-11.8-7.6-20.2h-30.4c-2.2,6-4.4,11.2-6.3,16.6-3.1,8.6-1.1,9.7,10.4,11v3.7h-32.5v-3.7c8.9-1.1,11.1-2,16-13.9l29.1-69.7,4.5-.8c8.9,22.7,18.5,47.8,27.4,70.8,4.5,11.6,5.8,12.6,15.7,13.7v3.7h-34.7ZM385.2,91.6c-4.5,11.4-9.3,23.5-13.5,34h26.3l-12.8-34Z"/><path class="st0" d="M545.2,140.3c-.8,4.1-5.1,17.9-6.5,22h-65.3v-3.7c12.8-1.2,13.9-1.9,13.9-13.1v-52.7c0-11.3-1.4-11.9-12.6-13v-3.7h37.7v3.7c-11.2,1.1-12.8,1.6-12.8,13v54c0,8.1,1.1,10,9.1,10.1.1,0,10.3.1,11.1.1,7.2,0,9.3-.8,12.5-4.1,3.5-3.5,6.5-8.8,8.6-13.7l4.4,1.1Z"/><path class="st0" d="M651.2,96.9c-1.3-4.2-3-8.6-4.5-11c-2.2-3.6-3.7-4.5-11.4-4.5h-14.1v64.7c0,10.4,1.1,11.8,14.5,12.6v3.7h-40.9v-3.7c13.1-.8,14.2-2.1,14.2-12.6v-64.7h-12.8c-7.7,0-10,.8-12.4,4.8-1.7,2.7-2.8,5.8-4.6,10.8h-4.2c.8-8.1,1.7-16.5,2.1-23.9h3.2c2.1,3.2,3.7,3.1,7.6,3.1h55.7c3.9,0,5.1-.5,7.2-3.1h3.4c0,6.2.6,15.8,1.3,23.5l-4.2.4Z"/><path class="st0" d="M749.6,74.2c24,0,45.5,17.4,45.5,43.8s-20.5,46.3-46.4,46.3-46.7-19.4-46.7-44.3,17.8-45.8,47.5-45.8ZM746.8,79.1c-15.7,0-30.1,12.5-30.1,37.3s14.3,42.9,34.3,42.9,29.8-11.9,29.8-37.6-15.6-42.6-34-42.6Z"/><path class="st0" d="M931.1,81c-9.3.9-12.1,2.1-17.4,14.7-4.4,10.2-18.8,43.1-29.2,68.1h-7.7c-3.9-10.4-22.2-55.9-28.1-70-4.4-10-6.2-12.1-15.3-12.9v-4.9h42.9v4.9c-10.4,1.3-10.4,2.3-8.2,7.8,4.4,11.2,14.9,38.5,19.7,50.2,8.4-19,16-37,19.3-45.7,3.5-9.2,2.5-11.2-9.3-12.3v-4.9h33.4v4.9Z"/><path class="st0" d="M1001.8,162.4v-4.9c8.9-1.2,8.9-2.7,6.9-8.4-1.4-4-3.7-10-5.8-15.3h-27.4c-1.5,4.1-3.5,9.2-4.9,13.3-3,8.4.4,9.4,11.5,10.4v4.9h-34.7v-4.9c8.9-1.1,11.1-2.3,15.9-13.4l29.2-68.6,6.7-1.2c9,23.1,18.6,46.7,27.7,68.9,5.2,12.3,6.5,13.3,15.6,14.3v4.9h-40.8ZM989.5,98.9c-4.1,9.6-8,18.5-11.5,28.1h22.3l-10.8-28.1Z"/><path class="st0" d="M1157.3,139c-1.1,5.7-5.1,19.8-6.3,23.4h-69.7v-4.9c12.4-.8,13.5-1.7,13.5-12.9v-50.6c0-11.2-1.4-12.2-11.9-13v-4.9h43.8v4.9c-11,.9-12.4,1.9-12.4,13v51.5c0,7.3.3,10.6,8,10.8.3.1,6.7.1,7.3.1,8,0,10.1-1.6,13.5-5.2,2.7-2.7,6.3-8.4,8.9-13.8l5.3,1.6Z"/><path class="st0" d="M1249.9,74.2c26,0,47.2,17.9,47.2,44.1s-21.4,46.1-47.9,46.1-48.5-19.4-48.5-45,17.1-45.1,49.2-45.1ZM1247.8,80.1c-14.3,0-24.9,13.3-24.9,36.8s9.4,41.7,28.4,41.7,23.8-12.2,23.8-36.5-11-41.9-27.3-41.9Z"/><path class="st0" d="M1432.8,163.2c-.8,0-2.5,0-4.2-.1-17.8-.8-23-4.4-27.3-10-5.6-7.3-9.7-15.4-14.5-23.4-2.1-3.6-4.1-4.4-8.6-4.4h-2.8c0-.1,0,19.2,0,19.2,0,10.8,1.4,11.7,11.9,12.9v4.9h-43v-4.9c10.7-1.1,11.9-2.1,11.9-12.9v-50.8c0-10.5-1.4-11.9-11.9-12.7v-4.9h40.8c12.5,0,19.7,1.3,25.4,5,5.6,3.6,9.4,9.4,9.4,17.7,0,11.8-8.3,18.1-17.6,21.5,2.1,4,7.6,12.6,11.8,18.7,4.9,7.3,8,10.9,10.7,13.8,3.2,3.5,4.8,4.5,8.9,5.8l-1,4.5ZM1379.3,119.8c6,0,10.7-.9,13.8-3.5,4.6-3.7,6.6-8.8,6.6-15.5,0-14.1-8.6-19.1-16.4-19.1s-5.6.5-6.5,1.3c-1,.8-1.3,2.4-1.3,5v31.7h3.8Z"/></g></g></g><g><path class="st0" d="M1702.9,177.1c-6.1-6.1-11.9-12.2-18-17.8-1.8-1.7-4.8-2.9-7.2-3-7.5-.4-15-.2-22.6-.1-1.3,0-2.6.2-4.4,1.3,12.1,11.7,24.3,23.5,36.8,35.6-12.1,11.8-24,23.3-36.6,35.5,1.9.3,2.9.6,3.9.6,7.9,0,15.9.2,23.8-.1,2.4-.1,5.1-1.4,6.9-3,5.8-5.3,11.1-10.9,16.3-16,5,4.6,10.3,8.8,14.8,13.8,3.6,3.9,7.3,5.7,12.7,5.4,8.2-.4,16.4-.1,24.7,0,1.3,0,2.7.1,4.2.5-11.8,5.3-12.2,15.7-12,26.4-.9.2-1.5.4-2.2.4-41.3,0-82.5,0-123.8-.1-16.4,0-26.3-10.6-26.3-27,0-54.6,0-109.3,0-163.9,0-15,9.3-25,24.3-25.9,4-.2,8.1-.4,12.1-.4,57.6,0,115.1-.1,172.7.1,6.3,0,12.9,1,18.7,3.2,8.4,3.1,12.9,10.6,13,19.3.3,37.9.1,75.8.1,113.7,0,.4-.1.7-.2,1.1-2.4-3.4-4.3-7.1-7.1-10-7.1-7.6-16.6-10.2-26.6-10.3-25.1-.3-50.2-.3-75.3,0-2,0-4.5,1.5-6,3.1-5.7,5.7-11.1,11.7-16.8,17.8Z"/><path class="st0" d="M1834.7,208.9c0,9,.8,18-.2,26.8-1.4,11.8-11.1,20.1-23.3,20.5-13.6.4-27.3,0-41.2,0v-27.5c3.4,0,6.6,0,9.9,0,8.8-.1,17.6.3,26.3-.5,12.8-1.2,23.1-6.8,28.5-19.4Z"/><path class="st0" d="M1769.7,206.8v-28.3c3.8,0,7.4,0,11.1,0,6.1,0,12.3-.2,18.4.1,10.5.5,16.1,7.1,14.8,16.9-.9,6.3-5.3,10.7-13.2,11.1-10.2.6-20.5.1-31.1.1Z"/><path class="st0" d="M1719.7,191.3c7.7-7.5,16.7-16.1,26.2-25.2v53.9c-9-9.9-17.4-19.1-26.2-28.7Z"/></g></svg>
-  </div>
+  <div class="logo-area"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1835 295.6"><defs><style>.st0{fill:#fff}</style></defs><g><g><path class="st0" d="M174.9,248.6c-20.4-40.4-27.6-85.1-39.9-128.1-8.6-30.1-7.5-30.2-38.5-30.2-7.7,0-11.5,2.4-14.5,9.7C55,165.2,32.9,232.3,0,295.6h65.6c15.3-57.1,40.6-108.9,61.3-162.6,1.4,0,1.5,0,2.8,0,1,2,2.4,3.9,3,6.1,4.9,18,9.8,36,14.4,54,6.3,24.1,14.6,47.3,26.5,68.9.4-.2.9-.5,1.3-.7,2.8-1.4,3.9-5,2.4-7.8s-1.7-3.2-2.5-4.9Z"/><path class="st0" d="M240.6,14.8c-15.2,57-40.7,109.2-61.5,163.2q-1.7,0-3.3,0c-1.3-3.9-2.8-7.8-4-11.8-9.3-31.3-16.7-63.4-28.3-93.9-11.5-30.2-28-55.6-52.2-72.3-.4,1.1-.9,2.1-1.4,3.1-1.5,2.9-.6,6.4,1.9,8.5.9.7,1.8,1.5,2.7,2.2,27.3,23.1,42.3,53.9,52.2,87.3,10.8,36.4,20.3,73.1,30,109.8,2,7.4,5.3,10.5,14.3,9,5.3-.9,10.8-1.2,16.1-.2,8.3,1.5,11.5-.7,14.1-7,27.6-65.9,49.7-134.2,83.2-197.9h-63.8Z"/></g><g><g><path class="st0" d="M345.5,206.7h2.8v26.2h-2.8v-26.2Z"/><path class="st0" d="M388.1,206.7v26.2h-2.3l-16.9-21.3v21.3h-2.8v-26.2h2.3l16.9,21.3v-21.3h2.7Z"/><path class="st0" d="M427.5,206.7l-11.6,26.2h-2.7l-11.6-26.2h3l10,22.8,10.1-22.8h2.8Z"/><path class="st0" d="M459.3,230.5v2.4h-18.6v-26.2h18v2.4h-15.2v9.3h13.6v2.4h-13.6v9.7h15.8Z"/><path class="st0" d="M472.6,229.7l1.1-2.1c1.9,1.8,5.2,3.2,8.7,3.2,4.9,0,7-2.1,7-4.6,0-7.2-16.2-2.8-16.2-12.5s3-7.2,9.7-7.2,6,.9,8.1,2.3l-.9,2.2c-2.2-1.5-4.9-2.2-7.2-2.2-4.8,0-6.9,2.1-6.9,4.8,0,7.2,16.2,2.8,16.2,12.4s-3.1,7.2-9.8,7.2-7.8-1.4-9.7-3.4Z"/><path class="st0" d="M512.3,209.1h-9.2v-2.4h21.2v2.4h-9.2v23.8h-2.8v-23.8Z"/><path class="st0" d="M538.1,206.7h2.8v26.2h-2.8v-26.2Z"/><path class="st0" d="M586.1,206.7v26.2h-2.7v-21l-10.3,17.7h-1.3l-10.3-17.5v20.9h-2.7v-26.2h2.3l11.4,19.5,11.3-19.5h2.3Z"/><path class="st0" d="M622.6,230.5v2.4h-18.6v-26.2h18v2.4h-15.2v9.3h13.6v2.4h-13.6v9.7h15.8Z"/><path class="st0" d="M660.4,206.7v26.2h-2.3l-16.9-21.3v21.3h-2.8v-26.2h2.3l16.9,21.3v-21.3h2.7Z"/><path class="st0" d="M683.4,209.1h-9.2v-2.4h21.2v2.4h-9.2v23.8h-2.8v-23.8Z"/><path class="st0" d="M706.5,219.8c0-7.6,5.8-13.3,13.8-13.3s13.8,5.7,13.8,13.3-5.9,13.3-13.8,13.3-13.8-5.7-13.8-13.3ZM731.3,219.8c0-6.3-4.7-10.9-11-10.9s-11.1,4.6-11.1,10.9,4.7,10.9,11.1,10.9,11-4.6,11-10.9Z"/><path class="st0" d="M747.2,229.7l1.1-2.1c1.9,1.8,5.2,3.2,8.7,3.2,4.9,0,7-2.1,7-4.6,0-7.2-16.2-2.8-16.2-12.5s3-7.2,9.7-7.2,6,.9,8.1,2.3l-.9,2.2c-2.2-1.5-4.9-2.2-7.2-2.2-4.8,0-6.9,2.1-6.9,4.8,0,7.2,16.2,2.8,16.2,12.4s-3.1,7.2-9.8,7.2-7.8-1.4-9.7-3.4Z"/></g><g><path class="st0" d="M399.2,162.4v-3.7c9.1-1.1,10.3-2.4,8.3-7.4-1.8-5.2-4.6-11.8-7.6-20.2h-30.4c-2.2,6-4.4,11.2-6.3,16.6-3.1,8.6-1.1,9.7,10.4,11v3.7h-32.5v-3.7c8.9-1.1,11.1-2,16-13.9l29.1-69.7,4.5-.8c8.9,22.7,18.5,47.8,27.4,70.8,4.5,11.6,5.8,12.6,15.7,13.7v3.7h-34.7ZM385.2,91.6c-4.5,11.4-9.3,23.5-13.5,34h26.3l-12.8-34Z"/><path class="st0" d="M545.2,140.3c-.8,4.1-5.1,17.9-6.5,22h-65.3v-3.7c12.8-1.2,13.9-1.9,13.9-13.1v-52.7c0-11.3-1.4-11.9-12.6-13v-3.7h37.7v3.7c-11.2,1.1-12.8,1.6-12.8,13v54c0,8.1,1.1,10,9.1,10.1.1,0,10.3.1,11.1.1,7.2,0,9.3-.8,12.5-4.1,3.5-3.5,6.5-8.8,8.6-13.7l4.4,1.1Z"/><path class="st0" d="M651.2,96.9c-1.3-4.2-3-8.6-4.5-11c-2.2-3.6-3.7-4.5-11.4-4.5h-14.1v64.7c0,10.4,1.1,11.8,14.5,12.6v3.7h-40.9v-3.7c13.1-.8,14.2-2.1,14.2-12.6v-64.7h-12.8c-7.7,0-10,.8-12.4,4.8-1.7,2.7-2.8,5.8-4.6,10.8h-4.2c.8-8.1,1.7-16.5,2.1-23.9h3.2c2.1,3.2,3.7,3.1,7.6,3.1h55.7c3.9,0,5.1-.5,7.2-3.1h3.4c0,6.2.6,15.8,1.3,23.5l-4.2.4Z"/><path class="st0" d="M749.6,74.2c24,0,45.5,17.4,45.5,43.8s-20.5,46.3-46.4,46.3-46.7-19.4-46.7-44.3,17.8-45.8,47.5-45.8ZM746.8,79.1c-15.7,0-30.1,12.5-30.1,37.3s14.3,42.9,34.3,42.9,29.8-11.9,29.8-37.6-15.6-42.6-34-42.6Z"/><path class="st0" d="M931.1,81c-9.3.9-12.1,2.1-17.4,14.7-4.4,10.2-18.8,43.1-29.2,68.1h-7.7c-3.9-10.4-22.2-55.9-28.1-70-4.4-10-6.2-12.1-15.3-12.9v-4.9h42.9v4.9c-10.4,1.3-10.4,2.3-8.2,7.8,4.4,11.2,14.9,38.5,19.7,50.2,8.4-19,16-37,19.3-45.7,3.5-9.2,2.5-11.2-9.3-12.3v-4.9h33.4v4.9Z"/><path class="st0" d="M1001.8,162.4v-4.9c8.9-1.2,8.9-2.7,6.9-8.4-1.4-4-3.7-10-5.8-15.3h-27.4c-1.5,4.1-3.5,9.2-4.9,13.3-3,8.4.4,9.4,11.5,10.4v4.9h-34.7v-4.9c8.9-1.1,11.1-2.3,15.9-13.4l29.2-68.6,6.7-1.2c9,23.1,18.6,46.7,27.7,68.9,5.2,12.3,6.5,13.3,15.6,14.3v4.9h-40.8ZM989.5,98.9c-4.1,9.6-8,18.5-11.5,28.1h22.3l-10.8-28.1Z"/><path class="st0" d="M1157.3,139c-1.1,5.7-5.1,19.8-6.3,23.4h-69.7v-4.9c12.4-.8,13.5-1.7,13.5-12.9v-50.6c0-11.2-1.4-12.2-11.9-13v-4.9h43.8v4.9c-11,.9-12.4,1.9-12.4,13v51.5c0,7.3.3,10.6,8,10.8.3.1,6.7.1,7.3.1,8,0,10.1-1.6,13.5-5.2,2.7-2.7,6.3-8.4,8.9-13.8l5.3,1.6Z"/><path class="st0" d="M1249.9,74.2c26,0,47.2,17.9,47.2,44.1s-21.4,46.1-47.9,46.1-48.5-19.4-48.5-45,17.1-45.1,49.2-45.1ZM1247.8,80.1c-14.3,0-24.9,13.3-24.9,36.8s9.4,41.7,28.4,41.7,23.8-12.2,23.8-36.5-11-41.9-27.3-41.9Z"/><path class="st0" d="M1432.8,163.2c-.8,0-2.5,0-4.2-.1-17.8-.8-23-4.4-27.3-10-5.6-7.3-9.7-15.4-14.5-23.4-2.1-3.6-4.1-4.4-8.6-4.4h-2.8c0-.1,0,19.2,0,19.2,0,10.8,1.4,11.7,11.9,12.9v4.9h-43v-4.9c10.7-1.1,11.9-2.1,11.9-12.9v-50.8c0-10.5-1.4-11.9-11.9-12.7v-4.9h40.8c12.5,0,19.7,1.3,25.4,5,5.6,3.6,9.4,9.4,9.4,17.7,0,11.8-8.3,18.1-17.6,21.5,2.1,4,7.6,12.6,11.8,18.7,4.9,7.3,8,10.9,10.7,13.8,3.2,3.5,4.8,4.5,8.9,5.8l-1,4.5ZM1379.3,119.8c6,0,10.7-.9,13.8-3.5,4.6-3.7,6.6-8.8,6.6-15.5,0-14.1-8.6-19.1-16.4-19.1s-5.6.5-6.5,1.3c-1,.8-1.3,2.4-1.3,5v31.7h3.8Z"/></g></g></g><g><path class="st0" d="M1702.9,177.1c-6.1-6.1-11.9-12.2-18-17.8-1.8-1.7-4.8-2.9-7.2-3-7.5-.4-15-.2-22.6-.1-1.3,0-2.6.2-4.4,1.3,12.1,11.7,24.3,23.5,36.8,35.6-12.1,11.8-24,23.3-36.6,35.5,1.9.3,2.9.6,3.9.6,7.9,0,15.9.2,23.8-.1,2.4-.1,5.1-1.4,6.9-3,5.8-5.3,11.1-10.9,16.3-16,5,4.6,10.3,8.8,14.8,13.8,3.6,3.9,7.3,5.7,12.7,5.4,8.2-.4,16.4-.1,24.7,0,1.3,0,2.7.1,4.2.5-11.8,5.3-12.2,15.7-12,26.4-.9.2-1.5.4-2.2.4-41.3,0-82.5,0-123.8-.1-16.4,0-26.3-10.6-26.3-27,0-54.6,0-109.3,0-163.9,0-15,9.3-25,24.3-25.9,4-.2,8.1-.4,12.1-.4,57.6,0,115.1-.1,172.7.1,6.3,0,12.9,1,18.7,3.2,8.4,3.1,12.9,10.6,13,19.3.3,37.9.1,75.8.1,113.7,0,.4-.1.7-.2,1.1-2.4-3.4-4.3-7.1-7.1-10-7.1-7.6-16.6-10.2-26.6-10.3-25.1-.3-50.2-.3-75.3,0-2,0-4.5,1.5-6,3.1-5.7,5.7-11.1,11.7-16.8,17.8Z"/><path class="st0" d="M1834.7,208.9c0,9,.8,18-.2,26.8-1.4,11.8-11.1,20.1-23.3,20.5-13.6.4-27.3,0-41.2,0v-27.5c3.4,0,6.6,0,9.9,0,8.8-.1,17.6.3,26.3-.5,12.8-1.2,23.1-6.8,28.5-19.4Z"/><path class="st0" d="M1769.7,206.8v-28.3c3.8,0,7.4,0,11.1,0,6.1,0,12.3-.2,18.4.1,10.5.5,16.1,7.1,14.8,16.9-.9,6.3-5.3,10.7-13.2,11.1-10.2.6-20.5.1-31.1.1Z"/><path class="st0" d="M1719.7,191.3c7.7-7.5,16.7-16.1,26.2-25.2v53.9c-9-9.9-17.4-19.1-26.2-28.7Z"/></g></svg></div>
   <div class="header-title"><h2>Guia de Fundos</h2></div>
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="showTab('abertos', this)">Fundos Abertos</button>
-  <button class="tab-btn" onclick="showTab('previdencia', this)">Fundos de Previdência</button>
-  <button class="tab-btn" onclick="showTab('fechados', this)">Fundos Fechados</button>
+  <button class="tab-btn active" onclick="switchTab('abertos',this)">Fundos Abertos</button>
+  <button class="tab-btn" onclick="switchTab('previdencia',this)">Fundos de Previdência</button>
+  <button class="tab-btn" onclick="switchTab('fechados',this)">Fundos Fechados</button>
 </div>
 
-<!-- FUNDOS ABERTOS -->
+<!-- ===== ABERTOS ===== -->
 <div id="tab-abertos" class="tab-panel active">
 
   <div class="section-label">Pós Fixado</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo de Resgate</th></tr></thead>
-      <tbody>
-        <tr><td class="td-fundo">XP Liquidez FIC FR REF DI CP RL</td><td class="td-prazo">D+0</td></tr>
-        <tr><td class="td-fundo">Mag FIRF Referenciado DI Premium CP</td><td class="td-prazo">D+0</td></tr>
-        <tr><td class="td-fundo">Tivio Banks RF CP FIF RL</td><td class="td-prazo">D+0</td></tr>
-        <tr><td class="td-fundo">BNP Paribas Match FIF RF</td><td class="td-prazo">D+0</td></tr>
-        <tr><td class="td-fundo">Giant Cash FIRF LP</td><td class="td-prazo">D+1</td></tr>
-        <tr><td class="td-fundo">ARX Fuji FIC de FIF CP RL</td><td class="td-prazo">D+1</td></tr>
-        <tr><td class="td-fundo">Bradesco Zupo FIC FIRF LP CP</td><td class="td-prazo">D+6</td></tr>
-        <tr><td class="td-fundo">Mag Cash 10 FIRF</td><td class="td-prazo">D+10</td></tr>
-        <tr><td class="td-fundo">V8 Cash Platinum FIF</td><td class="td-prazo">D+12</td></tr>
-        <tr><td class="td-fundo">Novus RF Isento FIC FI Infraestrutura CP RL</td><td class="td-prazo">D+31</td></tr>
-        <tr><td class="td-fundo">XP Debêntures Incentivadas CDI CP FIF Incentivado</td><td class="td-prazo">D+31</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo de Resgate</th><th>ROA</th></tr></thead>
+    <tbody>
+      <tr><td class="td-fundo">XP Liquidez FIC FR REF DI CP RL</td><td class="td-prazo">D+0</td><td class="td-roa">0,11%</td></tr>
+      <tr><td class="td-fundo">Tivio Banks RF CP FIF RL</td><td class="td-prazo">D+0</td><td class="td-roa">0,09%</td></tr>
+      <tr><td class="td-fundo">BNP Paribas Match FIF RF</td><td class="td-prazo">D+0</td><td class="td-roa">0,11%</td></tr>
+      <tr><td class="td-fundo">Giant Cash FIRF LP</td><td class="td-prazo">D+1</td><td class="td-roa">0,20%</td></tr>
+      <tr><td class="td-fundo">ARX Fuji FIC de FIF CP RL</td><td class="td-prazo">D+1</td><td class="td-roa">0,08%</td></tr>
+      <tr><td class="td-fundo">Bradesco Zupo FIC FIRF LP CP</td><td class="td-prazo">D+6</td><td class="td-roa">0,13%</td></tr>
+      <tr><td class="td-fundo">V8 Cash Platinum FIF</td><td class="td-prazo">D+12</td><td class="td-roa">0,15%</td></tr>
+      <tr><td class="td-fundo">Novus RF Isento FIC FI Infraestrutura CP RL</td><td class="td-prazo">D+31</td><td class="td-roa">0,26%</td></tr>
+      <tr><td class="td-fundo">XP Debêntures Incentivadas CDI CP FIF Incentivado</td><td class="td-prazo">D+31</td><td class="td-roa">0,24%</td></tr>
+    </tbody>
+  </table></div>
 
   <div class="section-label">Inflação</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo de Resgate</th></tr></thead>
-      <tbody>
-        <tr><td class="td-fundo">JGP Debêntures Incentivadas Juros Reais 60 FI Infra CP RL</td><td class="td-prazo">D+61</td></tr>
-        <tr><td class="td-fundo">Kinea IPCA Dinâmico II FIF RF RL</td><td class="td-prazo">D+1</td></tr>
-        <tr><td class="td-fundo">ARX Elbrus Advisory I FIC Incentivado FIF</td><td class="td-prazo">D+31</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo de Resgate</th><th>ROA</th></tr></thead>
+    <tbody>
+      <tr><td class="td-fundo">JGP Debêntures Incentivadas Juros Reais 60 FI Infra CP RL</td><td class="td-prazo">D+61</td><td class="td-roa">0,24%</td></tr>
+      <tr><td class="td-fundo">Kinea IPCA Dinâmico II FIF RF RL</td><td class="td-prazo">D+1</td><td class="td-roa">0,20%</td></tr>
+      <tr><td class="td-fundo">ARX Elbrus Advisory I FIC Incentivado FIF</td><td class="td-prazo">D+31</td><td class="td-roa">0,20%</td></tr>
+    </tbody>
+  </table></div>
 
   <div class="section-label">Multimercado</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo de Resgate</th></tr></thead>
-      <tbody>
-        <tr><td class="td-fundo">Armor Axe FIC FIM RL</td><td class="td-prazo">D+22</td></tr>
-        <tr><td class="td-fundo">Real Investor FIC de FIF Multimercado RL</td><td class="td-prazo">D+30</td></tr>
-        <tr><td class="td-fundo">V8 Speedway Long Short FIF FIF Multimercado</td><td class="td-prazo">D+17</td></tr>
-        <tr><td class="td-fundo">Kapitalo K10 Advisory FIF em Cotas de FIM</td><td class="td-prazo">D+31</td></tr>
-        <tr><td class="td-fundo">Absolute Vertex Advisory FIC FIF Multimercado</td><td class="td-prazo">D+45</td></tr>
-        <tr><td class="td-fundo">Genoa Capital Radar Advisory FIF</td><td class="td-prazo">D+31</td></tr>
-        <tr><td class="td-fundo">Vista Hedge FIF em Cotas de FIM</td><td class="td-prazo">D+16</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo de Resgate</th><th>ROA</th></tr></thead>
+    <tbody>
+      <tr><td class="td-fundo">Armor Axe FIC FIM RL</td><td class="td-prazo">D+22</td><td class="td-roa">0,48%</td></tr>
+      <tr><td class="td-fundo">Real Investor FIC de FIF Multimercado RL</td><td class="td-prazo">D+30</td><td class="td-roa">0,47%</td></tr>
+      <tr><td class="td-fundo">V8 Speedway Long Short FIF FIF Multimercado</td><td class="td-prazo">D+17</td><td class="td-roa">0,59%</td></tr>
+      <tr><td class="td-fundo">Kapitalo K10 Advisory FIF em Cotas de FIM</td><td class="td-prazo">D+31</td><td class="td-roa">0,36%</td></tr>
+      <tr><td class="td-fundo">Absolute Vertex Advisory FIC FIF Multimercado</td><td class="td-prazo">D+45</td><td class="td-roa">0,48%</td></tr>
+      <tr><td class="td-fundo">Genoa Capital Radar Advisory FIF</td><td class="td-prazo">D+31</td><td class="td-roa">0,48%</td></tr>
+      <tr><td class="td-fundo">Vista Hedge FIF em Cotas de FIM</td><td class="td-prazo">D+16</td><td class="td-roa">0,54%</td></tr>
+    </tbody>
+  </table></div>
 
   <div class="section-label">Renda Variável</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo de Resgate</th></tr></thead>
-      <tbody>
-        <tr><td class="td-fundo">Real Investor FIC de FIF em Ações RL</td><td class="td-prazo">D+29</td></tr>
-        <tr><td class="td-fundo">Absolute Pace Long Biased Advisory FIC FIA</td><td class="td-prazo">D+33</td></tr>
-        <tr><td class="td-fundo">Genoa Capital Arpa Advisory FIF</td><td class="td-prazo">D+32</td></tr>
-      </tbody>
-    </table>
-  </div>
-
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo de Resgate</th><th>ROA</th></tr></thead>
+    <tbody>
+      <tr><td class="td-fundo">Real Investor FIC de FIF em Ações RL</td><td class="td-prazo">D+29</td><td class="td-roa">0,46%</td></tr>
+      <tr><td class="td-fundo">Genoa Capital Arpa Advisory FIF</td><td class="td-prazo">D+32</td><td class="td-roa">0,48%</td></tr>
+    </tbody>
+  </table></div>
 </div>
 
-<!-- FUNDOS DE PREVIDÊNCIA -->
+<!-- ===== PREVIDÊNCIA ===== -->
 <div id="tab-previdencia" class="tab-panel">
 
   <div class="section-label">Pós Fixado</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo (dias úteis)</th><th>Observações</th></tr></thead>
-      <tbody>
-        <tr><td class="td-fundo">V8 Vanquish Termo XP Seg Prev FIC FIM CP</td><td class="td-prazo">D+9</td><td class="td-obs"></td></tr>
-        <tr><td class="td-fundo">XP Liquidez 50 Prev</td><td class="td-prazo">D+1</td><td class="td-obs"></td></tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo de Resgate</th><th>ROA</th><th>Observações</th></tr></thead>
+    <tbody>
+      <tr><td class="td-fundo">V8 Vanquish Termo XP Seg Prev FIC FIM CP</td><td class="td-prazo">D+9</td><td class="td-roa">0,27%</td><td class="td-obs"></td></tr>
+      <tr><td class="td-fundo">XP Liquidez 50 Prev</td><td class="td-prazo">D+1</td><td class="td-roa">0,10%</td><td class="td-obs"></td></tr>
+    </tbody>
+  </table></div>
 
   <div class="section-label">Inflação</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo (dias úteis)</th><th>Observações</th></tr></thead>
-      <tbody>
-        <tr><td class="td-fundo">Kinea Prev XP Seg IPCA Dinâmico FICFI RF</td><td class="td-prazo">D+1</td><td class="td-obs"></td></tr>
-        <tr><td class="td-fundo">ARX K2 XP Seg Prev Inflação Curta FIC FIM CP</td><td class="td-prazo">D+7</td><td class="td-obs"></td></tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo de Resgate</th><th>ROA</th><th>Observações</th></tr></thead>
+    <tbody>
+      <tr><td class="td-fundo">Kinea Prev XP Seg IPCA Dinâmico FICFI RF</td><td class="td-prazo">D+1</td><td class="td-roa">0,15%</td><td class="td-obs"></td></tr>
+      <tr><td class="td-fundo">Arx K2 XP Seg Prev Inflação Curta FIC FIM CP</td><td class="td-prazo">D+7</td><td class="td-roa">0,33%</td><td class="td-obs"></td></tr>
+    </tbody>
+  </table></div>
 
   <div class="section-label">Multimercado</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo (dias úteis)</th><th>Observações</th></tr></thead>
-      <tbody>
-        <tr><td class="td-fundo">Absolute Vertex XP Seg Prev FIC FIM</td><td class="td-prazo">D+22</td><td class="td-obs"><span class="badge-iq">Inv. Qualificado</span></td></tr>
-        <tr><td class="td-fundo">Kapitalo K10 Global Prev XP Seg Advisory FIC FIM RL</td><td class="td-prazo">D+9</td><td class="td-obs"></td></tr>
-        <tr><td class="td-fundo">Genoa Capital Cruise Prev XP Seg FIC FIM</td><td class="td-prazo">D+7</td><td class="td-obs"></td></tr>
-        <tr><td class="td-fundo">Real Investor XP Seg Prev FIM RL</td><td class="td-prazo">D+22</td><td class="td-obs"><span class="badge-iq">Inv. Qualificado</span></td></tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo de Resgate</th><th>ROA</th><th>Observações</th></tr></thead>
+    <tbody>
+      <tr><td class="td-fundo">Absolute Vertex XP Seg Prev FIC FIM</td><td class="td-prazo">D+22</td><td class="td-roa">0,44%</td><td class="td-obs"><span class="badge-qi">Investidor Qualificado</span></td></tr>
+      <tr><td class="td-fundo">Kapitalo K10 Global Prev XP Seg Advisory FIC FIM RL</td><td class="td-prazo">D+9</td><td class="td-roa">0,30%</td><td class="td-obs"></td></tr>
+      <tr><td class="td-fundo">Genoa Capital Cruise Prev XP Seg FIC FIM</td><td class="td-prazo">D+7</td><td class="td-roa">0,44%</td><td class="td-obs"></td></tr>
+      <tr><td class="td-fundo">Real Investor XP Seg Prev FIM RL</td><td class="td-prazo">D+22</td><td class="td-roa">0,47%</td><td class="td-obs"><span class="badge-qi">Investidor Qualificado</span></td></tr>
+      <tr><td class="td-fundo">V8 Speedway Veja LS XP Seg Prev FIC Multi RL</td><td class="td-prazo">D+10</td><td class="td-roa">0,53%</td><td class="td-obs"></td></tr>
+    </tbody>
+  </table></div>
 
   <div class="section-label">Renda Variável</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo (dias úteis)</th><th>Observações</th></tr></thead>
-      <tbody>
-        <tr><td class="td-fundo">Real Investor 100 XP Seg Ad FICFIA RL</td><td class="td-prazo">D+22</td><td class="td-obs"><span class="badge-iq">Inv. Qualificado</span></td></tr>
-        <tr><td class="td-fundo">Real Investor 70 XP Seg Advisory FIC FIA</td><td class="td-prazo">D+9</td><td class="td-obs"></td></tr>
-        <tr><td class="td-fundo">Absolute Pace XP Seg Prev FIA RL</td><td class="td-prazo">D+24</td><td class="td-obs"><span class="badge-iq">Inv. Qualificado</span></td></tr>
-        <tr><td class="td-fundo">Guepardo XP Seg Prev FIC FIM</td><td class="td-prazo">D+23</td><td class="td-obs"><span class="badge-iq">Inv. Qualificado</span></td></tr>
-        <tr><td class="td-fundo">Guepardo 70 XP Seg Prev FIC FIM RL</td><td class="td-prazo">D+9</td><td class="td-obs"></td></tr>
-      </tbody>
-    </table>
-  </div>
-
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo de Resgate</th><th>ROA</th><th>Observações</th></tr></thead>
+    <tbody>
+      <tr><td class="td-fundo">Real Investor 100 XP Seg Ad FICFIA RL</td><td class="td-prazo">D+22</td><td class="td-roa">0,46%</td><td class="td-obs"><span class="badge-qi">Investidor Qualificado</span></td></tr>
+      <tr><td class="td-fundo">Real Investor 70 XP Seg Advisory FIC FIA</td><td class="td-prazo">D+9</td><td class="td-roa">0,52%</td><td class="td-obs"></td></tr>
+      <tr><td class="td-fundo">Guepardo XP Seg Prev FIC FIM</td><td class="td-prazo">D+23</td><td class="td-roa">0,44%</td><td class="td-obs"><span class="badge-qi">Investidor Qualificado</span></td></tr>
+      <tr><td class="td-fundo">Guepardo 70 XP Seg Prev FIC FIM RL</td><td class="td-prazo">D+9</td><td class="td-roa">0,28%</td><td class="td-obs"></td></tr>
+    </tbody>
+  </table></div>
 </div>
 
-<!-- FUNDOS FECHADOS -->
+<!-- ===== FECHADOS ===== -->
 <div id="tab-fechados" class="tab-panel">
 
   <div class="section-label">Prefixado</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo</th><th>Link</th></tr></thead>
-      <tbody>
-        <tr>
-          <td class="td-fundo">LCP Prefixado Feeder FII</td>
-          <td class="td-prazo">2030 (+2 anos)</td>
-          <td class="td-link"><a href="https://lifecapitalpartners.com.br/fundo/lcp-prefixado/" target="_blank">lifecapitalpartners.com.br ↗</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo</th><th>Tipo</th><th>Rentabilidade Alvo</th><th>Subordinação</th><th>Link</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="td-fundo">LCP Prefixado Feeder FII</td>
+        <td class="td-prazo">2030 (+2 anos)</td>
+        <td class="td-meta">Renda+</td>
+        <td class="td-meta">15% a.a. (isento)</td>
+        <td class="td-meta">Sim (15%)</td>
+        <td class="td-link"><a href="https://lifecapitalpartners.com.br/fundo/lcp-prefixado/" target="_blank">lifecapitalpartners.com.br ↗</a></td>
+      </tr>
+    </tbody>
+  </table></div>
 
   <div class="section-label">Pós Fixado</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo</th><th>Link</th></tr></thead>
-      <tbody>
-        <tr>
-          <td class="td-fundo">ARX FII Portfólio Renda CDI+ RL</td>
-          <td class="td-prazo">2030 (+2 anos)</td>
-          <td class="td-link"><a href="https://www.arxinvestimentos.com.br/pt/fundos/real-estate/arx-fii-portfolio-renda-cdi--responsabilidade-limitada.html" target="_blank">arxinvestimentos.com.br ↗</a></td>
-        </tr>
-        <tr>
-          <td class="td-fundo">AVBI11 — VBI Crédito</td>
-          <td class="td-prazo">2029</td>
-          <td class="td-link"><a href="https://realestate.patria.com/papel/avbi/documentos/" target="_blank">realestate.patria.com ↗</a></td>
-        </tr>
-        <tr>
-          <td class="td-fundo">TGRE11 — TG Real Estate</td>
-          <td class="td-prazo">2027 (+2 anos)</td>
-          <td class="td-link"><a href="https://tgcore.com.br/fundos/tgre/" target="_blank">tgcore.com.br ↗</a></td>
-        </tr>
-        <tr>
-          <td class="td-fundo">XPAG11 — XP Crédito Agro</td>
-          <td class="td-prazo">2027 (+2 anos)</td>
-          <td class="td-link"><a href="https://www.xpasset.com.br/fundos/xp-credito-agro/" target="_blank">xpasset.com.br ↗</a></td>
-        </tr>
-        <tr>
-          <td class="td-fundo">TGRI — TG Renda Imobiliária Feeder FII RL</td>
-          <td class="td-prazo">2027 (+2 anos)</td>
-          <td class="td-link"><a href="https://tgcore.com.br/fundos/tgri/" target="_blank">tgcore.com.br ↗</a></td>
-        </tr>
-        <tr>
-          <td class="td-fundo">Verde A&amp;I Portfólio Renda Mais FII RL</td>
-          <td class="td-prazo">2031 (+1 ano)</td>
-          <td class="td-link"><a href="https://www.verdeagroimob.com.br/#/performance" target="_blank">verdeagroimob.com.br ↗</a></td>
-        </tr>
-        <tr>
-          <td class="td-fundo">Legacy Capital Portfolio Renda Mais</td>
-          <td class="td-prazo">2032</td>
-          <td class="td-link"><a href="https://app.powerbi.com/view?r=eyJrIjoiZTc4ZTM5ODEtNzFmNC00MThiLWJmM2EtNGJmMDA0YmIzNmZkIiwidCI6IjQ5N2ExNTY0LTdkNWItNDhkMy1hNTVlLTc5MWVhZWVmNTgxOSJ9" target="_blank">PowerBI ↗</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo</th><th>Tipo</th><th>Rentabilidade Alvo</th><th>Subordinação</th><th>Link</th></tr></thead>
+    <tbody>
+      <tr><td class="td-fundo">ARX FII Portfólio Renda CDI+ RL</td><td class="td-prazo">2030 (+2 anos)</td><td class="td-meta">Renda+</td><td class="td-meta">CDI+2% (isento)</td><td class="td-meta">Não</td><td class="td-link"><a href="https://www.arxinvestimentos.com.br/pt/fundos/real-estate/arx-fii-portfolio-renda-cdi--responsabilidade-limitada.html" target="_blank">arxinvestimentos.com.br ↗</a></td></tr>
+      <tr><td class="td-fundo">AVBI11 — VBI Crédito</td><td class="td-prazo">2029</td><td class="td-meta">Cetipado</td><td class="td-meta">—</td><td class="td-meta">Não</td><td class="td-link"><a href="https://realestate.patria.com/papel/avbi/documentos/" target="_blank">realestate.patria.com ↗</a></td></tr>
+      <tr><td class="td-fundo">TGRE11 — TG Real Estate</td><td class="td-prazo">2027 (+2 anos)</td><td class="td-meta">Cetipado</td><td class="td-meta">—</td><td class="td-meta">Não</td><td class="td-link"><a href="https://tgcore.com.br/fundos/tgre/" target="_blank">tgcore.com.br ↗</a></td></tr>
+      <tr><td class="td-fundo">XPAG11 — XP Crédito Agro</td><td class="td-prazo">2027 (+2 anos)</td><td class="td-meta">Cetipado</td><td class="td-meta">—</td><td class="td-meta">Não</td><td class="td-link"><a href="https://www.xpasset.com.br/fundos/xp-credito-agro/" target="_blank">xpasset.com.br ↗</a></td></tr>
+      <tr><td class="td-fundo">TGRI — TG Renda Imobiliária Feeder FII RL</td><td class="td-prazo">2027 (+2 anos)</td><td class="td-meta">Renda+</td><td class="td-meta">CDI+2% (isento)</td><td class="td-meta">Sim (10%)</td><td class="td-link"><a href="https://tgcore.com.br/fundos/tgri/" target="_blank">tgcore.com.br ↗</a></td></tr>
+      <tr><td class="td-fundo">Verde A&amp;I Portfólio Renda Mais FII RL</td><td class="td-prazo">2031 (+1 ano)</td><td class="td-meta">Renda+</td><td class="td-meta">CDI+2,30% (isento)</td><td class="td-meta">Não</td><td class="td-link"><a href="https://www.verdeagroimob.com.br/#/performance" target="_blank">verdeagroimob.com.br ↗</a></td></tr>
+      <tr><td class="td-fundo">Legacy Capital Portfolio Renda Mais</td><td class="td-prazo">2032</td><td class="td-meta">Renda+</td><td class="td-meta">CDI+1,90% (isento)</td><td class="td-meta">Não</td><td class="td-link"><a href="https://app.powerbi.com/view?r=eyJrIjoiZTc4ZTM5ODEtNzFmNC00MThiLWJmM2EtNGJmMDA0YmIzNmZkIiwidCI6IjQ5N2ExNTY0LTdkNWItNDhkMy1hNTVlLTc5MWVhZWVmNTgxOSJ9" target="_blank">powerbi.com ↗</a></td></tr>
+    </tbody>
+  </table></div>
 
   <div class="section-label">Inflação</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo</th><th>Link</th></tr></thead>
-      <tbody>
-        <tr>
-          <td class="td-fundo">XP Renda Imobiliária Feeder FII RL</td>
-          <td class="td-prazo">2030 (+1 ano)</td>
-          <td class="td-link"><a href="https://www.xpasset.com.br/fundos/xp-renda-imobiliaria/" target="_blank">xpasset.com.br ↗</a></td>
-        </tr>
-        <tr>
-          <td class="td-fundo">Mauá Capital Logística Feeder FII — RL</td>
-          <td class="td-prazo">2030 (+2 anos)</td>
-          <td class="td-link"><a href="https://jivemaua.com.br/fundo/maua-capital-logistica-feeder-mclg11/" target="_blank">jivemaua.com.br ↗</a></td>
-        </tr>
-        <tr>
-          <td class="td-fundo">Mauá Lajes Corporativas Feeder FII RL — Sênior</td>
-          <td class="td-prazo">2030 (+1 ano)</td>
-          <td class="td-link"><a href="https://jivemaua.com.br/fundo/maua-capital-lajes-corporativas-mclc11/" target="_blank">jivemaua.com.br ↗</a></td>
-        </tr>
-        <tr>
-          <td class="td-fundo">TG Renda Urbana Feeder FII RL</td>
-          <td class="td-prazo">2030 (+1 ano)</td>
-          <td class="td-link"><a href="https://tgcorerenda.com.br/fundos/tg-feeder/" target="_blank">tgcorerenda.com.br ↗</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo</th><th>Tipo</th><th>Rentabilidade Alvo</th><th>Subordinação</th><th>Link</th></tr></thead>
+    <tbody>
+      <tr><td class="td-fundo">Mauá Capital Logística Feeder FII - RL</td><td class="td-prazo">2030 (+2 anos)</td><td class="td-meta">Renda+</td><td class="td-meta">IPCA+9,00% (isento)</td><td class="td-meta">Sim (50%)</td><td class="td-link"><a href="https://jivemaua.com.br/fundo/maua-capital-logistica-feeder-mclg11/" target="_blank">jivemaua.com.br ↗</a></td></tr>
+      <tr><td class="td-fundo">Mauá Lajes Corporativas Feeder FII RL - Senior</td><td class="td-prazo">2030 (+1 ano)</td><td class="td-meta">Renda+</td><td class="td-meta">IPCA+8,75% (isento)</td><td class="td-meta">Sim (23%)</td><td class="td-link"><a href="https://jivemaua.com.br/fundo/maua-capital-lajes-corporativas-mclc11/" target="_blank">jivemaua.com.br ↗</a></td></tr>
+      <tr><td class="td-fundo">TG Renda Urbana Feeder FII RL</td><td class="td-prazo">2030 (+1 ano)</td><td class="td-meta">Renda+</td><td class="td-meta">IPCA+9,50% (isento)</td><td class="td-meta">Sim (25%)</td><td class="td-link"><a href="https://tgcorerenda.com.br/fundos/tg-feeder/" target="_blank">tgcorerenda.com.br ↗</a></td></tr>
+    </tbody>
+  </table></div>
 
   <div class="section-label">Alternativos</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Fundo</th><th>Prazo</th><th>Link</th></tr></thead>
-      <tbody>
-        <tr>
-          <td class="td-fundo">XP Special Opportunities FIP Multi — Classe A</td>
-          <td class="td-prazo">2028</td>
-          <td class="td-link"><a href="https://conteudos.xpi.com.br/fundos-de-investimento/xp-special-opportunities-fip-multiestrategia/" target="_blank">xpi.com.br ↗</a></td>
-        </tr>
-        <tr>
-          <td class="td-fundo">Headline XP Venture Capital 3 FIP Multi — Classe A</td>
-          <td class="td-prazo">2032 (+2 anos)</td>
-          <td class="td-link"><a href="https://www.xpasset.com.br/fundos/xp-headline-3-venture-capital/" target="_blank">xpasset.com.br ↗</a></td>
-        </tr>
-        <tr>
-          <td class="td-fundo">XP Selection Alternativo FIP Multi — Classe A</td>
-          <td class="td-prazo">2031 (+2 anos)</td>
-          <td class="td-link"><a href="https://www.xpasset.com.br/fundos/xp-selection-alternativo/" target="_blank">xpasset.com.br ↗</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
+  <div class="table-wrap"><table>
+    <thead><tr><th>Fundo</th><th>Prazo</th><th>Tipo</th><th>Rentabilidade Alvo</th><th>Subordinação</th><th>Link</th></tr></thead>
+    <tbody>
+      <tr><td class="td-fundo">XP Special Opportunities FIP Multi - Classe A</td><td class="td-prazo">2028</td><td class="td-meta">Private Equity</td><td class="td-meta">25% a.a.</td><td class="td-meta">Não</td><td class="td-link"><a href="https://conteudos.xpi.com.br/fundos-de-investimento/xp-special-opportunities-fip-multiestrategia/" target="_blank">xpi.com.br ↗</a></td></tr>
+      <tr><td class="td-fundo">Headline XP Venture Capital 3 FIP Multi - Classe A</td><td class="td-prazo">2032 (+2 anos)</td><td class="td-meta">Private Equity</td><td class="td-meta">IPCA+20% a.a.</td><td class="td-meta">Não</td><td class="td-link"><a href="https://www.xpasset.com.br/fundos/xp-headline-3-venture-capital/" target="_blank">xpasset.com.br ↗</a></td></tr>
+      <tr><td class="td-fundo">XP Selection Alternativo FIP Multi - Classe A</td><td class="td-prazo">2031 (+2 anos)</td><td class="td-meta">Private Equity</td><td class="td-meta">IPCA+15% a.a.</td><td class="td-meta">Não</td><td class="td-link"><a href="https://www.xpasset.com.br/fundos/xp-selection-alternativo/" target="_blank">xpasset.com.br ↗</a></td></tr>
+    </tbody>
+  </table></div>
 </div>
 
 <footer>Alto Valor Investimentos &nbsp;·&nbsp; Guia de Fundos</footer>
 
 <script>
-  function showTab(name, btn) {
+  function switchTab(id, btn) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
     btn.classList.add('active');
   }
 </script>
-
 </body>
 </html>
