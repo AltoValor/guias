@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Factor Ações vs. Pares</title>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.8.1/prop-types.min.js"></script>
+<script crossorigin src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #0B1220; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #E2E8F0;
+    -webkit-font-smoothing: antialiased;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState } = React;
+const {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, ReferenceLine, ScatterChart, Scatter, ZAxis, Label
+} = Recharts;
+
+const PERIOD_FACTOR = 2 / 3;
+const CDI_PERIOD = 9.19;
+
+const data = [
+  { date: "15/09/25", real: 0.0,   guepardo: -0.5,  charles: -0.5,  spx: 0.0,   factor: 0.0,    tarpon: -0.5,  alaska: -1.0,  ip: -0.5  },
+  { date: "22/09/25", real: -1.0,  guepardo: -2.0,  charles: -3.0,  spx: -0.5,  factor: -0.5,   tarpon: -1.5,  alaska: -3.0,  ip: -1.0  },
+  { date: "29/09/25", real: -2.0,  guepardo: -3.5,  charles: -5.5,  spx: -1.0,  factor: -1.0,   tarpon: -3.0,  alaska: -5.0,  ip: -2.0  },
+  { date: "06/10/25", real: -3.5,  guepardo: -4.0,  charles: -7.0,  spx: -1.5,  factor: -1.5,   tarpon: -4.5,  alaska: -7.5,  ip: -3.5  },
+  { date: "13/10/25", real: -3.0,  guepardo: -3.0,  charles: -7.0,  spx: -1.0,  factor: -1.5,   tarpon: -4.0,  alaska: -8.0,  ip: -4.0  },
+  { date: "20/10/25", real: -1.5,  guepardo: -2.0,  charles: -6.0,  spx: 0.5,   factor: 0.5,    tarpon: -2.0,  alaska: -7.0,  ip: -3.0  },
+  { date: "27/10/25", real: 1.0,   guepardo: 0.0,   charles: -5.0,  spx: 2.0,   factor: 2.5,    tarpon: 0.5,   alaska: -5.0,  ip: -1.5  },
+  { date: "03/11/25", real: 4.0,   guepardo: 3.0,   charles: -3.0,  spx: 4.5,   factor: 4.5,    tarpon: 4.0,   alaska: -2.0,  ip: 0.0   },
+  { date: "10/11/25", real: 6.0,   guepardo: 5.0,   charles: -2.0,  spx: 5.5,   factor: 5.5,    tarpon: 7.0,   alaska: 0.5,   ip: 0.5   },
+  { date: "17/11/25", real: 7.5,   guepardo: 6.5,   charles: -1.5,  spx: 6.0,   factor: 5.5,    tarpon: 9.0,   alaska: 2.0,   ip: 1.0   },
+  { date: "24/11/25", real: 8.5,   guepardo: 7.5,   charles: -1.0,  spx: 6.5,   factor: 5.5,    tarpon: 11.0,  alaska: 4.0,   ip: 1.5   },
+  { date: "01/12/25", real: 11.5,  guepardo: 10.0,  charles: 1.5,   spx: 8.0,   factor: 7.5,    tarpon: 13.5,  alaska: 8.5,   ip: 2.5   },
+  { date: "08/12/25", real: 13.0,  guepardo: 12.5,  charles: 3.0,   spx: 8.5,   factor: 9.5,    tarpon: 13.5,  alaska: 10.5,  ip: 3.0   },
+  { date: "15/12/25", real: 11.0,  guepardo: 10.5,  charles: 1.5,   spx: 7.5,   factor: 6.0,    tarpon: 9.0,   alaska: 5.5,   ip: 2.0   },
+  { date: "22/12/25", real: 10.0,  guepardo: 9.0,   charles: 1.0,   spx: 7.5,   factor: 5.5,    tarpon: 7.5,   alaska: 4.0,   ip: 1.5   },
+  { date: "29/12/25", real: 9.5,   guepardo: 8.5,   charles: 1.5,   spx: 8.0,   factor: 6.5,    tarpon: 8.0,   alaska: 4.5,   ip: 2.0   },
+  { date: "05/01/26", real: 9.5,   guepardo: 9.0,   charles: 4.0,   spx: 8.5,   factor: 7.0,    tarpon: 9.0,   alaska: 5.5,   ip: 3.0   },
+  { date: "12/01/26", real: 11.0,  guepardo: 11.0,  charles: 6.5,   spx: 10.5,  factor: 8.0,    tarpon: 12.0,  alaska: 8.5,   ip: 4.5   },
+  { date: "19/01/26", real: 14.0,  guepardo: 14.5,  charles: 8.5,   spx: 13.0,  factor: 8.5,    tarpon: 16.0,  alaska: 13.0,  ip: 6.0   },
+  { date: "26/01/26", real: 17.5,  guepardo: 18.0,  charles: 10.5,  spx: 15.0,  factor: 11.0,   tarpon: 18.5,  alaska: 15.5,  ip: 7.0   },
+  { date: "02/02/26", real: 19.0,  guepardo: 19.5,  charles: 11.0,  spx: 16.0,  factor: 14.0,   tarpon: 20.0,  alaska: 14.5,  ip: 7.0   },
+  { date: "09/02/26", real: 21.0,  guepardo: 21.0,  charles: 12.0,  spx: 17.0,  factor: 18.0,   tarpon: 21.5,  alaska: 14.0,  ip: 7.0   },
+  { date: "16/02/26", real: 23.0,  guepardo: 22.0,  charles: 12.5,  spx: 18.0,  factor: 19.5,   tarpon: 22.0,  alaska: 12.5,  ip: 6.5   },
+  { date: "23/02/26", real: 24.5,  guepardo: 23.5,  charles: 13.0,  spx: 19.0,  factor: 20.0,   tarpon: 21.5,  alaska: 11.5,  ip: 6.0   },
+  { date: "02/03/26", real: 25.0,  guepardo: 24.0,  charles: 13.0,  spx: 19.5,  factor: 19.0,   tarpon: 21.0,  alaska: 11.0,  ip: 5.5   },
+  { date: "09/03/26", real: 22.0,  guepardo: 21.0,  charles: 11.0,  spx: 18.5,  factor: 17.0,   tarpon: 18.0,  alaska: 8.0,   ip: 4.5   },
+  { date: "16/03/26", real: 20.5,  guepardo: 19.0,  charles: 9.0,   spx: 18.0,  factor: 14.5,   tarpon: 15.0,  alaska: 4.0,   ip: 3.0   },
+  { date: "23/03/26", real: 19.5,  guepardo: 18.0,  charles: 8.5,   spx: 17.5,  factor: 13.0,   tarpon: 12.0,  alaska: 1.0,   ip: 1.0   },
+  { date: "30/03/26", real: 18.0,  guepardo: 17.0,  charles: 8.0,   spx: 17.0,  factor: 11.5,   tarpon: 8.0,   alaska: -1.5,  ip: -0.5  },
+  { date: "06/04/26", real: 15.0,  guepardo: 14.0,  charles: 7.5,   spx: 16.5,  factor: 9.5,    tarpon: 5.5,   alaska: -2.0,  ip: -1.0  },
+  { date: "13/04/26", real: 17.0,  guepardo: 16.5,  charles: 8.0,   spx: 18.0,  factor: 18.5,   tarpon: 6.0,   alaska: 1.0,   ip: 0.0   },
+  { date: "20/04/26", real: 18.5,  guepardo: 18.0,  charles: 8.5,   spx: 19.0,  factor: 17.0,   tarpon: 4.5,   alaska: 0.5,   ip: 1.5   },
+  { date: "27/04/26", real: 12.01, guepardo: 15.38, charles: 6.52,  spx: 18.55, factor: 14.0,   tarpon: 1.94,  alaska: -0.55, ip: 2.11  },
+  { date: "04/05/26", real: 12.01, guepardo: 15.38, charles: 6.52,  spx: 18.55, factor: 13.64,  tarpon: 1.94,  alaska: -0.55, ip: 2.11  },
+];
+
+const metrics = [
+  { key: "factor",   name: "Factor Ações",            short: "Factor",   color: "#3B82F6", width: 3.5, ret: 13.64, vol12m: 12.65 },
+  { key: "spx",      name: "SPX Falcon 2",            short: "SPX",      color: "#65A30D", width: 2,   ret: 18.55, vol12m: 10.16 },
+  { key: "guepardo", name: "Guepardo Institucional",  short: "Guepardo", color: "#DC2626", width: 2,   ret: 15.38, vol12m: 18.89 },
+  { key: "real",     name: "Real Investor",           short: "Real",     color: "#22C55E", width: 2,   ret: 12.01, vol12m: 16.24 },
+  { key: "charles",  name: "Charles River",           short: "Charles",  color: "#0891B2", width: 2,   ret: 6.52,  vol12m: 15.31 },
+  { key: "ip",       name: "IP Participações",        short: "IP",       color: "#60A5FA", width: 2,   ret: 2.11,  vol12m: 13.58 },
+  { key: "tarpon",   name: "Tarpon GT 90",            short: "Tarpon",   color: "#C026D3", width: 2,   ret: 1.94,  vol12m: 19.37 },
+  { key: "alaska",   name: "Alaska Institucional",    short: "Alaska",   color: "#FB7185", width: 2,   ret: -0.55, vol12m: 28.74 },
+];
+
+const sharpeTable = metrics
+  .map((m) => {
+    const volAdj = m.vol12m * PERIOD_FACTOR;
+    const excess = m.ret - CDI_PERIOD;
+    const sharpe = excess / volAdj;
+    return { ...m, volAdj, excess, sharpe };
+  })
+  .sort((a, b) => b.sharpe - a.sharpe);
+
+const scatterData = metrics.map((m) => ({
+  x: m.vol12m * PERIOD_FACTOR,
+  y: m.ret,
+  name: m.name,
+  short: m.short,
+  color: m.color,
+  key: m.key,
+}));
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (!active || !payload || !payload.length) return null;
+  const sorted = [...payload].sort((a, b) => b.value - a.value);
+  return (
+    <div style={{
+      background: "rgba(15, 23, 42, 0.96)",
+      border: "1px solid rgba(148, 163, 184, 0.3)",
+      borderRadius: "6px",
+      padding: "10px 14px",
+      backdropFilter: "blur(8px)",
+      fontFamily: "ui-monospace, monospace",
+    }}>
+      <div style={{ color: "#94A3B8", fontSize: "11px", marginBottom: "8px", letterSpacing: "0.05em" }}>{label}</div>
+      {sorted.map((entry) => (
+        <div key={entry.dataKey} style={{
+          display: "flex", alignItems: "center", gap: "8px",
+          fontSize: "12px", color: "#E2E8F0", marginTop: "3px",
+        }}>
+          <span style={{ width: "10px", height: "10px", background: entry.color, borderRadius: "2px" }} />
+          <span style={{ color: entry.color, fontWeight: 600, minWidth: "60px", textAlign: "right" }}>
+            {entry.value >= 0 ? "+" : ""}{entry.value.toFixed(2)}%
+          </span>
+          <span style={{ color: "#CBD5E1" }}>{entry.name}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const ScatterTooltip = ({ active, payload }) => {
+  if (!active || !payload || !payload.length) return null;
+  const p = payload[0].payload;
+  if (!p || !p.color) return null;
+  const excess = p.y - CDI_PERIOD;
+  const sharpe = excess / p.x;
+  return (
+    <div style={{
+      background: "rgba(15, 23, 42, 0.96)",
+      border: `1px solid ${p.color}`,
+      borderRadius: "6px",
+      padding: "12px 14px",
+      backdropFilter: "blur(8px)",
+      fontFamily: "ui-monospace, monospace",
+      minWidth: "200px",
+    }}>
+      <div style={{
+        color: p.color, fontSize: "13px", fontWeight: 700,
+        marginBottom: "8px", fontFamily: "'Inter', sans-serif",
+      }}>{p.name}</div>
+      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "4px 12px", fontSize: "11px" }}>
+        <span style={{ color: "#94A3B8" }}>Retorno</span>
+        <span style={{ color: "#E2E8F0", textAlign: "right" }}>{p.y.toFixed(2)}%</span>
+        <span style={{ color: "#94A3B8" }}>Vol Aj.</span>
+        <span style={{ color: "#E2E8F0", textAlign: "right" }}>{p.x.toFixed(2)}%</span>
+        <span style={{ color: "#94A3B8" }}>Excesso</span>
+        <span style={{ color: excess >= 0 ? "#86EFAC" : "#FCA5A5", textAlign: "right" }}>
+          {excess >= 0 ? "+" : ""}{excess.toFixed(2)}%
+        </span>
+        <span style={{ color: "#94A3B8" }}>Sharpe</span>
+        <span style={{
+          color: sharpe >= 0.5 ? "#86EFAC" : sharpe >= 0 ? "#FACC15" : "#FCA5A5",
+          textAlign: "right", fontWeight: 700,
+        }}>{sharpe.toFixed(2)}</span>
+      </div>
+    </div>
+  );
+};
+
+const CustomScatterDot = (props) => {
+  const { cx, cy, payload } = props;
+  if (cx == null || cy == null) return null;
+  const isFactor = payload.key === "factor";
+  return (
+    <g>
+      {isFactor && <circle cx={cx} cy={cy} r={18} fill={payload.color} opacity={0.15} />}
+      <circle cx={cx} cy={cy} r={isFactor ? 9 : 7} fill={payload.color} stroke="#0F172A" strokeWidth={2} />
+      <text x={cx + 12} y={cy + 4} fill={payload.color}
+        fontSize={isFactor ? 13 : 11}
+        fontWeight={isFactor ? 700 : 600}
+        fontFamily="'Inter', sans-serif">{payload.short}</text>
+    </g>
+  );
+};
+
+const sharpeColor = (s) => {
+  if (s >= 1) return "#22C55E";
+  if (s >= 0.5) return "#84CC16";
+  if (s >= 0) return "#FACC15";
+  if (s >= -0.5) return "#FB923C";
+  return "#EF4444";
+};
+
+function App() {
+  const [hidden, setHidden] = useState({});
+
+  const toggle = (key) => setHidden((h) => ({ ...h, [key]: !h[key] }));
+  const showAll = () => setHidden({});
+  const onlyFactor = () => {
+    const h = {};
+    metrics.forEach((m) => { if (m.key !== "factor") h[m.key] = true; });
+    setHidden(h);
+  };
+
+  const xMax = Math.max(...scatterData.map((d) => d.x)) + 2;
+  const xMin = Math.min(...scatterData.map((d) => d.x)) - 2;
+  const yMax = Math.max(...scatterData.map((d) => d.y)) + 3;
+  const yMin = Math.min(...scatterData.map((d) => d.y)) - 3;
+
+  const isoSharpeLines = [
+    { sharpe: 1.0,  color: "rgba(34, 197, 94, 0.25)" },
+    { sharpe: 0.5,  color: "rgba(132, 204, 22, 0.20)" },
+    { sharpe: -0.5, color: "rgba(251, 146, 60, 0.20)" },
+  ];
+
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #0B1220 0%, #0F172A 50%, #1E293B 100%)",
+      padding: "32px 24px",
+      fontFamily: "'Inter', -apple-system, sans-serif",
+      color: "#E2E8F0",
+    }}>
+      <div style={{ maxWidth: "1320px", margin: "0 auto" }}>
+
+        {/* Header */}
+        <div style={{
+          display: "flex", justifyContent: "space-between", alignItems: "flex-end",
+          marginBottom: "24px", flexWrap: "wrap", gap: "16px",
+        }}>
+          <div>
+            <div style={{
+              fontSize: "11px", letterSpacing: "0.2em", color: "#64748B",
+              textTransform: "uppercase", marginBottom: "8px",
+            }}>Resultado Acumulado · 15/09/2025 — 04/05/2026</div>
+            <h1 style={{
+              fontSize: "28px", fontWeight: 600, margin: 0,
+              color: "#F1F5F9", letterSpacing: "-0.02em",
+            }}>Factor Ações vs. Pares</h1>
+          </div>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button onClick={showAll} style={{
+              background: "rgba(59, 130, 246, 0.15)",
+              border: "1px solid rgba(59, 130, 246, 0.4)",
+              color: "#93C5FD", padding: "8px 14px", borderRadius: "6px",
+              fontSize: "12px", fontWeight: 500, cursor: "pointer", fontFamily: "inherit",
+            }}>Mostrar todos</button>
+            <button onClick={onlyFactor} style={{
+              background: "rgba(30, 41, 59, 0.6)",
+              border: "1px solid rgba(148, 163, 184, 0.25)",
+              color: "#CBD5E1", padding: "8px 14px", borderRadius: "6px",
+              fontSize: "12px", fontWeight: 500, cursor: "pointer", fontFamily: "inherit",
+            }}>Só Factor</button>
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "20px" }}>
+          {metrics.map((s) => {
+            const isHidden = hidden[s.key];
+            return (
+              <button key={s.key} onClick={() => toggle(s.key)} style={{
+                background: isHidden ? "rgba(30, 41, 59, 0.4)" : "rgba(30, 41, 59, 0.9)",
+                border: `1px solid ${isHidden ? "rgba(148,163,184,0.15)" : s.color + "60"}`,
+                borderRadius: "6px", padding: "8px 12px",
+                display: "flex", alignItems: "center", gap: "10px",
+                cursor: "pointer", opacity: isHidden ? 0.4 : 1,
+                transition: "all 0.15s ease", fontFamily: "inherit",
+              }}>
+                <span style={{ width: "12px", height: "12px", background: s.color, borderRadius: "2px" }} />
+                <span style={{ fontSize: "12px", color: "#E2E8F0", fontWeight: 500 }}>{s.name}</span>
+                <span style={{
+                  fontSize: "12px", color: s.color, fontWeight: 700,
+                  fontFamily: "ui-monospace, monospace",
+                }}>{s.ret >= 0 ? "+" : ""}{s.ret.toFixed(2)}%</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Line Chart */}
+        <div style={{
+          background: "rgba(15, 23, 42, 0.6)",
+          border: "1px solid rgba(51, 65, 85, 0.5)",
+          borderRadius: "10px", padding: "20px 12px 12px 12px", height: "480px",
+        }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data} margin={{ top: 10, right: 60, left: 10, bottom: 10 }}>
+              <CartesianGrid strokeDasharray="3 6" stroke="rgba(71, 85, 105, 0.3)" vertical={false} />
+              <XAxis dataKey="date"
+                tick={{ fill: "#64748B", fontSize: 10, fontFamily: "ui-monospace, monospace" }}
+                tickLine={{ stroke: "rgba(71, 85, 105, 0.5)" }}
+                axisLine={{ stroke: "rgba(71, 85, 105, 0.5)" }}
+                interval={2} />
+              <YAxis
+                tick={{ fill: "#64748B", fontSize: 10, fontFamily: "ui-monospace, monospace" }}
+                tickLine={{ stroke: "rgba(71, 85, 105, 0.5)" }}
+                axisLine={{ stroke: "rgba(71, 85, 105, 0.5)" }}
+                tickFormatter={(v) => `${v}%`}
+                domain={[-10, 27]}
+                ticks={[-10, -5, 0, 5, 10, 15, 20, 25]} />
+              <Tooltip content={<CustomTooltip />} />
+              <ReferenceLine y={0} stroke="rgba(148, 163, 184, 0.4)" strokeWidth={1} />
+              {metrics.map((s) => !hidden[s.key] && (
+                <Line key={s.key} type="monotone" dataKey={s.key} name={s.name}
+                  stroke={s.color} strokeWidth={s.width} dot={false}
+                  activeDot={{ r: 5, strokeWidth: 2, stroke: "#0F172A" }}
+                  isAnimationActive={true} animationDuration={600} />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* SCATTER */}
+        <div style={{ marginTop: "40px" }}>
+          <div style={{
+            fontSize: "11px", letterSpacing: "0.2em", color: "#64748B",
+            textTransform: "uppercase", marginBottom: "8px",
+          }}>Mapa de Risco-Retorno</div>
+          <h2 style={{
+            fontSize: "22px", fontWeight: 600, margin: "0 0 8px 0",
+            color: "#F1F5F9", letterSpacing: "-0.01em",
+          }}>Volatilidade × Rentabilidade</h2>
+          <div style={{ fontSize: "12px", color: "#94A3B8", marginBottom: "20px", lineHeight: 1.6 }}>
+            Eixo X: vol 12m ajustada (× 2/3) · Eixo Y: retorno do período · Linhas pontilhadas = iso-Sharpe
+          </div>
+
+          <div style={{
+            background: "rgba(15, 23, 42, 0.6)",
+            border: "1px solid rgba(51, 65, 85, 0.5)",
+            borderRadius: "10px", padding: "20px 12px 12px 12px", height: "560px",
+          }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <ScatterChart margin={{ top: 20, right: 80, left: 30, bottom: 50 }}>
+                <CartesianGrid strokeDasharray="3 6" stroke="rgba(71, 85, 105, 0.25)" />
+                <XAxis type="number" dataKey="x" domain={[Math.max(0, xMin), xMax]}
+                  tick={{ fill: "#64748B", fontSize: 11, fontFamily: "ui-monospace, monospace" }}
+                  tickLine={{ stroke: "rgba(71, 85, 105, 0.5)" }}
+                  axisLine={{ stroke: "rgba(71, 85, 105, 0.5)" }}
+                  tickFormatter={(v) => `${v.toFixed(1)}%`}>
+                  <Label value="Volatilidade ajustada (12m × 2/3)" position="bottom" offset={20}
+                    style={{ fill: "#94A3B8", fontSize: 12, fontFamily: "'Inter', sans-serif" }} />
+                </XAxis>
+                <YAxis type="number" dataKey="y" domain={[yMin, yMax]}
+                  tick={{ fill: "#64748B", fontSize: 11, fontFamily: "ui-monospace, monospace" }}
+                  tickLine={{ stroke: "rgba(71, 85, 105, 0.5)" }}
+                  axisLine={{ stroke: "rgba(71, 85, 105, 0.5)" }}
+                  tickFormatter={(v) => `${v.toFixed(0)}%`}>
+                  <Label value="Retorno do período" angle={-90} position="left" offset={10}
+                    style={{ fill: "#94A3B8", fontSize: 12, fontFamily: "'Inter', sans-serif", textAnchor: "middle" }} />
+                </YAxis>
+                <ZAxis range={[100, 100]} />
+                <Tooltip content={<ScatterTooltip />} cursor={{ strokeDasharray: "3 3", stroke: "rgba(148,163,184,0.3)" }} />
+
+                {isoSharpeLines.map((iso) => {
+                  const x1 = 0;
+                  const y1 = CDI_PERIOD + iso.sharpe * x1;
+                  const x2 = xMax;
+                  const y2 = CDI_PERIOD + iso.sharpe * x2;
+                  return (
+                    <Line key={iso.sharpe} type="linear" dataKey="y"
+                      data={[{ x: x1, y: y1 }, { x: x2, y: y2 }]}
+                      stroke={iso.color} strokeDasharray="3 6" strokeWidth={1}
+                      dot={false} isAnimationActive={false} legendType="none" />
+                  );
+                })}
+
+                <Scatter data={scatterData} shape={<CustomScatterDot />} isAnimationActive animationDuration={800} />
+              </ScatterChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div style={{
+            display: "grid", gridTemplateColumns: "1fr 1fr",
+            gap: "12px", marginTop: "16px",
+          }}>
+            <div style={{
+              background: "rgba(34, 197, 94, 0.08)",
+              border: "1px solid rgba(34, 197, 94, 0.25)",
+              borderRadius: "8px", padding: "12px 16px", fontSize: "12px",
+            }}>
+              <div style={{ color: "#86EFAC", fontWeight: 600, marginBottom: "4px" }}>
+                ↗ Eficiente: alto retorno, baixa vol
+              </div>
+              <div style={{ color: "#94A3B8", lineHeight: 1.5 }}>
+                Canto superior-esquerdo. SPX Falcon 2 e Factor Ações dominam aqui.
+              </div>
+            </div>
+            <div style={{
+              background: "rgba(239, 68, 68, 0.08)",
+              border: "1px solid rgba(239, 68, 68, 0.25)",
+              borderRadius: "8px", padding: "12px 16px", fontSize: "12px",
+            }}>
+              <div style={{ color: "#FCA5A5", fontWeight: 600, marginBottom: "4px" }}>
+                ↘ Ineficiente: baixo retorno, alta vol
+              </div>
+              <div style={{ color: "#94A3B8", lineHeight: 1.5 }}>
+                Canto inferior-direito. Alaska e Tarpon ficam mais expostos aqui.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Sharpe Table */}
+        <div style={{ marginTop: "40px" }}>
+          <div style={{
+            fontSize: "11px", letterSpacing: "0.2em", color: "#64748B",
+            textTransform: "uppercase", marginBottom: "8px",
+          }}>Análise de Risco-Retorno</div>
+          <h2 style={{
+            fontSize: "22px", fontWeight: 600, margin: "0 0 8px 0",
+            color: "#F1F5F9", letterSpacing: "-0.01em",
+          }}>Índice de Sharpe (período)</h2>
+          <div style={{ fontSize: "12px", color: "#94A3B8", marginBottom: "20px", lineHeight: 1.6 }}>
+            Vol 12m ponderada pelo período (× 2/3) · Taxa livre de risco: CDI {CDI_PERIOD.toFixed(2)}% no período
+          </div>
+
+          <div style={{
+            background: "rgba(15, 23, 42, 0.6)",
+            border: "1px solid rgba(51, 65, 85, 0.5)",
+            borderRadius: "10px", overflow: "hidden",
+          }}>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "40px 1.8fr 0.9fr 0.9fr 0.9fr 0.9fr 0.9fr",
+              padding: "14px 20px",
+              background: "rgba(30, 41, 59, 0.7)",
+              borderBottom: "1px solid rgba(71, 85, 105, 0.4)",
+              fontSize: "11px", fontWeight: 600, color: "#94A3B8",
+              letterSpacing: "0.08em", textTransform: "uppercase", gap: "12px",
+            }}>
+              <div>#</div>
+              <div>Ativo</div>
+              <div style={{ textAlign: "right" }}>Retorno</div>
+              <div style={{ textAlign: "right" }}>Vol 12m</div>
+              <div style={{ textAlign: "right" }}>Vol Aj.</div>
+              <div style={{ textAlign: "right" }}>Excesso</div>
+              <div style={{ textAlign: "right" }}>Sharpe</div>
+            </div>
+
+            {sharpeTable.map((row, idx) => (
+              <div key={row.key} style={{
+                display: "grid",
+                gridTemplateColumns: "40px 1.8fr 0.9fr 0.9fr 0.9fr 0.9fr 0.9fr",
+                padding: "14px 20px",
+                borderBottom: idx < sharpeTable.length - 1 ? "1px solid rgba(71, 85, 105, 0.2)" : "none",
+                fontSize: "13px", fontFamily: "ui-monospace, monospace",
+                alignItems: "center", gap: "12px",
+                background: row.key === "factor" ? "rgba(59, 130, 246, 0.08)" : "transparent",
+              }}>
+                <div style={{ color: "#64748B", fontWeight: 600 }}>{idx + 1}</div>
+                <div style={{
+                  display: "flex", alignItems: "center", gap: "10px",
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  <span style={{ width: "4px", height: "20px", background: row.color, borderRadius: "2px" }} />
+                  <span style={{ color: "#F1F5F9", fontWeight: row.key === "factor" ? 700 : 500 }}>
+                    {row.name}
+                  </span>
+                </div>
+                <div style={{ textAlign: "right", color: row.ret >= 0 ? "#86EFAC" : "#FCA5A5" }}>
+                  {row.ret >= 0 ? "+" : ""}{row.ret.toFixed(2)}%
+                </div>
+                <div style={{ textAlign: "right", color: "#CBD5E1" }}>{row.vol12m.toFixed(2)}%</div>
+                <div style={{ textAlign: "right", color: "#94A3B8" }}>{row.volAdj.toFixed(2)}%</div>
+                <div style={{ textAlign: "right", color: row.excess >= 0 ? "#86EFAC" : "#FCA5A5" }}>
+                  {row.excess >= 0 ? "+" : ""}{row.excess.toFixed(2)}%
+                </div>
+                <div style={{
+                  textAlign: "right", color: sharpeColor(row.sharpe),
+                  fontWeight: 700, fontSize: "14px",
+                }}>
+                  {row.sharpe >= 0 ? "+" : ""}{row.sharpe.toFixed(2)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{
+          marginTop: "20px", fontSize: "11px", color: "#64748B",
+          fontStyle: "italic", lineHeight: 1.6,
+        }}>
+          <strong>Metodologia:</strong> Vol ajustada = Vol 12m × 2/3. Sharpe = (Retorno − CDI) / Vol ajustada.
+          No scatter, linhas pontilhadas representam combinações com mesmo Sharpe (iso-Sharpe), partindo do CDI.
+          Curva da Factor Ações até abr/26 estimada visualmente; retorno final 13,64% conforme reporte oficial.
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>
